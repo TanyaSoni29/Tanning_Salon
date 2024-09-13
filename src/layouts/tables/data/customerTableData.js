@@ -17,18 +17,18 @@ import { useSelector } from "react-redux";
 export default function data() {
   const [rowsData, setRowsData] = useState([]);
   const { token } = useSelector((state) => state.auth);
-  const handleView = (userId) => {
-    console.log(`Viewing user with id: ${userId}`);
+  const handleView = (customerId) => {
+    console.log(`Viewing user with id: ${customerId}`);
     // Implement view logic here
   };
 
-  const handleEdit = (userId) => {
-    console.log(`Editing user with id: ${userId}`);
+  const handleEdit = (customerId) => {
+    console.log(`Editing user with id: ${customerId}`);
     // Implement edit logic here
   };
 
-  const handleDelete = (userId) => {
-    console.log(`Deleting user with id: ${userId}`);
+  const handleDelete = (customerId) => {
+    console.log(`Deleting user with id: ${customerId}`);
     // Implement delete logic here
   };
   useEffect(() => {
@@ -36,7 +36,7 @@ export default function data() {
       try {
         const response = await getAllUserProfiles(token);
         console.log("getAlluserProfile response", response.data);
-        setRowsData(response.data);
+        setRowsData(response.data.filter((data) => data.role === "customer"));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -44,12 +44,12 @@ export default function data() {
     fetchData();
   }, []);
 
-  const Author = ({ image, name, email }) => (
+  const Author = ({ image, firstName, lastName, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} name={name} size="sm" />
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
-          {name}
+          {firstName} {lastName}
         </MDTypography>
         <MDTypography variant="caption">{email}</MDTypography>
       </MDBox>
@@ -61,7 +61,6 @@ export default function data() {
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
         {title}
       </MDTypography>
-      {/* <MDTypography variant="caption">{description}</MDTypography> */}
     </MDBox>
   );
 
@@ -73,15 +72,27 @@ export default function data() {
     </MDBox>
   );
 
-  const rows = rowsData.map((user) => ({
-    userName: <Author image={user.avatar} name={user.firstName} email={user.email} />,
-    Admin: <Job title={user.role} />,
-    location: <Location name={user.preferred_location.name} />,
+  const rows = rowsData.map((customer) => ({
+    userName: (
+      <Author
+        image={customer.avatar}
+        firstName={customer.firstName}
+        lastName={customer.lastName}
+        email={customer.email}
+      />
+    ),
+    Admin: <Job title={customer.role} />,
+    location: <Location name={customer.preferred_location.name} />,
+    phone_number: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {customer.phone_number}
+      </MDTypography>
+    ),
     status: (
       <MDBox ml={-1}>
         <MDBadge
-          badgeContent={user.active === "online" ? "online" : "offline"}
-          color={user.active === "online" ? "success" : "dark"}
+          badgeContent={customer.active ? "Active" : "Inactive"}
+          color={customer.active ? "success" : "error"}
           variant="gradient"
           size="sm"
         />
@@ -89,7 +100,7 @@ export default function data() {
     ),
     lastUpdatedAt: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {new Date(user.updated_at).toLocaleDateString()}
+        {new Date(customer.updated_at).toLocaleDateString()}
       </MDTypography>
     ),
     action: (
@@ -100,9 +111,9 @@ export default function data() {
         alignItems="center"
         gap="8px"
       >
-        <RemoveRedEyeIcon onClick={() => handleView(user.id)} sx={{ cursor: "pointer" }} />
-        <EditIcon onClick={() => handleEdit(user.id)} sx={{ cursor: "pointer" }} />
-        <DeleteIcon onClick={() => handleDelete(user.id)} sx={{ cursor: "pointer" }} />
+        <RemoveRedEyeIcon onClick={() => handleView(customer._id)} sx={{ cursor: "pointer" }} />
+        <EditIcon onClick={() => handleEdit(customer._id)} sx={{ cursor: "pointer" }} />
+        <DeleteIcon onClick={() => handleDelete(customer._id)} sx={{ cursor: "pointer" }} />
       </MDBox>
     ),
   }));
@@ -110,10 +121,10 @@ export default function data() {
   return {
     columns: [
       { Header: "User Name", accessor: "userName", width: "30%", align: "left" },
-      { Header: "Admin", accessor: "Admin", align: "left" },
       { Header: "Location", accessor: "location", align: "left" },
+      { Header: "phone number", accessor: "phone_number", align: "center" },
       { Header: "status", accessor: "status", align: "center" },
-      { Header: "last updated at", accessor: "lastUpdatedAt", align: "center" },
+      { Header: "Last service purchase", accessor: "lastUpdatedAt", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
 

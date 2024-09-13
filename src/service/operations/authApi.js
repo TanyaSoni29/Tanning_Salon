@@ -1,8 +1,7 @@
 import { toast } from "react-hot-toast";
 import { endpoints } from "../api";
 import { apiConnector } from "../apiConnector";
-import { setLoading, setToken } from "../../slices/authSlice";
-import { setUser } from "../../slices/profileSlice";
+import { setLoading, setToken, setUser } from "../../slices/authSlice";
 
 const { SIGNUP_API, LOGIN_API, UPDATE_PASSWORD_API, RESET_PASSWORD_API, FORGET_PASSWORD_API } =
   endpoints;
@@ -102,9 +101,8 @@ export function logout(navigate) {
     dispatch(setToken(null));
     dispatch(setUser(null));
     localStorage.removeItem("token");
-    localStorage.removeItem("user");
     toast.success("Logged Out");
-    navigate("/login");
+    navigate("/authentication/sign-in");
   };
 }
 

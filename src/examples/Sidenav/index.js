@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/function-component-definition */
 import { useEffect } from "react";
 
 // react-router-dom components
@@ -32,7 +34,7 @@ import {
   setWhiteSidenav,
 } from "context";
 
-function Sidenav({ color, brand, brandName, routes, ...rest }) {
+function Sidenav({ color, brand, brandName, routes, onLogoutClick, ...rest }) {
   const [controller, dispatch] = useMaterialUIController();
   const { miniSidenav, transparentSidenav, whiteSidenav, darkMode, sidenavColor } = controller;
   const location = useLocation();
@@ -173,8 +175,12 @@ function Sidenav({ color, brand, brandName, routes, ...rest }) {
           variant="gradient"
           color={sidenavColor}
           fullWidth
+          onClick={onLogoutClick}
         >
-          visit your profile
+          <Icon fontSize="small" sx={{ marginRight: 1 }}>
+            logout
+          </Icon>
+          LogOut
         </MDButton>
       </MDBox>
     </SidenavRoot>

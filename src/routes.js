@@ -1,14 +1,12 @@
 import UserTables from "layouts/user-tables";
 import ProductTables from "layouts/product-tables";
 import ServiceTables from "layouts/service-tables";
-
+import CustomerTable from "layouts/customers-tables";
+import SignIn from "layouts/authentication/sign-in";
 // Other imports remain the same
 import Dashboard from "layouts/dashboard";
 import Billing from "layouts/billing";
-import Notifications from "layouts/notifications";
 import Profile from "layouts/profile";
-import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -25,15 +23,7 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "User Tables",
-    key: "user-tables",
-    icon: <Icon fontSize="small">people</Icon>,
-    route: "/user-tables",
-    component: <UserTables />,
-  },
-  {
-    type: "collapse",
-    name: "Product Tables",
+    name: "Products",
     key: "product-tables",
     icon: <Icon fontSize="small">shopping_cart</Icon>,
     route: "/product-tables",
@@ -41,11 +31,27 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Service Tables",
+    name: "Services",
     key: "service-tables",
     icon: <Icon fontSize="small">build</Icon>,
     route: "/service-tables",
     component: <ServiceTables />,
+  },
+  {
+    type: "collapse",
+    name: "Users",
+    key: "user-tables",
+    icon: <Icon fontSize="small">people</Icon>,
+    route: "/user-tables",
+    component: <UserTables />,
+  },
+  {
+    type: "collapse",
+    name: "Customers",
+    key: "customers-tables",
+    icon: <Icon fontSize="small">people</Icon>,
+    route: "/customers-tables",
+    component: <CustomerTable />,
   },
   {
     type: "collapse",
@@ -55,14 +61,6 @@ const routes = [
     route: "/billing",
     component: <Billing />,
   },
-  // {
-  //   type: "collapse",
-  //   name: "Notifications",
-  //   key: "notifications",
-  //   icon: <Icon fontSize="small">notifications</Icon>,
-  //   route: "/notifications",
-  //   component: <Notifications />,
-  // },
   {
     type: "collapse",
     name: "Profile",
@@ -73,19 +71,11 @@ const routes = [
   },
   {
     type: "collapse",
-    name: "Sign In",
-    key: "sign-in",
-    icon: <Icon fontSize="small">login</Icon>,
+    name: "Profile",
+    key: "profile",
+    icon: <Icon fontSize="small">person</Icon>,
     route: "/authentication/sign-in",
     component: <SignIn />,
-  },
-  {
-    type: "collapse",
-    name: "Sign Up",
-    key: "sign-up",
-    icon: <Icon fontSize="small">assignment</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
   },
 ];
 

@@ -1,0 +1,118 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/function-component-definition */
+
+// Material Dashboard 2 React components
+import React, { useState, useEffect } from "react";
+import MDBox from "components/MDBox";
+import MDTypography from "components/MDTypography";
+import MDAvatar from "components/MDAvatar";
+import MDBadge from "components/MDBadge";
+import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
+import DeleteIcon from "@mui/icons-material/Delete";
+import EditIcon from "@mui/icons-material/Edit";
+
+import { getAllUserProfiles } from "service/operations/userProfileApi";
+import { useSelector } from "react-redux";
+
+export default function data() {
+  const [rowsData, setRowsData] = useState([]);
+  const { token } = useSelector((state) => state.auth);
+  const handleView = (userId) => {
+    console.log(`Viewing user with id: ${userId}`);
+    // Implement view logic here
+  };
+
+  const handleEdit = (userId) => {
+    console.log(`Editing user with id: ${userId}`);
+    // Implement edit logic here
+  };
+
+  const handleDelete = (userId) => {
+    console.log(`Deleting user with id: ${userId}`);
+    // Implement delete logic here
+  };
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await getAllUserProfiles(token);
+        console.log("getAlluserProfile response", response.data);
+        setRowsData(response.data.filter((data) => data.role === "admin" || data.role === "user"));
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  const Author = ({ image, firstName, lastName, email }) => (
+    <MDBox display="flex" alignItems="center" lineHeight={1}>
+      <MDAvatar src={image} name={name} size="sm" />
+      <MDBox ml={2} lineHeight={1}>
+        <MDTypography display="block" variant="button" fontWeight="medium">
+          {firstName} {lastName}
+        </MDTypography>
+        <MDTypography variant="caption">{email}</MDTypography>
+      </MDBox>
+    </MDBox>
+  );
+
+  const Job = ({ title }) => (
+    <MDBox lineHeight={1} textAlign="left">
+      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+        {title}
+      </MDTypography>
+      {/* <MDTypography variant="caption">{description}</MDTypography> */}
+    </MDBox>
+  );
+
+  const Location = ({ name }) => (
+    <MDBox lineHeight={1} textAlign="left">
+      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+        {name}
+      </MDTypography>
+    </MDBox>
+  );
+
+  const rows = rowsData.map((user) => ({
+    userName: (
+      <Author
+        image={user.avatar}
+        firstName={user.firstName}
+        lastName={user.lastName}
+        email={user.email}
+      />
+    ),
+    Admin: <Job title={user.role} />,
+    location: <Location name={user.preferred_location.name} />,
+    phone_number: (
+      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+        {user.phone_number}
+      </MDTypography>
+    ),
+    action: (
+      <MDBox
+        textAlign="center"
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        gap="8px"
+      >
+        <RemoveRedEyeIcon onClick={() => handleView(user._id)} sx={{ cursor: "pointer" }} />
+        <EditIcon onClick={() => handleEdit(user._id)} sx={{ cursor: "pointer" }} />
+        <DeleteIcon onClick={() => handleDelete(user._id)} sx={{ cursor: "pointer" }} />
+      </MDBox>
+    ),
+  }));
+
+  return {
+    columns: [
+      { Header: "User Name", accessor: "userName", width: "30%", align: "left" },
+      { Header: "Role", accessor: "Admin", align: "left" },
+      { Header: "Location", accessor: "location", align: "left" },
+      { Header: "phone number", accessor: "phone_number", align: "center" },
+      { Header: "action", accessor: "action", align: "center" },
+    ],
+
+    rows,
+  };
+}

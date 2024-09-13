@@ -14,11 +14,11 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import userTableData from "layouts/tables/data/userTableData";
+import customerTableData from "layouts/tables/data/customerTableData";
 import { Button } from "@mui/material";
 
 function index() {
-  const { columns, rows } = userTableData();
+  const { columns, rows } = customerTableData();
 
   return (
     <DashboardLayout>
@@ -38,12 +38,12 @@ function index() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Users Table
+                  Customers Table
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows }} // Replace `columns` and `rows` with actual data
+                  table={{ columns, rows }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
@@ -64,7 +64,7 @@ function index() {
                 },
               }}
             >
-              Add New User
+              Add New Customer
             </Button>
           </Grid>
         </Grid>

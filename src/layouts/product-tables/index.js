@@ -55,7 +55,7 @@ function index() {
                   },
                 }}
               >
-                Add New User
+                Add New Product
               </Button>
             </Grid>
           </Grid>

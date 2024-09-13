@@ -17,18 +17,18 @@ import { getAllProducts } from "service/operations/productAndProductTransaction"
 export default function data() {
   const [rowsData, setRowsData] = useState([]);
   const { token } = useSelector((state) => state.auth);
-  const handleView = (userId) => {
-    console.log(`Viewing user with id: ${userId}`);
+  const handleView = (productId) => {
+    console.log(`Viewing product with id: ${productId}`);
     // Implement view logic here
   };
 
-  const handleEdit = (userId) => {
-    console.log(`Editing user with id: ${userId}`);
+  const handleEdit = (productId) => {
+    console.log(`Editing product with id: ${productId}`);
     // Implement edit logic here
   };
 
-  const handleDelete = (userId) => {
-    console.log(`Deleting user with id: ${userId}`);
+  const handleDelete = (productId) => {
+    console.log(`Deleting product with id: ${productId}`);
     // Implement delete logic here
   };
   useEffect(() => {
@@ -44,52 +44,55 @@ export default function data() {
     fetchData();
   }, []);
 
-  const Author = ({ image, name, email }) => (
+  const Product = ({ image, name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
+      <MDAvatar
+        src={
+          image
+            ? image
+            : "https://c8.alamy.com/comp/R82P02/product-hand-written-word-text-for-typography-design-in-black-and-white-color-can-be-used-for-a-logo-branding-or-card-R82P02.jpg"
+        }
+        name={name}
+        size="sm"
+      />
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
           {name}
         </MDTypography>
-        <MDTypography variant="caption">{email}</MDTypography>
       </MDBox>
     </MDBox>
   );
 
-  const Job = ({ title }) => (
+  const ProductBrand = ({ title, description }) => (
     <MDBox lineHeight={1} textAlign="left">
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
         {title}
       </MDTypography>
-      {/* <MDTypography variant="caption">{description}</MDTypography> */}
+      <MDTypography variant="caption">{description}</MDTypography>
     </MDBox>
   );
 
-  const Location = ({ name }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {name}
+  const rows = rowsData.map((product) => ({
+    Name: <Product image={product.image} name={product.name} />,
+    Brand: <ProductBrand title={product.brand} description={product.description} />,
+    price: (
+      <MDTypography variant="caption" fontWeight="bold">
+        {product.price}
       </MDTypography>
-    </MDBox>
-  );
-
-  const rows = rowsData.map((user) => ({
-    userName: <Author image={user.avatar} name={user.firstName} email={user.email} />,
-    Admin: <Job title={user.role} />,
-    location: <Location name={user.preferred_location.name} />,
-    status: (
+    ),
+    type: (
       <MDBox ml={-1}>
         <MDBadge
-          badgeContent={user.active === "online" ? "online" : "offline"}
-          color={user.active === "online" ? "success" : "dark"}
+          badgeContent={product.type === "Product" ? "Product" : "Service"}
+          color={product.type === "Product" ? "success" : "dark"}
           variant="gradient"
           size="sm"
         />
       </MDBox>
     ),
-    lastUpdatedAt: (
+    createdAt: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {new Date(user.updated_at).toLocaleDateString()}
+        {new Date(product.created_at).toLocaleDateString()}
       </MDTypography>
     ),
     action: (
@@ -100,20 +103,19 @@ export default function data() {
         alignItems="center"
         gap="8px"
       >
-        <RemoveRedEyeIcon onClick={() => handleView(user.id)} sx={{ cursor: "pointer" }} />
-        <EditIcon onClick={() => handleEdit(user.id)} sx={{ cursor: "pointer" }} />
-        <DeleteIcon onClick={() => handleDelete(user.id)} sx={{ cursor: "pointer" }} />
+        <RemoveRedEyeIcon onClick={() => handleView(product._id)} sx={{ cursor: "pointer" }} />
+        <EditIcon onClick={() => handleEdit(product._id)} sx={{ cursor: "pointer" }} />
+        <DeleteIcon onClick={() => handleDelete(product._id)} sx={{ cursor: "pointer" }} />
       </MDBox>
     ),
   }));
 
   return {
     columns: [
-      { Header: "User Name", accessor: "userName", width: "30%", align: "left" },
-      { Header: "Admin", accessor: "Admin", align: "left" },
-      { Header: "Location", accessor: "location", align: "left" },
-      { Header: "status", accessor: "status", align: "center" },
-      { Header: "last updated at", accessor: "lastUpdatedAt", align: "center" },
+      { Header: "Product Name", accessor: "Name", width: "30%", align: "left" },
+      { Header: "Brand", accessor: "Brand", align: "left" },
+      { Header: "Price", accessor: "price", align: "center" },
+      { Header: "Listed On", accessor: "createdAt", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],
 

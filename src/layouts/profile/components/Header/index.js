@@ -92,7 +92,7 @@ function Header({ children }) {
             </MDBox>
           </Grid>
           <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}>
-            <AppBar position="static">
+            {/* <AppBar position="static">
               <Tabs orientation={tabsOrientation} value={tabValue} onChange={handleSetTabValue}>
                 <Tab
                   label="App"
@@ -119,7 +119,7 @@ function Header({ children }) {
                   }
                 />
               </Tabs>
-            </AppBar>
+            </AppBar> */}
           </Grid>
         </Grid>
         {children}

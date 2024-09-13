@@ -59,7 +59,7 @@ export default function data() {
   const Job = ({ title }) => (
     <MDBox lineHeight={1} textAlign="left">
       <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {title}
+        {title === "admin" ? "Admin" : "User"}
       </MDTypography>
       {/* <MDTypography variant="caption">{description}</MDTypography> */}
     </MDBox>
@@ -107,7 +107,7 @@ export default function data() {
   return {
     columns: [
       { Header: "User Name", accessor: "userName", width: "30%", align: "left" },
-      { Header: "Role", accessor: "Admin", align: "left" },
+      { Header: "Role", accessor: "Admin", align: "center" },
       { Header: "Location", accessor: "location", align: "left" },
       { Header: "phone number", accessor: "phone_number", align: "center" },
       { Header: "action", accessor: "action", align: "center" },

@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 // react-router components
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 
 // prop-types is a library for typechecking of props.
 import PropTypes from "prop-types";
@@ -46,6 +46,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const route = useLocation().pathname.split("/").slice(1);
   const [searchQuery, setSearchQuery] = useState("");
   const searchRef = useRef(null);
+  const navigate = useNavigate();
   useEffect(() => {
     // Setting the navbar type
     if (fixedNavbar) {
@@ -79,7 +80,10 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleSearch = async () => {
     console.log(searchQuery);
   };
-
+  const handleProfileClick = () => {
+    navigate("/profile");
+    handleCloseMenu();
+  };
   // Handle key press event
   const handleKeyPress = (event) => {
     if (event.key === "Enter") {
@@ -100,9 +104,12 @@ function DashboardNavbar({ absolute, light, isMini }) {
       onClose={handleCloseMenu}
       sx={{ mt: 2 }}
     >
-      <NotificationItem icon={<Icon>email</Icon>} title="Check new messages" />
-      <NotificationItem icon={<Icon>podcasts</Icon>} title="Manage Podcast sessions" />
-      <NotificationItem icon={<Icon>shopping_cart</Icon>} title="Payment successfully completed" />
+      <NotificationItem
+        icon={<Icon>account_circle</Icon>}
+        title="See Your Profile"
+        onClick={handleProfileClick}
+      />
+      <NotificationItem icon={<Icon>logout</Icon>} title="Log Out" />
     </Menu>
   );
 
@@ -144,11 +151,11 @@ function DashboardNavbar({ absolute, light, isMini }) {
               />
             </MDBox>
             <MDBox color={light ? "white" : "inherit"}>
-              <Link to="/authentication/sign-in/basic">
+              {/* <Link to="/authentication/sign-in">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>
-                  <Icon sx={iconsStyle}>account_circle</Icon>
+                  <Icon sx={iconsStyle}>logout</Icon>
                 </IconButton>
-              </Link>
+              </Link> */}
               <IconButton
                 size="small"
                 disableRipple
@@ -179,7 +186,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
                 variant="contained"
                 onClick={handleOpenMenu}
               >
-                <Icon sx={iconsStyle}>notifications</Icon>
+                <Icon sx={iconsStyle}>account_circle</Icon>
               </IconButton>
               {renderMenu()}
             </MDBox>

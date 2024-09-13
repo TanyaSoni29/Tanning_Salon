@@ -17,13 +17,15 @@ import themeDark from "assets/theme-dark";
 import routes from "routes";
 import ProtectedRoute from "utils/Protect";
 import { useMaterialUIController, setMiniSidenav, setOpenConfigurator } from "context";
-
+import Error from "../src/layouts/Error/index";
 // Images
 import brandWhite from "assets/images/Tanning_temporary.png";
 import brandDark from "assets/images/Tanning_temporary.png";
 import LogoutModal from "./components/Modal";
 import LogOut from "../src/layouts/authentication/log-out";
 import { logout } from "service/operations/authApi";
+import sideNavRoutes from "sidenavRoutes";
+import { RouterProvider, createBrowserRouter } from "react-router-dom";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -135,7 +137,7 @@ export default function App() {
             color={sidenavColor}
             brand={(transparentSidenav && !darkMode) || whiteSidenav ? brandDark : brandWhite}
             brandName="SALON"
-            routes={routes}
+            routes={sideNavRoutes}
             onMouseEnter={handleOnMouseEnter}
             onMouseLeave={handleOnMouseLeave}
             onLogoutClick={handleLogoutClick}
@@ -150,7 +152,7 @@ export default function App() {
       </LogoutModal>
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route path="*" element={<Error />} />
       </Routes>
     </ThemeProvider>
   );

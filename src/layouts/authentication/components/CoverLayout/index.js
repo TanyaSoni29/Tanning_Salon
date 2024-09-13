@@ -21,8 +21,8 @@ function CoverLayout({ coverHeight, image, children }) {
       <DefaultNavbar
         action={{
           type: "external",
-          route: "https://creative-tim.com/product/material-dashboard-react",
-          label: "free download",
+          route: "/authentication/sign-in",
+          label: "Login",
         }}
         transparent
         light

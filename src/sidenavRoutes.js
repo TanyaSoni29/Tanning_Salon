@@ -3,7 +3,6 @@ import ProductTables from "layouts/product-tables";
 import ServiceTables from "layouts/service-tables";
 import CustomerTable from "layouts/customers-tables";
 import SignIn from "layouts/authentication/sign-in";
-import SignUp from "layouts/authentication/sign-up";
 // Other imports remain the same
 import Dashboard from "layouts/dashboard";
 import Billing from "layouts/billing";
@@ -12,7 +11,7 @@ import Profile from "layouts/profile";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
-const routes = [
+const sideNavRoutes = [
   {
     type: "collapse",
     name: "Dashboard",
@@ -67,33 +66,6 @@ const routes = [
     component: <Billing />,
     protected: true,
   },
-  {
-    type: "collapse",
-    name: "Profile",
-    key: "profile",
-    icon: <Icon fontSize="small">person</Icon>,
-    route: "/profile",
-    component: <Profile />,
-    protected: true,
-  },
-  {
-    type: "collapse",
-    name: "SignIn",
-    key: "SignIn",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-in",
-    component: <SignIn />,
-    protected: false,
-  },
-  {
-    type: "collapse",
-    name: "SignUp",
-    key: "SignUp",
-    icon: <Icon fontSize="small">login</Icon>,
-    route: "/authentication/sign-up",
-    component: <SignUp />,
-    protected: false,
-  },
 ];
 
-export default routes;
+export default sideNavRoutes;

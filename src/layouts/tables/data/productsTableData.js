@@ -2,7 +2,7 @@
 /* eslint-disable react/function-component-definition */
 
 // Material Dashboard 2 React components
-import React, { useState, useEffect } from "react";
+import React from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
@@ -12,11 +12,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { useSelector } from "react-redux";
-import { getAllProducts } from "service/operations/productAndProductTransaction";
 
 export default function data(handleEdit) {
-  const [rowsData, setRowsData] = useState([]);
-  const { token } = useSelector((state) => state.auth);
+  const { products } = useSelector((state) => state.product);
   const handleView = (productId) => {
     console.log(`Viewing product with id: ${productId}`);
     // Implement view logic here
@@ -26,18 +24,6 @@ export default function data(handleEdit) {
     console.log(`Deleting product with id: ${productId}`);
     // Implement delete logic here
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getAllProducts(token);
-        console.log("getAllProducts response", response.data);
-        setRowsData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
 
   const Product = ({ image, name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -67,7 +53,7 @@ export default function data(handleEdit) {
     </MDBox>
   );
 
-  const rows = rowsData.map((product) => ({
+  const rows = products.map((product) => ({
     Name: <Product image={product.image} name={product.name} />,
     Brand: <ProductBrand title={product.brand} description={product.description} />,
     price: (

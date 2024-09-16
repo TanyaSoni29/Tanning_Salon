@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/function-component-definition */
 import { useState, useEffect, useRef } from "react";
 
 // react-router components
@@ -37,6 +39,8 @@ import {
   setMiniSidenav,
   setOpenConfigurator,
 } from "context";
+import { logout } from "service/operations/authApi";
+import { useDispatch } from "react-redux";
 
 function DashboardNavbar({ absolute, light, isMini }) {
   const [navbarType, setNavbarType] = useState();
@@ -47,6 +51,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const [searchQuery, setSearchQuery] = useState("");
   const searchRef = useRef(null);
   const navigate = useNavigate();
+  const appDispatch = useDispatch();
   useEffect(() => {
     // Setting the navbar type
     if (fixedNavbar) {
@@ -91,6 +96,9 @@ function DashboardNavbar({ absolute, light, isMini }) {
       searchRef.current.blur();
     }
   };
+  const handleLogout = () => {
+    appDispatch(logout(navigate));
+  };
   // Render the notifications menu
   const renderMenu = () => (
     <Menu
@@ -109,7 +117,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
         title="See Your Profile"
         onClick={handleProfileClick}
       />
-      <NotificationItem icon={<Icon>logout</Icon>} title="Log Out" />
+      <NotificationItem icon={<Icon>logout</Icon>} title="Log Out" onClick={() => handleLogout()} />
     </Menu>
   );
 

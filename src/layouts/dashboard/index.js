@@ -1,3 +1,5 @@
+/* eslint-disable react/prop-types */
+/* eslint-disable react/function-component-definition */
 import Grid from "@mui/material/Grid";
 
 // Material Dashboard 2 React components

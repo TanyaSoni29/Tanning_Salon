@@ -53,7 +53,7 @@ function index() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Services Table
+                  Services
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>

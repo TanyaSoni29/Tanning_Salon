@@ -6,7 +6,7 @@ import React, { useState, useEffect } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
-import MDBadge from "components/MDBadge";
+
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
@@ -36,7 +36,7 @@ export default function data() {
       try {
         const response = await getAllUserProfiles(token);
         console.log("getAlluserProfile response", response.data);
-        setRowsData(response.data.filter((data) => data.role === "admin" || data.role === "user"));
+        setRowsData(response.data.filter((data) => data.role !== "customer"));
       } catch (error) {
         console.error("Error fetching data:", error);
       }

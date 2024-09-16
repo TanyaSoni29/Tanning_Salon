@@ -2,7 +2,7 @@
 /* eslint-disable react/function-component-definition */
 
 // Material Dashboard 2 React components
-import React, { useState, useEffect } from "react";
+import React from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -10,11 +10,9 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { useSelector } from "react-redux";
-import { getAllServices } from "service/operations/serviceAndServiceTransaction";
 
 export default function data() {
-  const [rowsData, setRowsData] = useState([]);
-  const { token } = useSelector((state) => state.auth);
+  const { services } = useSelector((state) => state.service);
   const handleView = (customerId) => {
     console.log(`Viewing user with id: ${customerId}`);
     // Implement view logic here
@@ -27,21 +25,7 @@ export default function data() {
 
   const handleDelete = (customerId) => {
     console.log(`Deleting user with id: ${customerId}`);
-    // Implement delete logic here
   };
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getAllServices(token);
-        console.log("getAllService response", response.data);
-        setRowsData(response.data);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-    fetchData();
-  }, []);
-
   const Author = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDBox ml={2} lineHeight={1}>
@@ -68,7 +52,7 @@ export default function data() {
     </MDBox>
   );
 
-  const rows = rowsData.map((service) => ({
+  const rows = services.map((service) => ({
     serviceName: <Author name={service.serviceName} />,
     price: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">

@@ -102,8 +102,10 @@ export function login(userName, password, navigate) {
   };
 }
 
-export function getMe(token) {
+export function getMe(navigate) {
   return async (dispatch) => {
+    const token = localStorage.getItem("token");
+    console.log(token);
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
     console.log(GET_ME_API);
@@ -127,8 +129,9 @@ export function getMe(token) {
       toast.error("Login Failed");
       dispatch(setToken(null));
       navigate("/authentication/sign-in");
+    } finally {
+      dispatch(setLoading(false));
     }
-    dispatch(setLoading(false));
     toast.dismiss(toastId);
   };
 }

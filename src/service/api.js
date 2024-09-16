@@ -4,6 +4,7 @@ const BASE_URL = "http://localhost:3000/api/v1";
 export const endpoints = {
   SIGNUP_API: BASE_URL + "/user/signup",
   LOGIN_API: BASE_URL + "/user/login",
+  GET_ME_API: BASE_URL + "/user/me",
   UPDATE_PASSWORD_API: BASE_URL + "/user/updatePassword",
   RESET_PASSWORD_API: BASE_URL + "/user/resetPassword",
   FORGET_PASSWORD_API: BASE_URL + "/user/forgetPassword",

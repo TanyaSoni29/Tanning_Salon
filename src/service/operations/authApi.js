@@ -3,8 +3,14 @@ import { endpoints } from "../api";
 import { apiConnector } from "../apiConnector";
 import { setLoading, setToken, setUser } from "../../slices/authSlice";
 
-const { SIGNUP_API, LOGIN_API, UPDATE_PASSWORD_API, RESET_PASSWORD_API, FORGET_PASSWORD_API } =
-  endpoints;
+const {
+  SIGNUP_API,
+  LOGIN_API,
+  UPDATE_PASSWORD_API,
+  RESET_PASSWORD_API,
+  FORGET_PASSWORD_API,
+  GET_ME_API,
+} = endpoints;
 
 export function signUp(
   role,
@@ -90,6 +96,36 @@ export function login(userName, password, navigate) {
     } catch (error) {
       console.log("LOGIN API ERROR........", error);
       toast.error("Login Failed");
+    }
+    dispatch(setLoading(false));
+    toast.dismiss(toastId);
+  };
+}
+
+export function getMe(token) {
+  return async (dispatch) => {
+    const toastId = toast.loading("Loading...");
+    dispatch(setLoading(true));
+    try {
+      const response = await apiConnector("GET", GET_ME_API, null, {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      });
+
+      console.log("GET ME API RESPONSE.........", response);
+
+      if (response.status !== 200) {
+        throw new Error(response.data);
+      }
+      dispatch(setUser(response.data.user));
+      toast.success("Current Login User Fetched Successfully");
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.log("LOGIN API ERROR........", error);
+      toast.error("Login Failed");
+      dispatch(setToken(null));
+      navigate("/authentication/sign-in");
     }
     dispatch(setLoading(false));
     toast.dismiss(toastId);

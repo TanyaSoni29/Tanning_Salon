@@ -23,8 +23,9 @@ import brandWhite from "assets/images/Tanning_temporary.png";
 import brandDark from "assets/images/Tanning_temporary.png";
 import LogoutModal from "./components/Modal";
 import LogOut from "../src/layouts/authentication/log-out";
-import { logout } from "service/operations/authApi";
+import { getMe, logout } from "./service/operations/authApi";
 import sideNavRoutes from "sidenavRoutes";
+import { useSelector } from "react-redux";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
@@ -42,6 +43,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
+  const { token } = useSelector((state) => state.auth);
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -61,6 +63,10 @@ export default function App() {
 
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
+
+  useEffect(() => {
+    dispatch(getMe(token));
+  }, []);
 
   // Setting the dir attribute for the body element
   useEffect(() => {

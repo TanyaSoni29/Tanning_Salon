@@ -45,15 +45,10 @@ export const updateLocation = async (token, locationId, data) => {
   const toastId = toast.loading("Loading...");
   let result = null;
   try {
-    const response = await apiConnector(
-      "PATCH",
-      `${GET_ALL_LOCATION_API}/${locationId}`,
-      data,
-      {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    );
+    const response = await apiConnector("PATCH", `${GET_ALL_LOCATION_API}/${locationId}`, data, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
     console.log("Update Location Api Response..", response);
     if (response.status !== 200) throw new Error("Could not update Location");
     toast.success("Location updated successfully");
@@ -70,15 +65,10 @@ export const getLocation = async (token, locationId) => {
   const toastId = toast.loading("Loading...");
   let result = null;
   try {
-    const response = await apiConnector(
-      "GET",
-      `${GET_ALL_LOCATION_API}/${locationId}`,
-      null,
-      {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    );
+    const response = await apiConnector("GET", `${GET_ALL_LOCATION_API}/${locationId}`, null, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
 
     console.log("Get Location Api Response..", response);
     if (response.status !== 200) throw new Error("Could not fetch Location");
@@ -96,15 +86,10 @@ export const deleteLocation = async (token, locationId) => {
   const toastId = toast.loading("Loading...");
   let result = false;
   try {
-    const response = await apiConnector(
-      "DELETE",
-      `${GET_ALL_LOCATION_API}/${locationId}`,
-      null,
-      {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    );
+    const response = await apiConnector("DELETE", `${GET_ALL_LOCATION_API}/${locationId}`, null, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
     console.log("Delete Location Api Response..", response);
     if (response.status !== 200) throw new Error("Could not delete Location");
     toast.success("Location deleted successfully");

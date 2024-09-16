@@ -25,10 +25,11 @@ import LogoutModal from "./components/Modal";
 import LogOut from "../src/layouts/authentication/log-out";
 import { getMe, logout } from "./service/operations/authApi";
 import sideNavRoutes from "sidenavRoutes";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function App() {
   const [controller, dispatch] = useMaterialUIController();
+  const appDispatch = useDispatch();
   const navigate = useNavigate();
   const {
     miniSidenav,
@@ -64,9 +65,9 @@ export default function App() {
   // Change the openConfigurator state
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
-  useEffect(() => {
-    dispatch(getMe(token));
-  }, []);
+  // useEffect(() => {
+  //   dispatch(getMe(token));
+  // }, []);
 
   // Setting the dir attribute for the body element
   useEffect(() => {
@@ -83,7 +84,7 @@ export default function App() {
     setOpenLogoutModal(true);
   };
   const handleLogout = () => {
-    dispatch(logout(navigate));
+    appDispatch(logout(navigate));
     setOpenLogoutModal(false);
   };
 

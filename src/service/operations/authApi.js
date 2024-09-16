@@ -106,6 +106,7 @@ export function getMe(token) {
   return async (dispatch) => {
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
+    console.log(GET_ME_API);
     try {
       const response = await apiConnector("GET", GET_ME_API, null, {
         Authorization: `Bearer ${token}`,
@@ -134,6 +135,7 @@ export function getMe(token) {
 
 export function logout(navigate) {
   return (dispatch) => {
+    console.log("LOGOUT");
     dispatch(setToken(null));
     dispatch(setUser(null));
     localStorage.removeItem("token");

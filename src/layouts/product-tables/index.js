@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Table from "../tables";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
@@ -8,14 +8,45 @@ import MDTypography from "components/MDTypography";
 import DataTable from "examples/Tables/DataTable";
 import Footer from "examples/Footer";
 import productsTableData from "layouts/tables/data/productsTableData";
+import Modal from "../../components/Modal";
+import EditModal from "components/ActionButton/EditModal";
 function index() {
-  const { columns, rows } = productsTableData();
+  const [isEditOpen, setIsEditOpen] = useState(false);
+  const [currentProductId, setCurrentProductId] = useState(null);
+  const handleClose = () => setIsEditOpen(false);
+  const handleEdit = (productId) => {
+    setCurrentProductId(productId);
+    setIsEditOpen(true);
+    console.log(`Editing product with id: ${productId}`);
+    // Implement edit logic here
+  };
+
+  const { columns, rows } = productsTableData(handleEdit);
+
   return (
     <>
+      <Modal open={isEditOpen} setOpen={setIsEditOpen}>
+        <EditModal productId={currentProductId} onClose={handleClose} />
+      </Modal>
       <DashboardLayout>
         <DashboardNavbar />
-        <MDBox pt={6} pb={3}>
+        <MDBox pt={4} pb={3}>
           <Grid container spacing={6}>
+            <Grid item xs={12} display="flex" justifyContent="end">
+              <Button
+                sx={{
+                  backgroundColor: "#328BED",
+                  color: "#fff",
+                  marginBottom: "8px",
+                  "&:hover": {
+                    backgroundColor: "#63A0F5",
+                    color: "#fff",
+                  },
+                }}
+              >
+                Add New Product
+              </Button>
+            </Grid>
             <Grid item xs={12}>
               <Card>
                 <MDBox
@@ -42,21 +73,6 @@ function index() {
                   />
                 </MDBox>
               </Card>
-            </Grid>
-
-            <Grid item xs={12} display="flex" justifyContent="start">
-              <Button
-                sx={{
-                  backgroundColor: "#328BED",
-                  color: "#fff",
-                  "&:hover": {
-                    backgroundColor: "#63A0F5",
-                    color: "#fff",
-                  },
-                }}
-              >
-                Add New Product
-              </Button>
             </Grid>
           </Grid>
         </MDBox>

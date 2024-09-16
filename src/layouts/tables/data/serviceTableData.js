@@ -5,14 +5,12 @@
 import React, { useState, useEffect } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDAvatar from "components/MDAvatar";
-import MDBadge from "components/MDBadge";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import { getAllService } from "service/operations/serviceAndServiceTransaction";
 import { useSelector } from "react-redux";
+import { getAllServices } from "service/operations/serviceAndServiceTransaction";
 
 export default function data() {
   const [rowsData, setRowsData] = useState([]);
@@ -34,7 +32,7 @@ export default function data() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getAllService(token);
+        const response = await getAllServices(token);
         console.log("getAllService response", response.data);
         setRowsData(response.data);
       } catch (error) {

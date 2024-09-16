@@ -14,17 +14,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useSelector } from "react-redux";
 import { getAllProducts } from "service/operations/productAndProductTransaction";
 
-export default function data() {
+export default function data(handleEdit) {
   const [rowsData, setRowsData] = useState([]);
   const { token } = useSelector((state) => state.auth);
   const handleView = (productId) => {
     console.log(`Viewing product with id: ${productId}`);
     // Implement view logic here
-  };
-
-  const handleEdit = (productId) => {
-    console.log(`Editing product with id: ${productId}`);
-    // Implement edit logic here
   };
 
   const handleDelete = (productId) => {

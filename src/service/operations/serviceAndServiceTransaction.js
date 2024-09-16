@@ -28,7 +28,7 @@ export const createService = async (token, data) => {
   };
 };
 
-export const getAllService = async (token) => {
+export const getAllServices = async (token) => {
   const toastId = toast.loading("Loading...");
   let result = null;
   try {

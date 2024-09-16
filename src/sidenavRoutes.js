@@ -5,8 +5,7 @@ import CustomerTable from "layouts/customers-tables";
 import SignIn from "layouts/authentication/sign-in";
 // Other imports remain the same
 import Dashboard from "layouts/dashboard";
-import Billing from "layouts/billing";
-import Profile from "layouts/profile";
+import Transaction from "layouts/Transactions";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
@@ -60,10 +59,10 @@ const sideNavRoutes = [
   {
     type: "collapse",
     name: "Transactions",
-    key: "billing",
+    key: "transactions",
     icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
+    route: "/transactions",
+    component: <Transaction />,
     protected: true,
   },
 ];

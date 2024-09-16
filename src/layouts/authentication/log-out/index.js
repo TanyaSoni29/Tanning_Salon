@@ -25,7 +25,7 @@ function LogoutModal({ open, setOpen, handleLogout }) {
           onClick={handleLogout}
           sx={{
             backgroundColor: "#328BED",
-            color: "#000",
+            color: "#fff",
             padding: "8px 16px",
             borderRadius: "8px",
             boxShadow: "0 3px 5px rgba(0,0,0,0.3)",

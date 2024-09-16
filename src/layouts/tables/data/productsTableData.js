@@ -11,10 +11,12 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setProductIndex } from "slices/productSlice";
 
 export default function data(handleEdit) {
   const { products } = useSelector((state) => state.product);
+  const dispatch = useDispatch();
   const handleView = (productId) => {
     console.log(`Viewing product with id: ${productId}`);
     // Implement view logic here
@@ -53,7 +55,7 @@ export default function data(handleEdit) {
     </MDBox>
   );
 
-  const rows = products.map((product) => ({
+  const rows = products.map((product, i) => ({
     Name: <Product image={product.image} name={product.name} />,
     Brand: <ProductBrand title={product.brand} description={product.description} />,
     price: (
@@ -85,7 +87,13 @@ export default function data(handleEdit) {
         gap="8px"
       >
         <RemoveRedEyeIcon onClick={() => handleView(product._id)} sx={{ cursor: "pointer" }} />
-        <EditIcon onClick={() => handleEdit(product._id)} sx={{ cursor: "pointer" }} />
+        <EditIcon
+          onClick={() => {
+            dispatch(setProductIndex(i));
+            handleEdit();
+          }}
+          sx={{ cursor: "pointer" }}
+        />
         <DeleteIcon onClick={() => handleDelete(product._id)} sx={{ cursor: "pointer" }} />
       </MDBox>
     ),

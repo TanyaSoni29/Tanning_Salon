@@ -1,8 +1,9 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getAllProducts } from "service/operations/productAndProductTransaction";
 
 const initialState = {
   products: [],
-  product: null,
+  productIndex: null,
   loading: false,
 };
 
@@ -17,8 +18,8 @@ const productSlice = createSlice({
       state.products = action.payload;
       state.loading = false;
     },
-    setProduct: (state, action) => {
-      state.product = action.payload;
+    setProductIndex: (state, action) => {
+      state.productIndex = action.payload;
       state.loading = false;
     },
     addProduct: (state, action) => {
@@ -39,6 +40,21 @@ const productSlice = createSlice({
   },
 });
 
-export const { setLoading, setProducts, setProduct, addProduct, updateProduct, removeProduct } =
-  productSlice.actions;
+export function refreshProduct() {
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
+    console.log(token);
+    const response = await getAllProducts(token);
+    dispatch(setProducts(response.data));
+  };
+}
+
+export const {
+  setLoading,
+  setProducts,
+  setProductIndex,
+  addProduct,
+  updateProduct,
+  removeProduct,
+} = productSlice.actions;
 export default productSlice.reducer;

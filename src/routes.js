@@ -6,11 +6,11 @@ import SignIn from "layouts/authentication/sign-in";
 import SignUp from "layouts/authentication/sign-up";
 // Other imports remain the same
 import Dashboard from "layouts/dashboard";
-import Billing from "layouts/billing";
 import Profile from "layouts/profile";
 
 // @mui icons
 import Icon from "@mui/material/Icon";
+import Transaction from "layouts/Transactions";
 
 const routes = [
   {
@@ -61,10 +61,10 @@ const routes = [
   {
     type: "collapse",
     name: "Transactions",
-    key: "billing",
+    key: "transactions",
     icon: <Icon fontSize="small">receipt_long</Icon>,
-    route: "/billing",
-    component: <Billing />,
+    route: "/transactions",
+    component: <Transaction />,
     protected: true,
   },
   {

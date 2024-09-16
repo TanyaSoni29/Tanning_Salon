@@ -9,16 +9,12 @@ import DataTable from "examples/Tables/DataTable";
 import Footer from "examples/Footer";
 import productsTableData from "layouts/tables/data/productsTableData";
 import Modal from "../../components/Modal";
-import EditModal from "components/ActionButton/EditModal";
+import EditProductModal from "../../components/ActionButton/EditProductModal";
 function index() {
   const [isEditOpen, setIsEditOpen] = useState(false);
-  const [currentProductId, setCurrentProductId] = useState(null);
   const handleClose = () => setIsEditOpen(false);
-  const handleEdit = (productId) => {
-    setCurrentProductId(productId);
+  const handleEdit = () => {
     setIsEditOpen(true);
-    console.log(`Editing product with id: ${productId}`);
-    // Implement edit logic here
   };
 
   const { columns, rows } = productsTableData(handleEdit);
@@ -26,7 +22,7 @@ function index() {
   return (
     <>
       <Modal open={isEditOpen} setOpen={setIsEditOpen}>
-        <EditModal productId={currentProductId} onClose={handleClose} />
+        <EditProductModal onClose={handleClose} />
       </Modal>
       <DashboardLayout>
         <DashboardNavbar />

@@ -13,12 +13,12 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import customerTableData from "layouts/tables/data/customerTableData";
-import projectsTableData from "layouts/tables/data/projectsTableData";
+import serviceTransactionTableData from "layouts/tables/data/serviceTransactionTableData";
+import productTransactionTableData from "layouts/tables/data/productTransactionTableData";
 
 function Tables() {
-  const { columns, rows } = customerTableData();
-  const { columns: pColumns, rows: pRows } = projectsTableData();
+  const { columns: sColumns, rows: sRows } = serviceTransactionTableData();
+  const { columns: pColumns, rows: pRows } = productTransactionTableData();
 
   return (
     <DashboardLayout>
@@ -43,7 +43,7 @@ function Tables() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns: pColumns, rows: pRows }}
+                  table={{ columns: sColumns, rows: sRows }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}

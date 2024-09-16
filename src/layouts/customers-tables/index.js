@@ -23,8 +23,23 @@ function index() {
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
+      <MDBox pt={4} pb={3}>
         <Grid container spacing={6}>
+          <Grid item xs={12} display="flex" justifyContent="end">
+            <Button
+              sx={{
+                backgroundColor: "#328BED",
+                color: "#fff",
+                marginBottom: "8px",
+                "&:hover": {
+                  backgroundColor: "#63A0F5",
+                  color: "#fff",
+                },
+              }}
+            >
+              Add New Customer
+            </Button>
+          </Grid>
           <Grid item xs={12}>
             <Card>
               <MDBox
@@ -51,21 +66,6 @@ function index() {
                 />
               </MDBox>
             </Card>
-          </Grid>
-
-          <Grid item xs={12} display="flex" justifyContent="start">
-            <Button
-              sx={{
-                backgroundColor: "#328BED",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#63A0F5",
-                  color: "#fff",
-                },
-              }}
-            >
-              Add New Customer
-            </Button>
           </Grid>
         </Grid>
       </MDBox>

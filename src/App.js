@@ -66,7 +66,7 @@ export default function App() {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
   useEffect(() => {
-    appDispatch(getMe(navigate));
+    appDispatch(getMe(navigate, token));
   }, []);
 
   // Setting the dir attribute for the body element

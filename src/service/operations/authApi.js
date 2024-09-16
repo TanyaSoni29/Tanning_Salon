@@ -102,13 +102,11 @@ export function login(userName, password, navigate) {
   };
 }
 
-export function getMe(navigate) {
+export function getMe(navigate, token) {
   return async (dispatch) => {
-    const token = localStorage.getItem("token");
     console.log(token);
     const toastId = toast.loading("Loading...");
     dispatch(setLoading(true));
-    console.log(GET_ME_API);
     try {
       const response = await apiConnector("GET", GET_ME_API, null, {
         Authorization: `Bearer ${token}`,

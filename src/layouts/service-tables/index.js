@@ -14,17 +14,32 @@ import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
 // Data
-import projectsTableData from "layouts/tables/data/projectsTableData";
+import serviceTableData from "layouts/tables/data/serviceTableData";
 import { Button } from "@mui/material";
 
 function index() {
-  const { columns, rows } = projectsTableData();
+  const { columns, rows } = serviceTableData();
 
   return (
     <DashboardLayout>
       <DashboardNavbar />
-      <MDBox pt={6} pb={3}>
+      <MDBox pt={4} pb={3}>
         <Grid container spacing={6}>
+          <Grid item xs={12} display="flex" justifyContent="end">
+            <Button
+              sx={{
+                backgroundColor: "#328BED",
+                color: "#fff",
+                marginBottom: "8px",
+                "&:hover": {
+                  backgroundColor: "#63A0F5",
+                  color: "#fff",
+                },
+              }}
+            >
+              Add New Service
+            </Button>
+          </Grid>
           <Grid item xs={12}>
             <Card>
               <MDBox
@@ -38,12 +53,12 @@ function index() {
                 coloredShadow="info"
               >
                 <MDTypography variant="h6" color="white">
-                  Users Table
+                  Services Table
                 </MDTypography>
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns, rows }} // Replace `columns` and `rows` with actual data
+                  table={{ columns, rows }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
@@ -51,21 +66,6 @@ function index() {
                 />
               </MDBox>
             </Card>
-          </Grid>
-
-          <Grid item xs={12} display="flex" justifyContent="start">
-            <Button
-              sx={{
-                backgroundColor: "#328BED",
-                color: "#fff",
-                "&:hover": {
-                  backgroundColor: "#63A0F5",
-                  color: "#fff",
-                },
-              }}
-            >
-              Add New User
-            </Button>
           </Grid>
         </Grid>
       </MDBox>

@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getAllUserProfiles } from "service/operations/userProfileApi";
 
 const initialState = {
   userIndex: null,
@@ -10,18 +11,47 @@ const profileSlice = createSlice({
   name: "profile",
   initialState: initialState,
   reducers: {
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
     setUsers: (state, action) => {
       state.users = action.payload;
       state.loading = false;
     },
-    setLoading: (state, action) => {
-      state.loading = action.payload;
-    },
     setUserIndex: (state, action) => {
       state.userIndex = action.payload;
+      state.loading = false;
+    },
+    addUser: (state, action) => {
+      state.users.push(action.payload);
+      state.loading = false;
+    },
+    updateUser: (state, action) => {
+      const index = state.users.findIndex((user) => user.id === action.payload.id);
+      if (index !== -1) {
+        state.users[index] = action.payload;
+      }
+      state.loading = false;
+    },
+    removeUser: (state, action) => {
+      state.users = state.users.filter((user) => user.id !== action.payload);
+      state.loading = false;
     },
   },
 });
 
-export const { setUsers, setLoading, setUserIndex } = profileSlice.actions;
+export function refreshUser() {
+  return async (dispatch, getState) => {
+    const token = getState().auth.token;
+    try {
+      const response = await getAllUserProfiles(token);
+      dispatch(setUsers(response.data));
+    } catch (error) {
+      console.error("Failed to refresh users:", error);
+    }
+  };
+}
+
+export const { setUsers, setLoading, setUserIndex, addUser, updateUser, removeUser } =
+  profileSlice.actions;
 export default profileSlice.reducer;

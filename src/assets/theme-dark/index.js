@@ -47,7 +47,7 @@ import inputLabel from "assets/theme-dark/components/form/inputLabel";
 import inputOutlined from "assets/theme-dark/components/form/inputOutlined";
 import textField from "assets/theme-dark/components/form/textField";
 import menu from "assets/theme-dark/components/menu";
-import menuItem from "assets/theme-dark/components/menu/menuItem";
+import Item from "assets/theme-dark/components/menu/menuItem";
 import switchButton from "assets/theme-dark/components/form/switchButton";
 import divider from "assets/theme-dark/components/divider";
 import tableContainer from "assets/theme-dark/components/table/tableContainer";

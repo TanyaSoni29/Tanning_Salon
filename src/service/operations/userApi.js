@@ -26,8 +26,9 @@ export const createUser = async (token, data) => {
   } catch (error) {
     console.log("Create User Api Error", error);
     toast.error(error.message);
+  } finally {
+    toast.dismiss(toastId);
   }
-  toast.dismiss(toastId);
 };
 
 export const createCustomer = async (token, data) => {
@@ -45,8 +46,9 @@ export const createCustomer = async (token, data) => {
   } catch (error) {
     console.log("Customer User Api Error", error);
     toast.error(error.message);
+  } finally {
+    toast.dismiss(toastId);
   }
-  toast.dismiss(toastId);
 };
 
 export const getAllUser = async (token) => {
@@ -91,15 +93,10 @@ export const updateUser = async (token, userId, data) => {
   const toastId = toast.loading("Loading...");
   let result = null;
   try {
-    const response = await apiConnector(
-      "PATCH",
-      `${USER_API}/${userId}`,
-      data,
-      {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    );
+    const response = await apiConnector("PATCH", `${USER_API}/${userId}`, data, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
     console.log("Update User Api Response..", response);
     if (response.status !== 200) throw new Error("Could not update User");
     toast.success("User updated successfully");
@@ -116,15 +113,10 @@ export const deleteUser = async (token, userId) => {
   const toastId = toast.loading("Loading...");
   let result = null;
   try {
-    const response = await apiConnector(
-      "DELETE",
-      `${USER_API}/${userId}`,
-      null,
-      {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      }
-    );
+    const response = await apiConnector("DELETE", `${USER_API}/${userId}`, null, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
     console.log("Delete User Api Response..", response);
     if (response.status !== 204) throw new Error("Could not delete User");
     toast.success("User deleted successfully");
@@ -173,8 +165,7 @@ export const getSalesByLocation = async (token, locationId) => {
       }
     );
     console.log("Sales By Location Api Response..", response);
-    if (response.status !== 200)
-      throw new Error("Could not fetch Sales By Location");
+    if (response.status !== 200) throw new Error("Could not fetch Sales By Location");
     toast.success("Sales By Location fetched successfully");
     result = response.data?.data;
   } catch (error) {
@@ -193,8 +184,7 @@ export const getTopCustomer = async (token) => {
       Authorization: `Bearer ${token}`,
     });
     console.log("Get All Top Customer Api Response..", response);
-    if (response.status !== 200)
-      throw new Error("Could not fetch Top Customer");
+    if (response.status !== 200) throw new Error("Could not fetch Top Customer");
     result = response.data?.data;
   } catch (error) {
     console.log("Get All Top Customer Api Error", error);

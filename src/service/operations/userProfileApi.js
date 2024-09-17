@@ -7,28 +7,25 @@ const { GET_USER_DETAILS_API, UPDATE_USER_PROFILE_API, GET_ALL_USER_PROFILE_API 
   userProfileEndpoints;
 
 export const createUserProfile = async (token, data) => {
-  return async (dispatch) => {
-    const toastId = toast.loading("Loading...");
-    dispatch(setLoading(true));
-    try {
-      const response = await apiConnector("POST", GET_ALL_USER_PROFILE_API, data, {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      });
-      console.log("Create A new User Profile response", response);
-      if (response.status !== 201) {
-        throw new Error("Could not create a new user profile");
-      }
-
-      toast.success("User profile created successfully");
-      return response.data?.data;
-    } catch (err) {
-      console.log("Create user profile api error....", err);
-      toast.error(err.message);
+  const toastId = toast.loading("Loading...");
+  try {
+    const response = await apiConnector("POST", GET_ALL_USER_PROFILE_API, data, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
+    console.log("Create A new User Profile response", response);
+    if (response.status !== 201) {
+      throw new Error("Could not create a new user profile");
     }
-    dispatch(setLoading(false));
+
+    toast.success("User profile created successfully");
+    return response.data?.data;
+  } catch (err) {
+    console.log("Create user profile api error....", err);
+    toast.error(err.message);
+  } finally {
     toast.dismiss(toastId);
-  };
+  }
 };
 
 export const getAllUserProfiles = async (token) => {

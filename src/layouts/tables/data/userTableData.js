@@ -12,25 +12,13 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { getAllUserProfiles } from "service/operations/userProfileApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserIndex } from "slices/profileSlice";
 
-export default function data() {
+export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
   const [rowsData, setRowsData] = useState([]);
   const { token } = useSelector((state) => state.auth);
-  const handleView = (userId) => {
-    console.log(`Viewing user with id: ${userId}`);
-    // Implement view logic here
-  };
-
-  const handleEdit = (userId) => {
-    console.log(`Editing user with id: ${userId}`);
-    // Implement edit logic here
-  };
-
-  const handleDelete = (userId) => {
-    console.log(`Deleting user with id: ${userId}`);
-    // Implement delete logic here
-  };
+  const dispatch = useDispatch();
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -73,7 +61,7 @@ export default function data() {
     </MDBox>
   );
 
-  const rows = rowsData.map((user) => ({
+  const rows = rowsData.map((user, i) => ({
     userName: (
       <Author
         image={user.avatar}
@@ -97,9 +85,27 @@ export default function data() {
         alignItems="center"
         gap="8px"
       >
-        <RemoveRedEyeIcon onClick={() => handleView(user._id)} sx={{ cursor: "pointer" }} />
-        <EditIcon onClick={() => handleEdit(user._id)} sx={{ cursor: "pointer" }} />
-        <DeleteIcon onClick={() => handleDelete(user._id)} sx={{ cursor: "pointer" }} />
+        <RemoveRedEyeIcon
+          onClick={() => {
+            dispatch(setUserIndex(i));
+            setViewModal(true);
+          }}
+          sx={{ cursor: "pointer" }}
+        />
+        <EditIcon
+          onClick={() => {
+            dispatch(setUserIndex(i));
+            handleEdit();
+          }}
+          sx={{ cursor: "pointer" }}
+        />
+        <DeleteIcon
+          onClick={() => {
+            dispatch(setUserIndex(i));
+            setIsDeleteOpen(true);
+          }}
+          sx={{ cursor: "pointer" }}
+        />
       </MDBox>
     ),
   }));

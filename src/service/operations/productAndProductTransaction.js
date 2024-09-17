@@ -6,26 +6,23 @@ import { setLoading } from "../../slices/productSlice";
 const { GET_ALL_PRODUCT_API, GET_ALL_PRODUCT_TRANSACTION_API } = productEndpoints;
 
 export const createProduct = async (token, data) => {
-  return async (dispatch) => {
-    const toastId = toast.loading("LOading...");
-    dispatch(setLoading(true));
-    try {
-      const response = await apiConnector("POST", GET_ALL_PRODUCT_API, data, {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      });
+  const toastId = toast.loading("Loading...");
+  try {
+    const response = await apiConnector("POST", GET_ALL_PRODUCT_API, data, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
 
-      console.log("Create New Product Api Response..", response);
-      if (response.status !== 201) throw new Error("Could not create Product");
-      toast.success("Product created successfully");
-      return response.data?.data;
-    } catch (error) {
-      console.log("Create Product Api Error", error);
-      toast.error(error.message);
-    }
-    dispatch(setLoading(false));
+    console.log("Create New Product Api Response..", response);
+    if (response.status !== 201) throw new Error("Could not create Product");
+    toast.success("Product created successfully");
+    return response.data?.data;
+  } catch (error) {
+    console.log("Create Product Api Error", error);
+    toast.error(error.message);
+  } finally {
     toast.dismiss(toastId);
-  };
+  }
 };
 
 export const getAllProducts = async (token) => {
@@ -91,12 +88,17 @@ export const deleteProduct = async (token, productId) => {
   const toastId = toast.loading("Loading...");
   let result = false;
   try {
-    const response = await apiConnector("DELETE", `${GET_ALL_PRODUCT_API}/${productId}`, null, {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    });
+    const response = await apiConnector(
+      "DELETE",
+      `${GET_ALL_PRODUCT_API}/${productId}`,
+      undefined,
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
     console.log("Delete Product Api Response..", response);
-    if (response.status !== 200) throw new Error("Could not delete Product");
+    if (response.status !== 204) throw new Error("Could not delete Product");
     toast.success("Product deleted successfully");
     result = true;
   } catch (error) {

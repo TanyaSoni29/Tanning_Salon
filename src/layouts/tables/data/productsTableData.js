@@ -13,19 +13,11 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setProductIndex } from "slices/productSlice";
+import { formatDate } from "utils/formateDate";
 
-export default function data(handleEdit) {
+export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
   const { products } = useSelector((state) => state.product);
   const dispatch = useDispatch();
-  const handleView = (productId) => {
-    console.log(`Viewing product with id: ${productId}`);
-    // Implement view logic here
-  };
-
-  const handleDelete = (productId) => {
-    console.log(`Deleting product with id: ${productId}`);
-    // Implement delete logic here
-  };
 
   const Product = ({ image, name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -75,7 +67,7 @@ export default function data(handleEdit) {
     ),
     createdAt: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {new Date(product.created_at).toLocaleDateString()}
+        {formatDate(product.created_at)}
       </MDTypography>
     ),
     action: (
@@ -86,7 +78,13 @@ export default function data(handleEdit) {
         alignItems="center"
         gap="8px"
       >
-        <RemoveRedEyeIcon onClick={() => handleView(product._id)} sx={{ cursor: "pointer" }} />
+        <RemoveRedEyeIcon
+          onClick={() => {
+            dispatch(setProductIndex(i));
+            setViewModal(true);
+          }}
+          sx={{ cursor: "pointer" }}
+        />
         <EditIcon
           onClick={() => {
             dispatch(setProductIndex(i));
@@ -94,7 +92,13 @@ export default function data(handleEdit) {
           }}
           sx={{ cursor: "pointer" }}
         />
-        <DeleteIcon onClick={() => handleDelete(product._id)} sx={{ cursor: "pointer" }} />
+        <DeleteIcon
+          onClick={() => {
+            dispatch(setProductIndex(i));
+            setIsDeleteOpen(true);
+          }}
+          sx={{ cursor: "pointer" }}
+        />
       </MDBox>
     ),
   }));

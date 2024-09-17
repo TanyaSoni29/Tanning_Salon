@@ -9,23 +9,13 @@ import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setServiceIndex } from "slices/serviceSlice";
 
-export default function data() {
+export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
   const { services } = useSelector((state) => state.service);
-  const handleView = (customerId) => {
-    console.log(`Viewing user with id: ${customerId}`);
-    // Implement view logic here
-  };
+  const dispatch = useDispatch();
 
-  const handleEdit = (customerId) => {
-    console.log(`Editing user with id: ${customerId}`);
-    // Implement edit logic here
-  };
-
-  const handleDelete = (customerId) => {
-    console.log(`Deleting user with id: ${customerId}`);
-  };
   const Author = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDBox ml={2} lineHeight={1}>
@@ -52,7 +42,7 @@ export default function data() {
     </MDBox>
   );
 
-  const rows = services.map((service) => ({
+  const rows = services.map((service, i) => ({
     serviceName: <Author name={service.serviceName} />,
     price: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
@@ -72,9 +62,27 @@ export default function data() {
         alignItems="center"
         gap="8px"
       >
-        <RemoveRedEyeIcon onClick={() => handleView(service._id)} sx={{ cursor: "pointer" }} />
-        <EditIcon onClick={() => handleEdit(service._id)} sx={{ cursor: "pointer" }} />
-        <DeleteIcon onClick={() => handleDelete(service._id)} sx={{ cursor: "pointer" }} />
+        <RemoveRedEyeIcon
+          onClick={() => {
+            dispatch(setServiceIndex(i));
+            setViewModal(true);
+          }}
+          sx={{ cursor: "pointer" }}
+        />
+        <EditIcon
+          onClick={() => {
+            dispatch(setServiceIndex(i));
+            handleEdit();
+          }}
+          sx={{ cursor: "pointer" }}
+        />
+        <DeleteIcon
+          onClick={() => {
+            dispatch(setServiceIndex(i));
+            setIsDeleteOpen(true);
+          }}
+          sx={{ cursor: "pointer" }}
+        />
       </MDBox>
     ),
   }));

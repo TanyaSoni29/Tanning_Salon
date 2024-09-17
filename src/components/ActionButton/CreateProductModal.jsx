@@ -4,26 +4,20 @@ import { Box, Button, TextField, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { updateProduct } from "service/operations/productAndProductTransaction";
 import { refreshProduct } from "slices/productSlice";
+import { createProduct } from "../../service/operations/productAndProductTransaction";
+import { addProduct } from "slices/productSlice";
 
-const EditProductModal = ({ onClose }) => {
-  const { products, productIndex } = useSelector((state) => state.product);
+const CreateProductModal = ({ onClose }) => {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const activeProduct = products[productIndex];
+
   const {
     register,
     handleSubmit,
     reset,
     formState: { errors, isSubmitSuccessful },
   } = useForm();
-
-  useEffect(() => {
-    if (!activeProduct) {
-      onClose();
-    }
-  }, []);
 
   const handleSubmitForm = async (data) => {
     try {
@@ -33,17 +27,16 @@ const EditProductModal = ({ onClose }) => {
         price: data.price,
         description: data.description,
       };
-      const updatedProduct = await updateProduct(token, activeProduct._id, newProductData);
-      if (updatedProduct) {
-        dispatch({
-          type: "product/updateProduct", // Ensure this matches the action type name
-          payload: updatedProduct,
-        });
+      const newProduct = await createProduct(token, newProductData);
+      if (newProduct) {
+        dispatch(addProduct(newProduct));
       }
       dispatch(refreshProduct());
       onClose();
     } catch (error) {
       console.error(error);
+      onClose();
+    } finally {
       onClose();
     }
   };
@@ -59,8 +52,6 @@ const EditProductModal = ({ onClose }) => {
     }
   }, [reset, isSubmitSuccessful]);
 
-  if (!activeProduct) return null; // Optionally render a loading state
-
   return (
     <Box
       sx={{
@@ -73,7 +64,7 @@ const EditProductModal = ({ onClose }) => {
       }}
     >
       <Typography id="logout-modal-title" variant="h6">
-        Edit Product
+        Add Product
       </Typography>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box mt={2}>
@@ -82,20 +73,23 @@ const EditProductModal = ({ onClose }) => {
               id="name"
               label="Name"
               variant="outlined"
-              defaultValue={activeProduct.name}
               {...register("name", { required: true })}
               sx={{ width: "100%" }}
             />
-            {errors.name && <span className="">Please enter product name</span>}
+            {errors.name && (
+              <span style={{ fontSize: "12px", color: "red" }}>Please enter product name</span>
+            )}
+
             <TextField
               id="brand"
               label="Brand"
               variant="outlined"
-              defaultValue={activeProduct.brand}
               {...register("brand", { required: true })}
               sx={{ width: "100%" }}
             />
-            {errors.brand && <span className="">Please enter product brand</span>}
+            {errors.brand && (
+              <span style={{ fontSize: "12px", color: "red" }}>Please enter product brand</span>
+            )}
           </Box>
 
           <Box mb={2}>
@@ -103,12 +97,11 @@ const EditProductModal = ({ onClose }) => {
               id="price"
               label="Price"
               variant="outlined"
-              defaultValue={activeProduct.price}
               {...register("price", { required: true })}
               sx={{ width: "100%" }}
             />
             {errors.price && (
-              <span className="-mt-1 text-[12px] text-yellow-100">Please enter product price</span>
+              <span style={{ fontSize: "12px", color: "red" }}>Please enter product price</span>
             )}
           </Box>
           <Box mb={2}>
@@ -116,13 +109,16 @@ const EditProductModal = ({ onClose }) => {
               id="description"
               label="Description"
               variant="outlined"
-              defaultValue={activeProduct.description}
               multiline
               rows={2} // Set rows for a multi-line text field
               {...register("description", { required: true })}
               sx={{ width: "100%" }}
             />
-            {errors.description && <span className="">Please enter product description</span>}
+            {errors.description && (
+              <span style={{ fontSize: "12px", color: "red" }}>
+                Please enter product description
+              </span>
+            )}
           </Box>
         </Box>
         <Box mt={2} display="flex" justifyContent="end" gap="1rem">
@@ -151,4 +147,4 @@ const EditProductModal = ({ onClose }) => {
   );
 };
 
-export default EditProductModal;
+export default CreateProductModal;

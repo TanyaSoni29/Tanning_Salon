@@ -1,31 +1,28 @@
 import { toast } from "react-hot-toast";
 import { apiConnector } from "../apiConnector";
 import { serviceEndpoints } from "../api";
-import { setLoading } from "../../slices/serviceSlice";
 
 const { GET_ALL_SERVICE_TRANSACTION_API, GET_ALL_SERVICE_API, GET_ALL_SERVICE_USAGES_API } =
   serviceEndpoints;
 
 export const createService = async (token, data) => {
-  return async (dispatch) => {
-    const toastId = toast.loading("Loading...");
-    dispatch(setLoading(true));
-    try {
-      const response = await apiConnector("POST", GET_ALL_SERVICE_API, data, {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-      });
-      if (response.status !== 201) throw new Error("Couldn't create a new service");
+  const toastId = toast.loading("Loading...");
+  try {
+    const response = await apiConnector("POST", GET_ALL_SERVICE_API, data, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
+    console.log("Create New Service Api Response..", response);
+    if (response.status !== 201) throw new Error("Couldn't create a new service");
 
-      toast.success("Service created successfully");
-      return response.data?.data;
-    } catch (error) {
-      console.log("Create service Api error...", error);
-      toast.error(error.message);
-    }
-    dispatch(setLoading(false));
+    toast.success("Service created successfully");
+    return response.data?.data;
+  } catch (error) {
+    console.log("Create service Api error...", error);
+    toast.error(error.message);
+  } finally {
     toast.dismiss(toastId);
-  };
+  }
 };
 
 export const getAllServices = async (token) => {

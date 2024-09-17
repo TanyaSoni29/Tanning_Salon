@@ -35,6 +35,16 @@ function index() {
                   backgroundColor: "#63A0F5",
                   color: "#fff",
                 },
+                "&:focus": {
+                  color: "#fff",
+                },
+                "&:active": {
+                  color: "#fff",
+                },
+                "&:disabled": {
+                  backgroundColor: "#D3D3D3",
+                  color: "#fff",
+                },
               }}
             >
               Add New User

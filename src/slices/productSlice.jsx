@@ -43,9 +43,12 @@ const productSlice = createSlice({
 export function refreshProduct() {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
-    console.log(token);
-    const response = await getAllProducts(token);
-    dispatch(setProducts(response.data));
+    try {
+      const response = await getAllProducts(token);
+      dispatch(setProducts(response.data));
+    } catch (error) {
+      console.error("Failed to refresh products:", error);
+    }
   };
 }
 

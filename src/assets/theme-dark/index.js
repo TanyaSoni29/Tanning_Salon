@@ -119,7 +119,7 @@ export default createTheme({
     MuiOutlinedInput: { ...inputOutlined },
     MuiTextField: { ...textField },
     MuiMenu: { ...menu },
-    MuiMenuItem: { ...menuItem },
+    MuiMenuItem: { ...Item },
     MuiSwitch: { ...switchButton },
     MuiDivider: { ...divider },
     MuiTableContainer: { ...tableContainer },

@@ -146,18 +146,20 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            <MDBox pr={1}>
-              <MDInput
-                label="Search here"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={handleKeyPress}
-                inputProps={{
-                  ref: searchRef,
-                  onFocus: (event) => event.target.select(),
-                }}
-              />
-            </MDBox>
+            {route[route.length - 1] !== "dashboard" && (
+              <MDBox pr={1}>
+                <MDInput
+                  label="Search here"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  inputProps={{
+                    ref: searchRef,
+                    onFocus: (event) => event.target.select(),
+                  }}
+                />
+              </MDBox>
+            )}
             <MDBox color={light ? "white" : "inherit"}>
               {/* <Link to="/authentication/sign-in">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>

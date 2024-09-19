@@ -3,27 +3,26 @@
 import {
   Box,
   Button,
-  FormControl,
-  InputLabel,
-  MenuItem,
-  Select,
   TextField,
   Typography,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  Avatar,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
-import { updateUserProfile } from "../../service/operations/userProfileApi";
-import { refreshUser } from "slices/profileSlice";
-import { refreshLocation } from "slices/locationSlice";
+import { addUser, refreshUser } from "../../slices/profileSlice";
+import { refreshLocation } from "../../slices/locationSlice"; // Import refreshLocation
+import { createCustomer } from "../../service/operations/userApi";
 
-const EditUserModal = ({ onClose }) => {
-  const { users, userIndex } = useSelector((state) => state.profile);
-  const { locations, loading } = useSelector((state) => state.location);
+const CreateCustomerModal = ({ onClose }) => {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const activeUser = users[userIndex];
-  console.log("active user:", activeUser);
+  //   const [avatarPreview, setAvatarPreview] = useState(null);
+
   const {
     register,
     handleSubmit,
@@ -31,23 +30,31 @@ const EditUserModal = ({ onClose }) => {
     formState: { errors, isSubmitSuccessful },
   } = useForm();
 
-  useEffect(() => {
-    if (!activeUser) {
-      onClose();
-    }
-  }, []);
+  // Fetch locations from Redux slice
+  const { locations, loading } = useSelector((state) => state.location);
 
   useEffect(() => {
     dispatch(refreshLocation()); // Fetch locations when component mounts
   }, [dispatch]);
 
+  //   const handleAvatarChange = (e) => {
+  //     const file = e.target.files[0];
+  //     if (file) {
+  //       const reader = new FileReader();
+  //       reader.onloadend = () => {
+  //         setAvatarPreview(reader.result);
+  //       };
+  //       reader.readAsDataURL(file);
+  //     }
+  //   };
+
   const handleSubmitForm = async (data) => {
     try {
       const newUserData = {
-        // userName: data.userName,
+        userName: data.userName,
+        password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
-        role: data.role,
         email: data.email,
         address: data.address,
         postCode: data.postCode,
@@ -57,18 +64,17 @@ const EditUserModal = ({ onClose }) => {
         gdpr_email_active: data.gdpr_email_active || false,
         referred_by: data.referred_by,
         preferred_location: data.preferred_location,
+        // avatar: avatarPreview, // Store avatar preview or upload file
       };
-      const updatedUser = await updateUserProfile(token, activeUser._id, newUserData);
-      if (updatedUser) {
-        dispatch({
-          type: "profile/updateUser", // Ensure this matches the action type name
-          payload: updatedUser,
-        });
+      const newUser = await createCustomer(token, newUserData);
+      if (newUser) {
+        dispatch(addUser(newUser));
       }
       dispatch(refreshUser());
       onClose();
     } catch (error) {
       console.error(error);
+    } finally {
       onClose();
     }
   };
@@ -76,10 +82,10 @@ const EditUserModal = ({ onClose }) => {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
-        // userName: "",
+        userName: "",
+        password: "",
         firstName: "",
         lastName: "",
-        role: "",
         email: "",
         address: "",
         postCode: "",
@@ -87,12 +93,11 @@ const EditUserModal = ({ onClose }) => {
         gender: "",
         referred_by: "",
         preferred_location: "",
-        avatar: "",
+        // avatar: "",
       });
+      // setAvatarPreview(null); // Reset avatar preview
     }
   }, [reset, isSubmitSuccessful]);
-
-  if (!activeUser) return null;
 
   return (
     <Box
@@ -105,8 +110,8 @@ const EditUserModal = ({ onClose }) => {
         borderRadius: 2,
       }}
     >
-      <Typography id="logout-modal-title" variant="h6">
-        Edit User
+      <Typography id="modal-title" variant="h6">
+        Add Customer
       </Typography>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box mt={2}>
@@ -114,14 +119,12 @@ const EditUserModal = ({ onClose }) => {
             <TextField
               label="First Name"
               variant="outlined"
-              defaultValue={activeUser.firstName}
               {...register("firstName", { required: true })}
               sx={{ width: "100%" }}
             />
             <TextField
               label="Last Name"
               variant="outlined"
-              defaultValue={activeUser.lastName}
               {...register("lastName", { required: true })}
               sx={{ width: "100%" }}
             />
@@ -131,39 +134,34 @@ const EditUserModal = ({ onClose }) => {
             <TextField
               label="Email"
               variant="outlined"
-              defaultValue={activeUser.email}
               {...register("email", { required: true })}
               sx={{ width: "100%" }}
             />
             <TextField
               label="Phone Number"
               variant="outlined"
-              defaultValue={activeUser.phone_number}
               {...register("phone_number", { required: true })}
               sx={{ width: "100%" }}
             />
           </Box>
-          {/* <Box mb={2} sx={{ display: "flex", gap: 2 }}>
+          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
             <TextField
               label="User Name"
               variant="outlined"
-              defaultValue={activeUser.userName}
               {...register("userName", { required: true })}
               sx={{ width: "100%" }}
             />
             <TextField
               label="Password"
               variant="outlined"
-              defaultValue={activeUser.password}
               {...register("password", { required: true })}
               sx={{ width: "100%" }}
             />
-          </Box> */}
+          </Box>
           <Box mb={2}>
             <TextField
               label="Address"
               variant="outlined"
-              defaultValue={activeUser.address}
               {...register("address", { required: true })}
               sx={{ width: "100%" }}
             />
@@ -173,38 +171,14 @@ const EditUserModal = ({ onClose }) => {
             <TextField
               label="Post Code"
               variant="outlined"
-              defaultValue={activeUser.postCode}
               {...register("postCode", { required: true })}
               sx={{ width: "100%" }}
             />
-
-            <TextField
-              label="Referred By"
-              variant="outlined"
-              defaultValue={activeUser.referred_by}
-              {...register("referred_by", { required: true })}
-              sx={{ width: "100%" }}
-            />
-          </Box>
-          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel id="role-label">Role</InputLabel>
-              <Select
-                labelId="role-label"
-                label="Role"
-                defaultValue={activeUser.role}
-                {...register("role", { required: true })}
-              >
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="user">User</MenuItem>
-              </Select>
-            </FormControl>
             <FormControl sx={{ width: "100%" }}>
               <InputLabel id="gender-label">Gender</InputLabel>
               <Select
                 labelId="gender-label"
                 label="Gender"
-                defaultValue={activeUser.gender}
                 {...register("gender", { required: true })}
               >
                 <MenuItem value="Male">Male</MenuItem>
@@ -213,13 +187,13 @@ const EditUserModal = ({ onClose }) => {
               </Select>
             </FormControl>
           </Box>
+
           <Box mb={2}>
             <FormControl fullWidth>
               <InputLabel id="location-label">Preferred Location</InputLabel>
               <Select
                 labelId="location-label"
                 label="Preferred Location"
-                defaultValue={activeUser.preferred_location._id}
                 {...register("preferred_location", { required: true })}
                 disabled={loading} // Disable dropdown if locations are loading
               >
@@ -231,7 +205,14 @@ const EditUserModal = ({ onClose }) => {
               </Select>
             </FormControl>
           </Box>
-
+          <Box mb={2}>
+            <TextField
+              label="Referred By"
+              variant="outlined"
+              {...register("referred_by", { required: true })}
+              sx={{ width: "100%" }}
+            />
+          </Box>
           {/* <Box mb={2}>
               <Typography variant="body2" mb={1}>
                 Upload Avatar
@@ -273,4 +254,4 @@ const EditUserModal = ({ onClose }) => {
   );
 };
 
-export default EditUserModal;
+export default CreateCustomerModal;

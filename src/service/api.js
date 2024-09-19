@@ -17,7 +17,9 @@ export const locationEndpoints = {
 export const userEndpoints = {
   USER_API: BASE_URL + "/user",
   CREATE_CUSTOMER_API: BASE_URL + "/createCustomer",
+  DELETE_CUSTOMER_API: BASE_URL + "/deleteCustomer",
   CREATE_USER_API: BASE_URL + "/createUser",
+  DELETE_USER_API: BASE_URL + "/deleteUser",
   TOTAL_SALES_API: BASE_URL + "/totalSales",
   SALES_BY_LOCATION_API: BASE_URL + "/salesByLocation",
   TOP_CUSTOMER_API: BASE_URL + "/topCustomer",

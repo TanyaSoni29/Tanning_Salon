@@ -14,6 +14,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { getAllUserProfiles } from "service/operations/userProfileApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserIndex } from "slices/profileSlice";
+import { setUsers } from "slices/profileSlice";
 
 export default function data(
   handleEdit,
@@ -31,6 +32,7 @@ export default function data(
       try {
         const response = await getAllUserProfiles(token);
         console.log("getAlluserProfile response", response.data);
+        dispatch(setUsers(response.data.filter((data) => data.role !== "customer")));
         setRowsData(response.data.filter((data) => data.role !== "customer"));
       } catch (error) {
         console.error("Error fetching data:", error);

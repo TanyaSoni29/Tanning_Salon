@@ -25,6 +25,7 @@ import CreateUserModal from "../../components/UserActionButton/CreateUserModal";
 import ViewUserModal from "../../components/UserActionButton/ViewUserModal";
 import DeleteUserModal from "../../components/UserActionButton/DeleteUserModal";
 import EditUserModal from "../../components/UserActionButton/EditUserModal";
+import { deleteUserAndUserProfile } from "service/operations/userApi";
 
 function index() {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -48,7 +49,7 @@ function index() {
   };
   const handleDelete = async () => {
     try {
-      const result = await deleteUser(token, activeUser._id);
+      const result = await deleteUserAndUserProfile(token, activeUser._id);
       if (result) {
         dispatch(removeUser(activeUser._id));
         dispatch(refreshUser());

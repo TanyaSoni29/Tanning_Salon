@@ -12,37 +12,36 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { getAllUserProfiles } from "service/operations/userProfileApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setUserIndex } from "slices/profileSlice";
+import { setUsers } from "slices/profileSlice";
 
-export default function data() {
+export default function data(
+  handleEdit,
+  setIsDeleteOpen,
+  setViewModal,
+  createModalOpen,
+  isDeleteOpen,
+  isEditOpen
+) {
   const [rowsData, setRowsData] = useState([]);
   const { token } = useSelector((state) => state.auth);
-  const handleView = (customerId) => {
-    console.log(`Viewing user with id: ${customerId}`);
-    // Implement view logic here
-  };
-
-  const handleEdit = (customerId) => {
-    console.log(`Editing user with id: ${customerId}`);
-    // Implement edit logic here
-  };
-
-  const handleDelete = (customerId) => {
-    console.log(`Deleting user with id: ${customerId}`);
-    // Implement delete logic here
-  };
+  // const { services } = useSelector((state) => state.service);
+  // console.log(services);
+  const dispatch = useDispatch();
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await getAllUserProfiles(token);
         console.log("getAlluserProfile response", response.data);
-        setRowsData(response.data.filter((data) => data.role === "customer"));
+        dispatch(setUsers(response.data.filter((data) => data.role === "customer" && data.active)));
+        setRowsData(response.data.filter((data) => data.role === "customer" && data.active));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, []);
+  }, [createModalOpen, isDeleteOpen, isEditOpen]);
 
   const Author = ({ image, firstName, lastName, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
@@ -72,7 +71,7 @@ export default function data() {
     </MDBox>
   );
 
-  const rows = rowsData.map((customer) => ({
+  const rows = rowsData.map((customer, i) => ({
     userName: (
       <Author
         image={customer.avatar}
@@ -88,15 +87,15 @@ export default function data() {
         {customer.phone_number}
       </MDTypography>
     ),
-    status: (
-      <MDBox ml={-1}>
-        <MDBadge
-          badgeContent={customer.active ? "Active" : "Inactive"}
-          color={customer.active ? "success" : "error"}
-          variant="gradient"
-          size="sm"
-        />
-      </MDBox>
+    minutesAvailable: (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {/* {service.minutesAvailable} */}
+      </MDTypography>
+    ),
+    totalSpend: (
+      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+        {/* {service.minutesAvailable} */}
+      </MDTypography>
     ),
     lastUpdatedAt: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
@@ -111,19 +110,38 @@ export default function data() {
         alignItems="center"
         gap="8px"
       >
-        <RemoveRedEyeIcon onClick={() => handleView(customer._id)} sx={{ cursor: "pointer" }} />
-        <EditIcon onClick={() => handleEdit(customer._id)} sx={{ cursor: "pointer" }} />
-        <DeleteIcon onClick={() => handleDelete(customer._id)} sx={{ cursor: "pointer" }} />
+        <RemoveRedEyeIcon
+          onClick={() => {
+            dispatch(setUserIndex(i));
+            setViewModal(true);
+          }}
+          sx={{ cursor: "pointer" }}
+        />
+        <EditIcon
+          onClick={() => {
+            dispatch(setUserIndex(i));
+            handleEdit();
+          }}
+          sx={{ cursor: "pointer" }}
+        />
+        <DeleteIcon
+          onClick={() => {
+            dispatch(setUserIndex(i));
+            setIsDeleteOpen(true);
+          }}
+          sx={{ cursor: "pointer" }}
+        />
       </MDBox>
     ),
   }));
 
   return {
     columns: [
-      { Header: "User Name", accessor: "userName", width: "30%", align: "left" },
-      { Header: "Location", accessor: "location", align: "left" },
+      { Header: "User Name", accessor: "userName", align: "left" },
+      { Header: "Location", accessor: "location", align: "center" },
       { Header: "phone number", accessor: "phone_number", align: "center" },
-      { Header: "status", accessor: "status", align: "center" },
+      { Header: "Minutes Available", accessor: "minutesAvailable", align: "center" },
+      { Header: "Total Spend Minutes", accessor: "totalSpend", align: "center" },
       { Header: "Last service purchase", accessor: "lastUpdatedAt", align: "center" },
       { Header: "action", accessor: "action", align: "center" },
     ],

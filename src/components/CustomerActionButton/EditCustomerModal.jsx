@@ -23,7 +23,7 @@ const EditUserModal = ({ onClose }) => {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const activeUser = users[userIndex];
-  console.log("active user:", activeUser);
+  console.log("active user:", activeUser, userIndex);
   const {
     register,
     handleSubmit,
@@ -47,7 +47,6 @@ const EditUserModal = ({ onClose }) => {
         // userName: data.userName,
         firstName: data.firstName,
         lastName: data.lastName,
-        role: data.role,
         email: data.email,
         address: data.address,
         postCode: data.postCode,
@@ -79,7 +78,6 @@ const EditUserModal = ({ onClose }) => {
         // userName: "",
         firstName: "",
         lastName: "",
-        role: "",
         email: "",
         address: "",
         postCode: "",
@@ -106,7 +104,7 @@ const EditUserModal = ({ onClose }) => {
       }}
     >
       <Typography id="logout-modal-title" variant="h6">
-        Edit User
+        Edit Customer
       </Typography>
       <form onSubmit={handleSubmit(handleSubmitForm)}>
         <Box mt={2}>
@@ -144,21 +142,21 @@ const EditUserModal = ({ onClose }) => {
             />
           </Box>
           {/* <Box mb={2} sx={{ display: "flex", gap: 2 }}>
-            <TextField
-              label="User Name"
-              variant="outlined"
-              defaultValue={activeUser.userName}
-              {...register("userName", { required: true })}
-              sx={{ width: "100%" }}
-            />
-            <TextField
-              label="Password"
-              variant="outlined"
-              defaultValue={activeUser.password}
-              {...register("password", { required: true })}
-              sx={{ width: "100%" }}
-            />
-          </Box> */}
+              <TextField
+                label="User Name"
+                variant="outlined"
+                defaultValue={activeUser.userName}
+                {...register("userName", { required: true })}
+                sx={{ width: "100%" }}
+              />
+              <TextField
+                label="Password"
+                variant="outlined"
+                defaultValue={activeUser.password}
+                {...register("password", { required: true })}
+                sx={{ width: "100%" }}
+              />
+            </Box> */}
           <Box mb={2}>
             <TextField
               label="Address"
@@ -187,7 +185,7 @@ const EditUserModal = ({ onClose }) => {
             />
           </Box>
           <Box mb={2} sx={{ display: "flex", gap: 2 }}>
-            <FormControl fullWidth>
+            {/* <FormControl fullWidth>
               <InputLabel id="role-label">Role</InputLabel>
               <Select
                 labelId="role-label"
@@ -198,7 +196,7 @@ const EditUserModal = ({ onClose }) => {
                 <MenuItem value="admin">Admin</MenuItem>
                 <MenuItem value="user">User</MenuItem>
               </Select>
-            </FormControl>
+            </FormControl> */}
             <FormControl sx={{ width: "100%" }}>
               <InputLabel id="gender-label">Gender</InputLabel>
               <Select
@@ -219,7 +217,7 @@ const EditUserModal = ({ onClose }) => {
               <Select
                 labelId="location-label"
                 label="Preferred Location"
-                defaultValue={activeUser.preferred_location._id}
+                defaultValue={activeUser?.preferred_location?._id}
                 {...register("preferred_location", { required: true })}
                 disabled={loading} // Disable dropdown if locations are loading
               >
@@ -233,18 +231,18 @@ const EditUserModal = ({ onClose }) => {
           </Box>
 
           {/* <Box mb={2}>
-              <Typography variant="body2" mb={1}>
-                Upload Avatar
-              </Typography>
-              <input accept="image/*" type="file" onChange={handleAvatarChange} />
-              {avatarPreview && (
-                <Avatar
-                  src={avatarPreview}
-                  alt="Avatar Preview"
-                  sx={{ width: 100, height: 100, mt: 2 }}
-                />
-              )}
-            </Box> */}
+                <Typography variant="body2" mb={1}>
+                  Upload Avatar
+                </Typography>
+                <input accept="image/*" type="file" onChange={handleAvatarChange} />
+                {avatarPreview && (
+                  <Avatar
+                    src={avatarPreview}
+                    alt="Avatar Preview"
+                    sx={{ width: 100, height: 100, mt: 2 }}
+                  />
+                )}
+              </Box> */}
         </Box>
 
         <Box mt={2} display="flex" justifyContent="end" gap="1rem">

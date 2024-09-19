@@ -18,22 +18,37 @@ import reportsBarChartData from "layouts/dashboard/data/reportsBarChartData";
 import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 
 // Dashboard components
-import Projects from "layouts/dashboard/components/Projects";
-import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
+// import Projects from "layouts/dashboard/components/Projects";
+import CustomerOverview from "./components/CustomerOverview";
 import { getAllProducts } from "../../service/operations/productAndProductTransaction";
 import { useDispatch, useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { getAllUserProfiles } from "../../service/operations/userProfileApi";
 import { setUsers } from "../../slices/profileSlice";
 import { setProducts } from "../../slices/productSlice";
 import { setServices } from "../../slices/serviceSlice";
 import { getAllServices } from "../../service/operations/serviceAndServiceTransaction";
+import { Card, MenuItem } from "@mui/material";
+import MDInput from "components/MDInput";
+import { Padding } from "@mui/icons-material";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;
   const { token } = useSelector((state) => state.auth);
+  const { users } = useSelector((state) => state.profile);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchRef = useRef(null);
   const dispatch = useDispatch();
+  const handleSearch = async () => {
+    console.log(searchQuery);
+  };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+      searchRef.current.blur();
+    }
+  };
   useEffect(() => {
     async function getAllProduct() {
       try {
@@ -50,7 +65,7 @@ function Dashboard() {
     async function getAllUserProfile() {
       try {
         const response = await getAllUserProfiles(token);
-        dispatch(setUsers(response.data));
+        dispatch(setUsers(response.data.filter((user) => user.role === "customer")));
       } catch (error) {
         console.log("Error getting all userProfiles");
       }
@@ -75,27 +90,26 @@ function Dashboard() {
       <DashboardNavbar />
       <MDBox py={3}>
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={4} lg={4}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                color="dark"
-                icon="weekend"
-                title="Bookings"
-                count={281}
+                color="primary"
+                icon="person_add"
+                title="Total Users"
+                count={users.length}
                 percentage={{
                   color: "success",
-                  amount: "+55%",
-                  label: "than lask week",
+                  label: "Customers",
                 }}
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={4} lg={4}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
-                icon="leaderboard"
+                icon="person"
                 title="Today's Users"
-                count="2,300"
+                count={users.length}
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -104,7 +118,7 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
+          <Grid item xs={12} md={4} lg={4}>
             <MDBox mb={1.5}>
               <ComplexStatisticsCard
                 color="success"
@@ -119,70 +133,39 @@ function Dashboard() {
               />
             </MDBox>
           </Grid>
-          <Grid item xs={12} md={6} lg={3}>
-            <MDBox mb={1.5}>
-              <ComplexStatisticsCard
-                color="primary"
-                icon="person_add"
-                title="Followers"
-                count="+91"
-                percentage={{
-                  color: "success",
-                  amount: "",
-                  label: "Just updated",
-                }}
-              />
-            </MDBox>
-          </Grid>
         </Grid>
+        <MDBox mt={4.5} display="flex" justifyContent="center">
+          <Card
+            sx={{
+              width: "100%", // Make the card take full width
+              maxWidth: "600px", // Set a maximum width (same as the input)
+              padding: "16px", // Add padding for better spacing inside the card
+            }}
+          >
+            <MDInput
+              label="Search here"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyPress={handleKeyPress}
+              inputProps={{
+                ref: searchRef,
+                onFocus: (event) => event.target.select(),
+              }}
+              sx={{
+                width: "100%", // Full width for the input inside the card
+                height: "50px", // Same height as before
+              }}
+            />
+          </Card>
+        </MDBox>
+
+        {/* Customer Overview Section */}
         <MDBox mt={4.5}>
           <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={4}>
+            <Grid item xs={12}>
               <MDBox mb={3}>
-                <ReportsBarChart
-                  color="info"
-                  title="website views"
-                  description="Last Campaign Performance"
-                  date="campaign sent 2 days ago"
-                  chart={reportsBarChartData}
-                />
+                <CustomerOverview searchQuery={searchQuery} />
               </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="success"
-                  title="daily sales"
-                  description={
-                    <>
-                      (<strong>+15%</strong>) increase in today sales.
-                    </>
-                  }
-                  date="updated 4 min ago"
-                  chart={sales}
-                />
-              </MDBox>
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <MDBox mb={3}>
-                <ReportsLineChart
-                  color="dark"
-                  title="completed tasks"
-                  description="Last Campaign Performance"
-                  date="just updated"
-                  chart={tasks}
-                />
-              </MDBox>
-            </Grid>
-          </Grid>
-        </MDBox>
-        <MDBox>
-          <Grid container spacing={3}>
-            <Grid item xs={12} md={6} lg={8}>
-              <Projects />
-            </Grid>
-            <Grid item xs={12} md={6} lg={4}>
-              <OrdersOverview />
             </Grid>
           </Grid>
         </MDBox>

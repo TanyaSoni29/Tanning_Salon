@@ -5,14 +5,16 @@ import { userEndpoints } from "../api";
 const {
   USER_API,
   CREATE_CUSTOMER_API,
+  DELETE_CUSTOMER_API,
   CREATE_USER_API,
+  DELETE_USER_API,
   TOTAL_SALES_API,
   SALES_BY_LOCATION_API,
   TOP_CUSTOMER_API,
 } = userEndpoints;
 
 export const createUser = async (token, data) => {
-  const toastId = toast.loading("LOading...");
+  const toastId = toast.loading("Loading...");
   try {
     const response = await apiConnector("POST", CREATE_USER_API, data, {
       Authorization: `Bearer ${token}`,
@@ -103,6 +105,56 @@ export const updateUser = async (token, userId, data) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Update User Api Error", error);
+    toast.error(error.message);
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+
+export const deleteUserAndUserProfile = async (token, userId) => {
+  const toastId = toast.loading("Loading...");
+  let result = null;
+  try {
+    const response = await apiConnector(
+      "DELETE",
+      DELETE_USER_API,
+      { userId: userId },
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+    console.log("Delete User Api Response..", response);
+    if (response.status !== 204) throw new Error("Could not delete User");
+    toast.success("User deleted successfully");
+    result = true;
+  } catch (error) {
+    console.log("Delete User Api Error...", error);
+    toast.error(error.message);
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+
+export const deleteCustomerProfile = async (token, userId) => {
+  const toastId = toast.loading("Loading...");
+  let result = null;
+  try {
+    const response = await apiConnector(
+      "DELETE",
+      DELETE_CUSTOMER_API,
+      { customerId: userId },
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+    console.log("Delete Customer Api Response..", response);
+    if (response.status !== 204) throw new Error("Could not delete Customer");
+    toast.success("User deleted successfully");
+    result = true;
+  } catch (error) {
+    console.log("Delete Customer Api Error...", error);
     toast.error(error.message);
   }
   toast.dismiss(toastId);

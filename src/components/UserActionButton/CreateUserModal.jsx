@@ -51,6 +51,8 @@ const CreateUserModal = ({ onClose }) => {
   const handleSubmitForm = async (data) => {
     try {
       const newUserData = {
+        userName: data.userName,
+        password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
         role: data.role,
@@ -81,6 +83,8 @@ const CreateUserModal = ({ onClose }) => {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
+        userName: "",
+        password: "",
         firstName: "",
         lastName: "",
         role: "",
@@ -91,9 +95,9 @@ const CreateUserModal = ({ onClose }) => {
         gender: "",
         referred_by: "",
         preferred_location: "",
-        avatar: "",
+        // avatar: "",
       });
-      setAvatarPreview(null); // Reset avatar preview
+      // setAvatarPreview(null); // Reset avatar preview
     }
   }, [reset, isSubmitSuccessful]);
 
@@ -142,7 +146,20 @@ const CreateUserModal = ({ onClose }) => {
               sx={{ width: "100%" }}
             />
           </Box>
-
+          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
+            <TextField
+              label="User Name"
+              variant="outlined"
+              {...register("userName", { required: true })}
+              sx={{ width: "100%" }}
+            />
+            <TextField
+              label="Password"
+              variant="outlined"
+              {...register("password", { required: true })}
+              sx={{ width: "100%" }}
+            />
+          </Box>
           <Box mb={2}>
             <TextField
               label="Address"
@@ -199,7 +216,14 @@ const CreateUserModal = ({ onClose }) => {
               </Select>
             </FormControl>
           </Box>
-
+          <Box mb={2}>
+            <TextField
+              label="Referred By"
+              variant="outlined"
+              {...register("referred_by", { required: true })}
+              sx={{ width: "100%" }}
+            />
+          </Box>
           {/* <Box mb={2}>
             <Typography variant="body2" mb={1}>
               Upload Avatar

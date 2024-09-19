@@ -55,13 +55,20 @@ function index() {
         setIsDeleteOpen(false);
       }
     } catch (error) {
-      console.error("Error during product deletion:", error);
+      console.error("Error during user deletion:", error);
     } finally {
       setIsDeleteOpen(false);
     }
   };
 
-  const { columns, rows } = userTableData(handleEdit, setIsDeleteOpen, setViewModal);
+  const { columns, rows } = userTableData(
+    handleEdit,
+    setIsDeleteOpen,
+    setViewModal,
+    createModalOpen,
+    isDeleteOpen,
+    isEditOpen
+  );
 
   return (
     <>

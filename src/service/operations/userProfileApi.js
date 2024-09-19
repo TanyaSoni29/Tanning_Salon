@@ -3,7 +3,7 @@ import { apiConnector } from "../apiConnector";
 import { userProfileEndpoints } from "../api";
 import { setLoading } from "../../slices/profileSlice";
 
-const { GET_USER_DETAILS_API, UPDATE_USER_PROFILE_API, GET_ALL_USER_PROFILE_API } =
+const { GET_USER_DETAILS_API, UPDATE_USER_PROFILE_IMAGE_API, GET_ALL_USER_PROFILE_API } =
   userProfileEndpoints;
 
 export const createUserProfile = async (token, data) => {
@@ -69,16 +69,37 @@ export const getUserDetails = async (token, userId) => {
   return result;
 };
 
-export const updateUserProfile = async (token, data) => {
+export const updateUserProfile = async (token, userId, data) => {
   let result = null;
   const toastId = toast.loading("Loading...");
   try {
-    const response = await apiConnector("POST", UPDATE_USER_PROFILE_API, data, {
+    const response = await apiConnector("PATCH", `${GET_ALL_USER_PROFILE_API}/${userId}`, data, {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     });
     console.log("Update user profile response....", response);
     if (response.status !== 200) throw new Error("Could not update user profile");
+
+    toast.success("User profile updated successfully");
+    result = response.data?.data;
+  } catch (error) {
+    console.log("update user profile error", error);
+    toast.error(error.message);
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+
+export const updateUserProfileImage = async (token, data) => {
+  let result = null;
+  const toastId = toast.loading("Loading...");
+  try {
+    const response = await apiConnector("POST", UPDATE_USER_PROFILE_IMAGE_API, data, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
+    console.log("Update user profile image response....", response);
+    if (response.status !== 200) throw new Error("Could not update user image profile");
 
     toast.success("User profile updated successfully");
     result = response.data?.data;

@@ -15,7 +15,14 @@ import { getAllUserProfiles } from "service/operations/userProfileApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserIndex } from "slices/profileSlice";
 
-export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
+export default function data(
+  handleEdit,
+  setIsDeleteOpen,
+  setViewModal,
+  createModalOpen,
+  isDeleteOpen,
+  isEditOpen
+) {
   const [rowsData, setRowsData] = useState([]);
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
@@ -30,7 +37,7 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
       }
     };
     fetchData();
-  }, []);
+  }, [createModalOpen, isDeleteOpen, isEditOpen]);
 
   const Author = ({ image, firstName, lastName, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>

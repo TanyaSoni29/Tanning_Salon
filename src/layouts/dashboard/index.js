@@ -20,14 +20,14 @@ import reportsLineChartData from "layouts/dashboard/data/reportsLineChartData";
 // Dashboard components
 import Projects from "layouts/dashboard/components/Projects";
 import OrdersOverview from "layouts/dashboard/components/OrdersOverview";
-import { getAllProducts } from "service/operations/productAndProductTransaction";
+import { getAllProducts } from "../../service/operations/productAndProductTransaction";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { getAllUserProfiles } from "service/operations/userProfileApi";
-import { setUsers } from "slices/profileSlice";
-import { setProducts } from "slices/productSlice";
-import { setServices } from "slices/serviceSlice";
-import { getAllServices } from "service/operations/serviceAndServiceTransaction";
+import { getAllUserProfiles } from "../../service/operations/userProfileApi";
+import { setUsers } from "../../slices/profileSlice";
+import { setProducts } from "../../slices/productSlice";
+import { setServices } from "../../slices/serviceSlice";
+import { getAllServices } from "../../service/operations/serviceAndServiceTransaction";
 
 function Dashboard() {
   const { sales, tasks } = reportsLineChartData;

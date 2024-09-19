@@ -133,7 +133,7 @@ function index() {
                 <MDBox pt={3}>
                   <DataTable
                     table={{ columns, rows }} // Replace `columns` and `rows` with actual data
-                    isSorted={false}
+                    isSorted={true}
                     entriesPerPage={false}
                     showTotalEntries={false}
                     noEndBorder

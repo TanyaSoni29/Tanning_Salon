@@ -11,6 +11,8 @@ const {
   TOTAL_SALES_API,
   SALES_BY_LOCATION_API,
   TOP_CUSTOMER_API,
+  GET_SERVICE_TRANSACTIONS_BY_USER,
+  GET_PRODUCT_TRANSACTIONS_BY_USER,
 } = userEndpoints;
 
 export const createUser = async (token, data) => {
@@ -240,6 +242,56 @@ export const getTopCustomer = async (token) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get All Top Customer Api Error", error);
+    toast.error(error.message);
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+
+export const getServiceTransactionsByUser = async (token, userId) => {
+  const toastId = toast.loading("Loading...");
+  let result = null;
+  try {
+    const response = await apiConnector(
+      "POST",
+      GET_SERVICE_TRANSACTIONS_BY_USER,
+      { userId: userId },
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+    console.log("Get User Service transactions Api Response..", response);
+    if (response.status !== 200) throw new Error("Could not fetch User transactions");
+    toast.success("User Transactions fetch successfully");
+    result = response.data?.data;
+  } catch (error) {
+    console.log("Get User Service transactions Api Error", error);
+    toast.error(error.message);
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+
+export const getProductTransactionsByUser = async (token, userId) => {
+  const toastId = toast.loading("Loading...");
+  let result = null;
+  try {
+    const response = await apiConnector(
+      "POST",
+      GET_PRODUCT_TRANSACTIONS_BY_USER,
+      { userId: userId },
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+    console.log("Get User Product transactions Api Response..", response);
+    if (response.status !== 200) throw new Error("Could not fetch User transactions");
+    toast.success("User Transactions fetch successfully");
+    result = response.data?.data;
+  } catch (error) {
+    console.log("Get User Product transactions Api Error", error);
     toast.error(error.message);
   }
   toast.dismiss(toastId);

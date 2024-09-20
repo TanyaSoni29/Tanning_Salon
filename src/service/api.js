@@ -23,6 +23,8 @@ export const userEndpoints = {
   TOTAL_SALES_API: BASE_URL + "/totalSales",
   SALES_BY_LOCATION_API: BASE_URL + "/salesByLocation",
   TOP_CUSTOMER_API: BASE_URL + "/topCustomer",
+  GET_SERVICE_TRANSACTIONS_BY_USER: BASE_URL + "/serviceTransactions",
+  GET_PRODUCT_TRANSACTIONS_BY_USER: BASE_URL + "/productTransactions",
 };
 
 export const userProfileEndpoints = {

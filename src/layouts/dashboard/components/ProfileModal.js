@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
-import * as React from "react";
+import React, { useEffect } from "react";
 import {
   Card,
   CardMedia,
@@ -20,9 +20,13 @@ import MDTypography from "components/MDTypography";
 import Header from "layouts/profile/components/Header";
 import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
-
+import userProductTableData from "../components/userProductTableData";
+import userServiceTableData from "../components/userServiceTableData";
 import MDAvatar from "components/MDAvatar";
+import DataTable from "examples/Tables/DataTable";
 export default function BasicCard({ onClose, handleSelectedProfileModal, selectedUser }) {
+  const { columns, rows } = userProductTableData(selectedUser);
+  const { columns: scols, rows: srows } = userServiceTableData(selectedUser);
   return (
     // <Box
     //   sx={{
@@ -169,7 +173,52 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
               />
             </MDBox>
           </MDBox>
-          <MDBox p={2}></MDBox>
+          <MDBox
+            mx={2}
+            mt={-3}
+            py={3}
+            px={2}
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="info"
+          >
+            <MDTypography variant="h6" color="white">
+              Services
+            </MDTypography>
+          </MDBox>
+          <MDBox pt={3}>
+            <DataTable
+              table={{ columns: scols, rows: srows }}
+              isSorted={true}
+              entriesPerPage={false}
+              showTotalEntries={false}
+              noEndBorder
+            />
+          </MDBox>
+          <MDBox
+            mx={2}
+            mt={-3}
+            py={3}
+            px={2}
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="info"
+          >
+            <MDTypography variant="h6" color="white">
+              Products
+            </MDTypography>
+          </MDBox>
+          <MDBox pt={3}>
+            <DataTable
+              table={{ columns, rows }}
+              isSorted={true}
+              entriesPerPage={false}
+              showTotalEntries={false}
+              noEndBorder
+            />
+          </MDBox>
           <MDBox p={2} sx={{ display: "flex", gap: 2 }}>
             <Button
               sx={{

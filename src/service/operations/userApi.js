@@ -34,7 +34,7 @@ export const createUser = async (token, data) => {
 };
 
 export const createCustomer = async (token, data) => {
-  const toastId = toast.loading("LOading...");
+  const toastId = toast.loading("Loading...");
   try {
     const response = await apiConnector("POST", CREATE_CUSTOMER_API, data, {
       Authorization: `Bearer ${token}`,

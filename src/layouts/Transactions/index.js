@@ -17,8 +17,9 @@ import serviceTransactionTableData from "layouts/tables/data/serviceTransactionT
 import productTransactionTableData from "layouts/tables/data/productTransactionTableData";
 
 function Tables() {
-  const { columns: sColumns, rows: sRows } = serviceTransactionTableData();
-  const { columns: pColumns, rows: pRows } = productTransactionTableData();
+  // const { columns: sColumns, rows: sRows } = serviceTransactionTableData();
+  const { columns, rows } = productTransactionTableData();
+  const { columns: col, rows: row } = serviceTransactionTableData();
 
   return (
     <DashboardLayout>
@@ -43,7 +44,7 @@ function Tables() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns: sColumns, rows: sRows }}
+                  table={{ columns: col, rows: row }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}
@@ -70,7 +71,7 @@ function Tables() {
               </MDBox>
               <MDBox pt={3}>
                 <DataTable
-                  table={{ columns: pColumns, rows: pRows }}
+                  table={{ columns, rows }}
                   isSorted={false}
                   entriesPerPage={false}
                   showTotalEntries={false}

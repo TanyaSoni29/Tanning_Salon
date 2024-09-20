@@ -65,13 +65,15 @@ function Dashboard() {
     async function getAllUserProfile() {
       try {
         const response = await getAllUserProfiles(token);
-        dispatch(setUsers(response.data.filter((user) => user.role === "customer")));
+        dispatch(setUsers(response.data.filter((user) => user.role === "customer" && user.active)));
       } catch (error) {
         console.log("Error getting all userProfiles");
       }
     }
     getAllUserProfile();
   }, []);
+
+  console.log("users", users);
 
   useEffect(() => {
     async function getAllService() {

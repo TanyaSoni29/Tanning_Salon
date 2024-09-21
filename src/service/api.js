@@ -42,4 +42,5 @@ export const serviceEndpoints = {
   GET_ALL_SERVICE_TRANSACTION_API: BASE_URL + "/serviceTransaction",
   GET_ALL_SERVICE_API: BASE_URL + "/service",
   GET_ALL_SERVICE_USAGES_API: BASE_URL + "/serviceUsage",
+  GET_ALL_SERVICE_USAGES_BY_USERID_API: BASE_URL + "/serviceUsage/user",
 };

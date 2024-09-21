@@ -10,20 +10,7 @@ import { useSelector } from "react-redux";
 import { formatDate } from "utils/formateDate";
 import { getServiceTransactionsByUser } from "service/operations/userApi";
 
-export default function data(selectedUser) {
-  const { token } = useSelector((state) => state.auth);
-  const [serviceTransactions, setServiceTransactions] = useState([]);
-  console.log(selectedUser);
-
-  useEffect(() => {
-    async function getServiceTransactionsOfUser() {
-      const { serviceTransactions } = await getServiceTransactionsByUser(token, selectedUser?._id);
-      //   console.log("response of get service transaction of user", response.serviceTransactions);
-      setServiceTransactions(serviceTransactions);
-    }
-    getServiceTransactionsOfUser();
-  }, []);
-
+export default function data(serviceTransactions) {
   const Product = ({ name }) => (
     <MDBox ml={2} lineHeight={1}>
       <MDTypography display="block" variant="caption" fontWeight="medium">
@@ -40,7 +27,14 @@ export default function data(selectedUser) {
   );
 
   const rows = serviceTransactions.map((transaction, i) => ({
-    productName: <Product name={transaction.service.serviceName} />,
+    productName:
+      transaction.type === "purchase" ? (
+        <Product name={transaction.service?.serviceName} />
+      ) : (
+        <MDTypography variant="caption" fontWeight="medium">
+          -
+        </MDTypography>
+      ),
     userName: <User firstName={transaction.user.firstName} lastName={transaction.user.lastName} />,
     price:
       transaction.type === "purchase" ? (

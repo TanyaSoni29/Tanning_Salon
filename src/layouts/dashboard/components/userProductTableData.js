@@ -9,18 +9,7 @@ import { useSelector } from "react-redux";
 import { formatDate } from "utils/formateDate";
 import { getProductTransactionsByUser } from "service/operations/userApi";
 
-export default function data(selectedUser) {
-  const { token } = useSelector((state) => state.auth);
-  const [productTransactions, setProductTransactions] = useState([]);
-
-  useEffect(() => {
-    async function getProductTransactionsOfUser() {
-      const { productTransactions } = await getProductTransactionsByUser(token, selectedUser?._id);
-      //   console.log("response of get product transaction of user", response.productTransactions);
-      setProductTransactions(productTransactions);
-    }
-    getProductTransactionsOfUser();
-  }, []);
+export default function data(productTransactions) {
   const Product = ({ name }) => (
     <MDBox ml={2} lineHeight={1}>
       <MDTypography display="block" variant="caption" fontWeight="medium">
@@ -56,7 +45,7 @@ export default function data(selectedUser) {
     ),
     createdAt: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {formatDate(transaction.date_time)} {transaction.date_time?.split("T").at(1).slice(0, 8)}
+        {formatDate(transaction.created_at)} {transaction.created_at?.split("T").at(1).slice(0, 8)}
       </MDTypography>
     ),
   }));

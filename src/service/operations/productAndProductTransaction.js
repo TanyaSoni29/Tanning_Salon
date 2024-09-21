@@ -109,6 +109,26 @@ export const deleteProduct = async (token, productId) => {
   return result;
 };
 
+export const createProductTransaction = async (token, data) => {
+  const toastId = toast.loading("Loading...");
+  try {
+    const response = await apiConnector("POST", GET_ALL_PRODUCT_TRANSACTION_API, data, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
+
+    console.log("Create New Product Transaction Api Response..", response);
+    if (response.status !== 201) throw new Error("Could not create Product");
+    toast.success("Product Transaction created successfully");
+    return response.data?.data;
+  } catch (error) {
+    console.log("Create Product Transaction Api Error", error);
+    toast.error(error.message);
+  } finally {
+    toast.dismiss(toastId);
+  }
+};
+
 export const getAllProductTransactions = async (token) => {
   const toastId = toast.loading("Loading...");
   let result = null;

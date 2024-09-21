@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   CardMedia,
@@ -24,46 +24,142 @@ import userProductTableData from "../components/userProductTableData";
 import userServiceTableData from "../components/userServiceTableData";
 import MDAvatar from "components/MDAvatar";
 import DataTable from "examples/Tables/DataTable";
+import { getProductTransactionsByUser } from "service/operations/userApi";
+import { useSelector } from "react-redux";
+import { getServiceTransactionsByUser } from "service/operations/userApi";
+import Modal from "../../../components/Modal";
+import TransactionModal from "./TransactionModal";
+import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
+import SmsOutlinedIcon from "@mui/icons-material/SmsOutlined";
+import { getAllServiceUsageByUser } from "service/operations/serviceAndServiceTransaction";
+import ProductListModal from "./ProductListModal";
+import { createProductTransaction } from "service/operations/productAndProductTransaction";
+import { createServiceTransaction } from "service/operations/serviceAndServiceTransaction";
+import ServiceListModal from "./ServiceListModal";
+import ServiceUseModal from "./ServiceUseModal";
 export default function BasicCard({ onClose, handleSelectedProfileModal, selectedUser }) {
-  const { columns, rows } = userProductTableData(selectedUser);
-  const { columns: scols, rows: srows } = userServiceTableData(selectedUser);
+  const { token } = useSelector((state) => state.auth);
+  const [productTransactions, setProductTransactions] = useState([]);
+  const [serviceTransactions, setServiceTransactions] = useState([]);
+  const [transactionModal, setTransactionModal] = useState(false);
+  const [productListModal, setProductListModal] = useState(false);
+  const [serviceListModal, setServiceListModal] = useState(false);
+  const [serviceUseModal, setServiceUseModal] = useState(false);
+
+  const [serviceUsageOfSelectedUser, setServiceUsageOfSelectedUser] = useState({});
+  useEffect(() => {
+    async function getServiceTransactionsOfUser() {
+      const { serviceTransactions } = await getServiceTransactionsByUser(token, selectedUser?._id);
+      //   console.log("response of get service transaction of user", response.serviceTransactions);
+      setServiceTransactions(serviceTransactions);
+    }
+    getServiceTransactionsOfUser();
+  }, [transactionModal]);
+
+  useEffect(() => {
+    async function getProductTransactionsOfUser() {
+      const { productTransactions } = await getProductTransactionsByUser(token, selectedUser?._id);
+      //   console.log("response of get product transaction of user", response.productTransactions);
+      setProductTransactions(productTransactions);
+    }
+    getProductTransactionsOfUser();
+  }, [transactionModal]);
+
+  useEffect(() => {
+    async function getServiceUsageByUser() {
+      const { serviceUsage } = await getAllServiceUsageByUser(token, selectedUser._id);
+      setServiceUsageOfSelectedUser(serviceUsage?.at(0));
+    }
+    getServiceUsageByUser();
+  }, [selectedUser, serviceListModal, serviceUseModal]);
+
+  const createProductTransactionOfUser = async (productId, quantity) => {
+    try {
+      const data = {
+        user: selectedUser._id, // Assuming user data is stored in auth state
+        location: selectedUser.preferred_location._id, // Replace with the correct location ID
+        product: productId,
+        quantity,
+      };
+      const response = await createProductTransaction(token, data);
+      console.log("Transaction created", response.data);
+    } catch (err) {
+      console.error("Error creating transaction", err);
+    }
+  };
+
+  const createServiceTransactionOfUser = async (serviceId) => {
+    try {
+      const data = {
+        user: selectedUser._id,
+        service: serviceId, // Assuming user data is stored in auth state
+        location: selectedUser.preferred_location._id, // Replace with the correct location ID
+        type: "purchase",
+      };
+      const response = await createServiceTransaction(token, data);
+      console.log("Transaction created", response.data);
+    } catch (err) {
+      console.error("Error creating transaction", err);
+    }
+  };
+
+  const createServiceUseTransactionOfUser = async (quantity) => {
+    try {
+      const data = {
+        user: selectedUser._id, // Assuming user data is stored in auth state
+        location: selectedUser.preferred_location._id, // Replace with the correct location ID
+        type: "usage",
+        quantity: quantity,
+      };
+      const response = await createServiceTransaction(token, data);
+      console.log("Transaction created", response.data);
+    } catch (err) {
+      console.error("Error creating transaction", err);
+    }
+  };
+  const handleServiceListModal = () => {
+    setServiceListModal(true);
+  };
+  const handleServiceUseModal = () => {
+    setServiceUseModal(true);
+  };
+  const handleProductListModal = () => {
+    setProductListModal(true);
+  };
+  const handleViewTransactionModal = () => {
+    setTransactionModal(true);
+  };
+  const { columns, rows } = userProductTableData(productTransactions);
+  const { columns: scols, rows: srows } = userServiceTableData(serviceTransactions);
   return (
-    // <Box
-    //   sx={{
-    //     width: 300,
-    //     padding: 2,
-    //     margin: "auto",
-    //     marginTop: "15%",
-    //     backgroundColor: "#fff",
-    //     borderRadius: 2,
-    //   }}
-    // >
-    //   <Typography id="logout-modal-title" variant="h6">
-    //     Have you used a tanning salon in the last 24 hours?
-    //   </Typography>
-    //   <Box mt={2} display="flex" justifyContent="end" gap="1rem">
-    //     <Button
-    //       variant="contained"
-    //       onClick={handleSelectedProfileModal}
-    //       sx={{
-    //         backgroundColor: "#328BED",
-    //         color: "#fff",
-    //         padding: "8px 16px",
-    //         borderRadius: "8px",
-    //         boxShadow: "0 3px 5px rgba(0,0,0,0.3)",
-    //         "&:hover": {
-    //           backgroundColor: "#63A0F5",
-    //         },
-    //       }}
-    //     >
-    //       Yes
-    //     </Button>
-    //     <Button variant="contained" color="info" onClick={onClose}>
-    //       Cancel
-    //     </Button>
-    //   </Box>
-    // </Box>
     <>
+      <Modal open={transactionModal} setOpen={setTransactionModal}>
+        <TransactionModal
+          setOpen={setTransactionModal}
+          scols={scols}
+          srows={srows}
+          columns={columns}
+          rows={rows}
+        />
+      </Modal>
+      <Modal open={productListModal} setOpen={setProductListModal}>
+        <ProductListModal
+          setOpen={setProductListModal}
+          createProductTransactionOfUser={createProductTransactionOfUser}
+        />
+      </Modal>
+      <Modal open={serviceListModal} setOpen={setServiceListModal}>
+        <ServiceListModal
+          setOpen={setServiceListModal}
+          createServiceTransactionOfUser={createServiceTransactionOfUser}
+        />
+      </Modal>
+      <Modal open={serviceUseModal} setOpen={setServiceUseModal}>
+        <ServiceUseModal
+          setOpen={setServiceUseModal}
+          createServiceUseTransactionOfUser={createServiceUseTransactionOfUser}
+        />
+      </Modal>
       <MDBox
         mb={2}
         sx={{
@@ -137,89 +233,35 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
                 </MDBox>
                 <MDBox height="100%" lineHeight={1}>
                   <MDTypography variant="button" color="text" fontWeight="regular">
+                    {serviceUsageOfSelectedUser?.available_balance
+                      ? `Available Balance : ${serviceUsageOfSelectedUser?.available_balance}`
+                      : "Not purchase any service yet"}
+                  </MDTypography>
+                </MDBox>
+                <MDBox height="100%" lineHeight={1}>
+                  <MDTypography variant="button" color="text" fontWeight="regular">
                     Preferred Location: {selectedUser.preferred_location.name}
                   </MDTypography>
                 </MDBox>
               </MDBox>
             </Grid>
-            <Grid item xs={12} md={6} lg={4} sx={{ ml: "auto" }}></Grid>
           </Grid>
-          <MDBox pt={2} px={2} lineHeight={1.25}>
-            <MDTypography variant="h6" fontWeight="medium">
-              GDPR Settings
+
+          <MDBox display="flex" alignItems="center">
+            <MDTypography variant="h6" color="secondary" sx={{ fontSize: "14px" }}>
+              GDPR :
             </MDTypography>
-            <MDBox mb={1}>
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={selectedUser.gdpr_email_active}
-                    name="gdpr_email_active"
-                    color="primary"
-                    // The functionality isn't changed, switch state comes from selectedUser
-                  />
-                }
-                label="GDPR Email Active"
-              />
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={selectedUser.gdpr_sms_active}
-                    name="gdpr_sms_active"
-                    color="primary"
-                    // The functionality isn't changed, switch state comes from selectedUser
-                  />
-                }
-                label="GDPR SMS Active"
-              />
-            </MDBox>
-          </MDBox>
-          <MDBox
-            mx={2}
-            mt={-3}
-            py={3}
-            px={2}
-            variant="gradient"
-            bgColor="info"
-            borderRadius="lg"
-            coloredShadow="info"
-          >
-            <MDTypography variant="h6" color="white">
-              Services
-            </MDTypography>
-          </MDBox>
-          <MDBox pt={3}>
-            <DataTable
-              table={{ columns: scols, rows: srows }}
-              isSorted={true}
-              entriesPerPage={false}
-              showTotalEntries={false}
-              noEndBorder
+            <EmailOutlinedIcon sx={{ color: "#32CD32", marginLeft: "4px" }} />
+            <Switch
+              checked={selectedUser.gdpr_email_active}
+              name="gdpr_email_active"
+              color="primary"
             />
+            <SmsOutlinedIcon sx={{ color: "#32CD32" }} />
+            <Switch checked={selectedUser.gdpr_sms_active} name="gdpr_sms_active" color="primary" />
           </MDBox>
-          <MDBox
-            mx={2}
-            mt={-3}
-            py={3}
-            px={2}
-            variant="gradient"
-            bgColor="info"
-            borderRadius="lg"
-            coloredShadow="info"
-          >
-            <MDTypography variant="h6" color="white">
-              Products
-            </MDTypography>
-          </MDBox>
-          <MDBox pt={3}>
-            <DataTable
-              table={{ columns, rows }}
-              isSorted={true}
-              entriesPerPage={false}
-              showTotalEntries={false}
-              noEndBorder
-            />
-          </MDBox>
-          <MDBox p={2} sx={{ display: "flex", gap: 2 }}>
+
+          <MDBox py={1} sx={{ display: "flex", gap: 2 }}>
             <Button
               sx={{
                 backgroundColor: "#328BED",
@@ -235,10 +277,11 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
                   color: "#fff",
                 },
                 "&:disabled": {
-                  backgroundColor: "#D3D3D3",
+                  backgroundColor: "#63A0F5",
                   color: "#fff",
                 },
               }}
+              onClick={handleProductListModal}
             >
               Buy Product
             </Button>
@@ -261,6 +304,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
                   color: "#fff",
                 },
               }}
+              onClick={handleServiceListModal}
             >
               Buy Service
             </Button>
@@ -279,13 +323,39 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
                   color: "#fff",
                 },
                 "&:disabled": {
-                  backgroundColor: "#D3D3D3",
+                  backgroundColor: "#63A0F5",
                   color: "#fff",
                 },
               }}
+              onClick={handleServiceUseModal}
             >
               Use Service
             </Button>
+            <Grid item xs={12} md={6} lg={3} sx={{ ml: "auto" }}>
+              <Button
+                sx={{
+                  backgroundColor: "#328BED",
+                  color: "#fff",
+                  "&:hover": {
+                    backgroundColor: "#63A0F5",
+                    color: "#fff",
+                  },
+                  "&:focus": {
+                    color: "#fff",
+                  },
+                  "&:active": {
+                    color: "#fff",
+                  },
+                  "&:disabled": {
+                    backgroundColor: "#63A0F5",
+                    color: "#fff",
+                  },
+                }}
+                onClick={handleViewTransactionModal}
+              >
+                View Transactions
+              </Button>
+            </Grid>
           </MDBox>
         </Card>
       </MDBox>

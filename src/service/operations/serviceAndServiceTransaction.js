@@ -2,8 +2,12 @@ import { toast } from "react-hot-toast";
 import { apiConnector } from "../apiConnector";
 import { serviceEndpoints } from "../api";
 
-const { GET_ALL_SERVICE_TRANSACTION_API, GET_ALL_SERVICE_API, GET_ALL_SERVICE_USAGES_API } =
-  serviceEndpoints;
+const {
+  GET_ALL_SERVICE_TRANSACTION_API,
+  GET_ALL_SERVICE_API,
+  GET_ALL_SERVICE_USAGES_API,
+  GET_ALL_SERVICE_USAGES_BY_USERID_API,
+} = serviceEndpoints;
 
 export const createService = async (token, data) => {
   const toastId = toast.loading("Loading...");
@@ -103,6 +107,26 @@ export const deleteService = async (token, serviceId) => {
   return result;
 };
 
+export const createServiceTransaction = async (token, data) => {
+  const toastId = toast.loading("Loading...");
+  try {
+    const response = await apiConnector("POST", GET_ALL_SERVICE_TRANSACTION_API, data, {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    });
+    console.log("Create New Service Api Response..", response);
+    if (response.status !== 201) throw new Error("Couldn't create a new service transaction");
+
+    toast.success("Service Transaction created successfully");
+    return response.data?.data;
+  } catch (error) {
+    console.log("Create service transaction Api error...", error);
+    toast.error(error.message);
+  } finally {
+    toast.dismiss(toastId);
+  }
+};
+
 export const getAllServiceTransactions = async (token) => {
   const toastId = toast.loading("Loading...");
   let result = null;
@@ -139,6 +163,33 @@ export const getAllServiceUsage = async (token) => {
     result = response.data?.data;
   } catch (error) {
     console.log("GET_ALL_SERVICE_USAGES_API error", error);
+    toast.error("Failed to get all services usage");
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+
+export const getAllServiceUsageByUser = async (token, userId) => {
+  const toastId = toast.loading("Loading...");
+  let result = null;
+  try {
+    const response = await apiConnector(
+      "POST",
+      GET_ALL_SERVICE_USAGES_BY_USERID_API,
+      { userId: userId },
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+
+    console.log("getAllServiceUsageByUser response...", response);
+
+    if (response.status !== 200) throw new Error("Couldn't get all services usage");
+
+    result = response.data?.data;
+  } catch (error) {
+    console.log("getAllServiceUsageByUser error", error);
     toast.error("Failed to get all services usage");
   }
   toast.dismiss(toastId);

@@ -67,8 +67,8 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
 
   useEffect(() => {
     async function getServiceUsageByUser() {
-      const { serviceUsage } = await getAllServiceUsageByUser(token, selectedUser._id);
-      setServiceUsageOfSelectedUser(serviceUsage?.at(0));
+      const response = await getAllServiceUsageByUser(token, selectedUser._id);
+      setServiceUsageOfSelectedUser(response.serviceUsage?.at(0));
     }
     getServiceUsageByUser();
   }, [selectedUser, serviceListModal, serviceUseModal]);
@@ -97,6 +97,8 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
         type: "purchase",
       };
       const response = await createServiceTransaction(token, data);
+      const updatedServiceUsageResponse = await getAllServiceUsageByUser(token, selectedUser._id);
+      setServiceUsageOfSelectedUser(updatedServiceUsageResponse.serviceUsage?.at(0));
       console.log("Transaction created", response.data);
     } catch (err) {
       console.error("Error creating transaction", err);
@@ -112,6 +114,8 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
         quantity: quantity,
       };
       const response = await createServiceTransaction(token, data);
+      const updatedServiceUsageResponse = await getAllServiceUsageByUser(token, selectedUser._id);
+      setServiceUsageOfSelectedUser(updatedServiceUsageResponse.serviceUsage?.at(0));
       console.log("Transaction created", response.data);
     } catch (err) {
       console.error("Error creating transaction", err);
@@ -328,6 +332,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
                 },
               }}
               onClick={handleServiceUseModal}
+              disabled={serviceUsageOfSelectedUser?.available_balance > 0 ? false : true}
             >
               Use Service
             </Button>

@@ -138,7 +138,7 @@ export const getAllProductTransactions = async (token) => {
       "Content-Type": "application/json",
     });
     if (response.status !== 200) throw new Error("Could not fetch All Product Transaction");
-    toast.success("All Product Transactions fetched successfully");
+    // toast.success("All Product Transactions fetched successfully");
     result = response.data?.data;
   } catch (error) {
     console.log("Fetch product transactions api error", error);

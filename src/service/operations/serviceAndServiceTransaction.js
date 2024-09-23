@@ -37,7 +37,7 @@ export const getAllServices = async (token) => {
       Authorization: `Bearer ${token}`,
     });
     if (response.status !== 200) throw new Error("Could not fetch All Service");
-    toast.success("All Services fetched successfully");
+    // toast.success("All Services fetched successfully");
     result = response.data?.data;
   } catch (error) {
     console.log("Fetch all services api error", error);
@@ -136,7 +136,7 @@ export const getAllServiceTransactions = async (token) => {
       "Content-Type": "application/json",
     });
     if (response.status !== 200) throw new Error("Could not fetch All Service Transaction");
-    toast.success("All Service Transactions fetched successfully");
+    // toast.success("All Service Transactions fetched successfully");
     result = response.data?.data;
   } catch (error) {
     console.log("Fetch service transactions api error", error);
@@ -159,7 +159,7 @@ export const getAllServiceUsage = async (token) => {
 
     if (response.status !== 200) throw new Error("Couldn't get all services usage");
 
-    toast.success("All Service Usage fetched successfully");
+    // toast.success("All Service Usage fetched successfully");
     result = response.data?.data;
   } catch (error) {
     console.log("GET_ALL_SERVICE_USAGES_API error", error);

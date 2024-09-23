@@ -263,7 +263,7 @@ export const getServiceTransactionsByUser = async (token, userId) => {
     );
     console.log("Get User Service transactions Api Response..", response);
     if (response.status !== 200) throw new Error("Could not fetch User transactions");
-    toast.success("User Transactions fetch successfully");
+    // toast.success("User Transactions fetch successfully");
     result = response.data?.data;
   } catch (error) {
     console.log("Get User Service transactions Api Error", error);
@@ -288,7 +288,7 @@ export const getProductTransactionsByUser = async (token, userId) => {
     );
     console.log("Get User Product transactions Api Response..", response);
     if (response.status !== 200) throw new Error("Could not fetch User transactions");
-    toast.success("User Transactions fetch successfully");
+    // toast.success("User Transactions fetch successfully");
     result = response.data?.data;
   } catch (error) {
     console.log("Get User Product transactions Api Error", error);

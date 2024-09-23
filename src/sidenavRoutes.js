@@ -58,7 +58,7 @@ const sideNavRoutes = [
   },
   {
     type: "collapse",
-    name: "Reports",
+    name: "Transaction Report",
     key: "transactions",
     icon: <Icon fontSize="small">receipt_long</Icon>,
     route: "/transactions",

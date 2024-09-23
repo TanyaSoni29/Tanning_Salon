@@ -57,13 +57,9 @@ export default function data() {
         {transaction.location.name}
       </MDTypography>
     ),
-    createdAt: (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {formatDate(transaction.created_at)} {transaction.created_at?.split("T").at(1).slice(0, 8)}
-      </MDTypography>
-    ),
+    createdAt: transaction.created_at,
   }));
-
+  const sortedRows = rows.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   return {
     columns: [
       { Header: "User Name", accessor: "userName", align: "left" },
@@ -74,6 +70,13 @@ export default function data() {
       { Header: "Transaction Time", accessor: "createdAt", align: "center" },
     ],
 
-    rows,
+    rows: sortedRows.map((row) => ({
+      ...row,
+      createdAt: (
+        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          {formatDate(row.createdAt)} {row.createdAt?.split("T")[1]?.slice(0, 8)}
+        </MDTypography>
+      ),
+    })),
   };
 }

@@ -67,7 +67,7 @@ export default function App() {
 
   useEffect(() => {
     appDispatch(getMe(navigate, token));
-  }, []);
+  }, [token]);
 
   // Setting the dir attribute for the body element
   useEffect(() => {

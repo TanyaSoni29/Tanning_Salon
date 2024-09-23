@@ -174,7 +174,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
         }}
       />
       <MDBox position="relative" mb={5}>
-        <MDBox
+        {/* <MDBox
           display="flex"
           alignItems="center"
           position="relative"
@@ -190,7 +190,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
             backgroundPosition: "50%",
             overflow: "hidden",
           }}
-        />
+        /> */}
         <Card
           sx={{
             position: "relative",
@@ -215,28 +215,28 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
 
           <Grid container spacing={3} alignItems="center">
             <Grid item>
-              <MDAvatar
+              {/* <MDAvatar
                 src={selectedUser.avatar ? selectedUser.avatar : burceMars}
                 alt="profile-image"
                 size="xl"
                 shadow="sm"
-              />
+              /> */}
             </Grid>
             <Grid item>
               <MDBox height="100%" mt={0.5} lineHeight={1}>
                 <MDTypography variant="h5" fontWeight="medium">
                   {selectedUser.firstName} {selectedUser.lastName}
                 </MDTypography>
-                <MDTypography variant="button" color="text" fontWeight="regular">
+                {/* <MDTypography variant="button" color="text" fontWeight="regular">
                   {selectedUser.email}
-                </MDTypography>
+                </MDTypography> */}
                 <MDBox height="100%" lineHeight={1}>
                   <MDTypography variant="button" color="text" fontWeight="regular">
                     {selectedUser.phone_number}
                   </MDTypography>
                 </MDBox>
                 <MDBox height="100%" lineHeight={1}>
-                  <MDTypography variant="button" color="text" fontWeight="regular">
+                  <MDTypography variant="button" color="text" fontWeight="medium">
                     {serviceUsageOfSelectedUser?.available_balance
                       ? `Available Balance : ${serviceUsageOfSelectedUser?.available_balance}`
                       : "Not purchase any service yet"}
@@ -251,7 +251,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
             </Grid>
           </Grid>
 
-          <MDBox display="flex" alignItems="center">
+          {/* <MDBox display="flex" alignItems="center">
             <MDTypography variant="h6" color="secondary" sx={{ fontSize: "14px" }}>
               GDPR :
             </MDTypography>
@@ -263,7 +263,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
             />
             <SmsOutlinedIcon sx={{ color: "#32CD32" }} />
             <Switch checked={selectedUser.gdpr_sms_active} name="gdpr_sms_active" color="primary" />
-          </MDBox>
+          </MDBox> */}
 
           <MDBox py={1} sx={{ display: "flex", gap: 2 }}>
             <Button

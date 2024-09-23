@@ -15,6 +15,10 @@ import { getAllUserProfiles } from "service/operations/userProfileApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserIndex } from "slices/profileSlice";
 import { setUsers } from "slices/profileSlice";
+import { formatDate } from "utils/formateDate";
+import { getAllServiceUsageByUser } from "service/operations/serviceAndServiceTransaction";
+import { getAllServiceUsage } from "service/operations/serviceAndServiceTransaction";
+import { getAllServiceTransactions } from "service/operations/serviceAndServiceTransaction";
 
 export default function data(
   handleEdit,
@@ -29,17 +33,76 @@ export default function data(
   // const { services } = useSelector((state) => state.service);
   // console.log(services);
   const dispatch = useDispatch();
+  const [serviceData, setServiceData] = useState({});
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await getAllUserProfiles(token);
+  //       console.log("getAlluserProfile response", response.data);
+  //       // dispatch(setUsers(response.data.filter((data) => data.role === "customer" && data.active)));
+  //       // setRowsData(response.data.filter((data) => data.role === "customer" && data.active));
+  //       const filteredUsers = response.data.filter(
+  //         (data) => data.role === "customer" && data.active
+  //       );
+  //       const sortedUsers = filteredUsers.sort(
+  //         (a, b) => new Date(b.created_at) - new Date(a.created_at)
+  //       );
+
+  //       dispatch(setUsers(sortedUsers));
+  //       setRowsData(sortedUsers);
+  //     } catch (error) {
+  //       console.error("Error fetching data:", error);
+  //     }
+  //   };
+  //   fetchData();
+  // }, [createModalOpen, isDeleteOpen, isEditOpen]);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getAllUserProfiles(token);
-        console.log("getAlluserProfile response", response.data);
-        dispatch(setUsers(response.data.filter((data) => data.role === "customer" && data.active)));
-        setRowsData(response.data.filter((data) => data.role === "customer" && data.active));
+        const userProfilesResponse = await getAllUserProfiles(token);
+        const filteredUsers = userProfilesResponse.data.filter(
+          (data) => data.role === "customer" && data.active
+        );
+        const sortedUsers = filteredUsers.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
+
+        dispatch(setUsers(sortedUsers));
+
+        const serviceUsageResponse = await getAllServiceUsage(token);
+        const serviceDataMap = {};
+
+        // Map service usage data to user IDs
+        serviceUsageResponse.data.forEach((usage) => {
+          serviceDataMap[usage.user] = {
+            available_balance: usage.available_balance || 0,
+            totalSpend: 0,
+          };
+        });
+
+        const transactions = await getAllServiceTransactions(token);
+
+        transactions.data.forEach((transaction) => {
+          if (transaction.type === "usage" && serviceDataMap[transaction.user]) {
+            const quantity = transaction.quantity || 0;
+            serviceDataMap[transaction.user].totalSpend += quantity;
+          }
+        });
+
+        // Combine user profiles with their corresponding service usage data
+        const combinedData = sortedUsers.map((user) => ({
+          ...user,
+          available_balance: serviceDataMap[user._id]?.available_balance || 0, // Default to 0 if no usage found
+          totalSpend: serviceDataMap[user._id]?.totalSpend || 0, // Default to 0 if no usage found
+        }));
+
+        setRowsData(combinedData);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
+
     fetchData();
   }, [createModalOpen, isDeleteOpen, isEditOpen]);
 
@@ -71,69 +134,73 @@ export default function data(
     </MDBox>
   );
 
-  const rows = rowsData.map((customer, i) => ({
-    userName: (
-      <Author
-        image={customer.avatar}
-        firstName={customer.firstName}
-        lastName={customer.lastName}
-        email={customer.email}
-      />
-    ),
-    Admin: <Job title={customer.role} />,
-    location: <Location name={customer.preferred_location.name} />,
-    phone_number: (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {customer.phone_number}
-      </MDTypography>
-    ),
-    minutesAvailable: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {/* {service.minutesAvailable} */}
-      </MDTypography>
-    ),
-    totalSpend: (
-      <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {/* {service.minutesAvailable} */}
-      </MDTypography>
-    ),
-    lastUpdatedAt: (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {new Date(customer.updated_at).toLocaleDateString()}
-      </MDTypography>
-    ),
-    action: (
-      <MDBox
-        textAlign="center"
-        display="flex"
-        justifyContent="center"
-        alignItems="center"
-        gap="8px"
-      >
-        <RemoveRedEyeIcon
-          onClick={() => {
-            dispatch(setUserIndex(i));
-            setViewModal(true);
-          }}
-          sx={{ cursor: "pointer" }}
+  const rows = rowsData.map((customer, i) => {
+    // const serviceUsage = serviceData[customer._id] || {};
+
+    return {
+      userName: (
+        <Author
+          image={customer.avatar}
+          firstName={customer.firstName}
+          lastName={customer.lastName}
+          email={customer.email}
         />
-        <EditIcon
-          onClick={() => {
-            dispatch(setUserIndex(i));
-            handleEdit();
-          }}
-          sx={{ cursor: "pointer" }}
-        />
-        <DeleteIcon
-          onClick={() => {
-            dispatch(setUserIndex(i));
-            setIsDeleteOpen(true);
-          }}
-          sx={{ cursor: "pointer" }}
-        />
-      </MDBox>
-    ),
-  }));
+      ),
+      Admin: <Job title={customer.role} />,
+      location: <Location name={customer.preferred_location.name} />,
+      phone_number: (
+        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          {customer.phone_number}
+        </MDTypography>
+      ),
+      minutesAvailable: (
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {customer?.available_balance}
+        </MDTypography>
+      ),
+      totalSpend: (
+        <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
+          {/* {customer?.totalSpend} */}
+        </MDTypography>
+      ),
+      lastUpdatedAt: (
+        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          {formatDate(customer.updated_at)}
+        </MDTypography>
+      ),
+      action: (
+        <MDBox
+          textAlign="center"
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          gap="8px"
+        >
+          <RemoveRedEyeIcon
+            onClick={() => {
+              dispatch(setUserIndex(i));
+              setViewModal(true);
+            }}
+            sx={{ cursor: "pointer" }}
+          />
+          <EditIcon
+            onClick={() => {
+              dispatch(setUserIndex(i));
+              handleEdit();
+            }}
+            sx={{ cursor: "pointer" }}
+          />
+          <DeleteIcon
+            onClick={() => {
+              dispatch(setUserIndex(i));
+              setIsDeleteOpen(true);
+            }}
+            sx={{ cursor: "pointer" }}
+          />
+        </MDBox>
+      ),
+    };
+  });
 
   return {
     columns: [

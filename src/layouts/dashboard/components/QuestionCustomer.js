@@ -1,9 +1,8 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
 import * as React from "react";
-import { Card, CardMedia, IconButton, Typography, Box, Button } from "@mui/material";
-import CloseIcon from "@mui/icons-material/Close";
-import { formatDate } from "utils/formateDate";
+import { Typography, Box, Button } from "@mui/material";
+
 export default function BasicCard({ onClose, handleSelectedProfileModal }) {
   return (
     <Box
@@ -34,10 +33,10 @@ export default function BasicCard({ onClose, handleSelectedProfileModal }) {
             },
           }}
         >
-          Yes
+          No
         </Button>
         <Button variant="contained" color="info" onClick={onClose}>
-          Cancel
+          Yes
         </Button>
       </Box>
     </Box>

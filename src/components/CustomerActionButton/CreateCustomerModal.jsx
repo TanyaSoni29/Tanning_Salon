@@ -51,8 +51,8 @@ const CreateCustomerModal = ({ onClose }) => {
   const handleSubmitForm = async (data) => {
     try {
       const newUserData = {
-        userName: data.userName,
-        password: data.password,
+        userName: data.firstName,
+        password: data.firstName,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -144,7 +144,7 @@ const CreateCustomerModal = ({ onClose }) => {
               sx={{ width: "100%" }}
             />
           </Box>
-          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
+          {/* <Box mb={2} sx={{ display: "flex", gap: 2 }}>
             <TextField
               label="User Name"
               variant="outlined"
@@ -157,7 +157,7 @@ const CreateCustomerModal = ({ onClose }) => {
               {...register("password", { required: true })}
               sx={{ width: "100%" }}
             />
-          </Box>
+          </Box> */}
           <Box mb={2}>
             <TextField
               label="Address"

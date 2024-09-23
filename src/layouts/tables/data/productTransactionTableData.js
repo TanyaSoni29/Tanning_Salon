@@ -59,7 +59,7 @@ export default function data() {
     ),
     createdAt: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {formatDate(transaction.date_time)} {transaction.date_time?.split("T").at(1).slice(0, 8)}
+        {formatDate(transaction.created_at)} {transaction.created_at?.split("T").at(1).slice(0, 8)}
       </MDTypography>
     ),
   }));

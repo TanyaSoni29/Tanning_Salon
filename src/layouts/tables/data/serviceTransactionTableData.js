@@ -26,7 +26,7 @@ export default function data() {
     }
     getServiceTransaction();
   }, []);
-
+  console.log("service Transactions set in empty array", serviceTransactions);
   const Product = ({ name }) => (
     <MDBox ml={2} lineHeight={1}>
       <MDTypography display="block" variant="caption" fontWeight="medium">
@@ -43,7 +43,7 @@ export default function data() {
   );
 
   const rows = serviceTransactions.map((transaction, i) => ({
-    productName: <Product name={transaction.service.serviceName} />,
+    productName: <Product name={transaction?.service?.serviceName} />,
     userName: <User firstName={transaction.user.firstName} lastName={transaction.user.lastName} />,
     price:
       transaction.type === "purchase" ? (

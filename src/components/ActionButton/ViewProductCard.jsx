@@ -30,9 +30,16 @@ export default function BasicCard({ onClose }) {
         <Typography variant="h6" component="div">
           {activeProduct.name}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
-          {activeProduct.brand}
+        <Typography
+          variant="body2"
+          color="text.primary"
+          sx={{ fontSize: "12px", fontWeight: "bold" }}
+        >
+          Price: {activeProduct.price}
         </Typography>
+        {/* <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
+          {activeProduct.brand}
+        </Typography> */}
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
           {formatDate(activeProduct.created_at)}
         </Typography>
@@ -47,19 +54,9 @@ export default function BasicCard({ onClose }) {
         alt={activeProduct.name}
       />
       <CardContent>
-        <Typography variant="body2" color="text.secondary" paragraph sx={{ fontSize: "12px" }}>
+        {/* <Typography variant="body2" color="text.secondary" paragraph sx={{ fontSize: "12px" }}>
           {activeProduct.description}
-        </Typography>
-        <Typography
-          variant="body2"
-          color="text.primary"
-          sx={{ fontSize: "12px", fontWeight: "bold" }}
-        >
-          Total price:
-        </Typography>
-        <Typography variant="h6" component="div">
-          {activeProduct.price}
-        </Typography>
+        </Typography> */}
       </CardContent>
     </Card>
   );

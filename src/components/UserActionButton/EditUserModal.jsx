@@ -169,13 +169,22 @@ const EditUserModal = ({ onClose }) => {
             />
           </Box>
 
-          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
+          <Box
+            mb={2}
+            sx={{
+              display: "flex",
+              gap: 2,
+              justifyContent: "center",
+              alignContent: "center",
+              width: "100%",
+            }}
+          >
             <TextField
               label="Post Code"
               variant="outlined"
               defaultValue={activeUser.postCode}
               {...register("postCode", { required: true })}
-              sx={{ width: "100%" }}
+              sx={{ width: "50%" }}
             />
 
             <TextField
@@ -183,53 +192,72 @@ const EditUserModal = ({ onClose }) => {
               variant="outlined"
               defaultValue={activeUser.referred_by}
               {...register("referred_by", { required: true })}
-              sx={{ width: "100%" }}
+              sx={{ width: "50%" }}
             />
           </Box>
-          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
-            <FormControl fullWidth>
-              <InputLabel id="role-label">Role</InputLabel>
-              <Select
-                labelId="role-label"
-                label="Role"
-                defaultValue={activeUser.role}
-                {...register("role", { required: true })}
-              >
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="user">User</MenuItem>
-              </Select>
-            </FormControl>
-            <FormControl sx={{ width: "100%" }}>
-              <InputLabel id="gender-label">Gender</InputLabel>
-              <Select
-                labelId="gender-label"
-                label="Gender"
-                defaultValue={activeUser.gender}
-                {...register("gender", { required: true })}
-              >
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
-                <MenuItem value="Other">Other</MenuItem>
-              </Select>
-            </FormControl>
+          <Box
+            mb={2}
+            sx={{
+              display: "flex",
+              gap: 2,
+              justifyContent: "center",
+              alignContent: "center",
+              width: "100%",
+            }}
+          >
+            <select
+              id="role"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px",
+                width: "50%", // Matches the height of the input
+              }}
+              defaultValue={activeUser.role}
+              {...register("role", { required: true })}
+            >
+              <option value="">Select role</option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+            </select>
+
+            <select
+              id="gender"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              defaultValue={activeUser.gender}
+              {...register("gender", { required: true })}
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px",
+                width: "50%", // Matches the height of the input
+              }}
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
           </Box>
-          <Box mb={2}>
-            <FormControl fullWidth>
-              <InputLabel id="location-label">Preferred Location</InputLabel>
-              <Select
-                labelId="location-label"
-                label="Preferred Location"
-                defaultValue={activeUser.preferred_location._id}
-                {...register("preferred_location", { required: true })}
-                disabled={loading} // Disable dropdown if locations are loading
-              >
-                {locations.map((location) => (
-                  <MenuItem key={location._id} value={location._id}>
-                    {location.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+          <Box mb={2} sx={{ width: "100%" }}>
+            <select
+              id="location"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px",
+                width: "100%", // Matches the height of the input
+              }}
+              defaultValue={activeUser.preferred_location._id}
+              {...register("preferred_location", { required: true })}
+              disabled={loading} // Disable dropdown if locations are loading
+            >
+              <option value="">Select location</option>
+              {locations.map((location) => (
+                <option key={location._id} value={location._id}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
           </Box>
 
           {/* <Box mb={2}>

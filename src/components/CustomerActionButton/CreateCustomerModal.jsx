@@ -6,10 +6,9 @@ import {
   TextField,
   Typography,
   Select,
-  MenuItem,
-  InputLabel,
-  FormControl,
+  Switch,
   Avatar,
+  FormControlLabel,
 } from "@mui/material";
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -51,8 +50,6 @@ const CreateCustomerModal = ({ onClose }) => {
   const handleSubmitForm = async (data) => {
     try {
       const newUserData = {
-        userName: data.firstName,
-        password: data.firstName,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -82,8 +79,6 @@ const CreateCustomerModal = ({ onClose }) => {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
-        userName: "",
-        password: "",
         firstName: "",
         lastName: "",
         email: "",
@@ -93,6 +88,8 @@ const CreateCustomerModal = ({ onClose }) => {
         gender: "",
         referred_by: "",
         preferred_location: "",
+        gdpr_sms_active: false,
+        gdpr_email_active: false,
         // avatar: "",
       });
       // setAvatarPreview(null); // Reset avatar preview
@@ -167,28 +164,26 @@ const CreateCustomerModal = ({ onClose }) => {
             />
           </Box>
 
-          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
+          <Box
+            mb={2}
+            sx={{ display: "flex", gap: 2, justifyContent: "center", alignItems: "center" }}
+          >
             <TextField
               label="Post Code"
               variant="outlined"
               {...register("postCode", { required: true })}
               sx={{ width: "100%" }}
             />
-            <FormControl sx={{ width: "100%" }}>
-              <InputLabel id="gender-label">Gender</InputLabel>
-              <Select
-                labelId="gender-label"
-                label="Gender"
-                {...register("gender", { required: true })}
-              >
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
-                <MenuItem value="Other">Other</MenuItem>
-              </Select>
-            </FormControl>
+
+            <TextField
+              label="Referred By"
+              variant="outlined"
+              {...register("referred_by", { required: true })}
+              sx={{ width: "100%" }}
+            />
           </Box>
 
-          <Box mb={2}>
+          {/* <Box mb={2}>
             <FormControl fullWidth>
               <InputLabel id="location-label">Preferred Location</InputLabel>
               <Select
@@ -204,15 +199,48 @@ const CreateCustomerModal = ({ onClose }) => {
                 ))}
               </Select>
             </FormControl>
+          </Box> */}
+          <Box
+            display="flex"
+            justifyContent="start"
+            alignItems="center"
+            gap={2}
+            sx={{ width: "100%" }}
+          >
+            <select
+              id="preferred_location"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              {...register("preferred_location", { required: true })}
+              disabled={loading}
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px", // Matches the height of the input
+              }} // Disable dropdown if locations are loading
+            >
+              <option value="">Select location</option>
+              {locations.map((location) => (
+                <option key={location._id} value={location._id}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              id="gender"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              {...register("gender", { required: true })}
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px", // Matches the height of the input
+              }}
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
           </Box>
-          <Box mb={2}>
-            <TextField
-              label="Referred By"
-              variant="outlined"
-              {...register("referred_by", { required: true })}
-              sx={{ width: "100%" }}
-            />
-          </Box>
+
           {/* <Box mb={2}>
               <Typography variant="body2" mb={1}>
                 Upload Avatar
@@ -226,6 +254,32 @@ const CreateCustomerModal = ({ onClose }) => {
                 />
               )}
             </Box> */}
+          <Box display="flex" justifyContent="start" alignItems="center" sx={{ width: "100%" }}>
+            <FormControlLabel
+              control={<Switch {...register("gdpr_sms_active")} color="primary" />}
+              label="SMS"
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  fontWeight: "medium", // Make it bold
+                  color: "#6F727B", // Change text color
+                  fontSize: "14px",
+                  marginLeft: "-4px", // Adjust font size
+                },
+              }}
+            />
+            <FormControlLabel
+              control={<Switch {...register("gdpr_email_active")} color="primary" />}
+              label="Email"
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  fontWeight: "medium",
+                  color: "#6F727B",
+                  fontSize: "14px",
+                  marginLeft: "-4px",
+                },
+              }}
+            />
+          </Box>
         </Box>
 
         <Box mt={2} display="flex" justifyContent="end" gap="1rem">

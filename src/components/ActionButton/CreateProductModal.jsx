@@ -23,9 +23,7 @@ const CreateProductModal = ({ onClose }) => {
     try {
       const newProductData = {
         name: data.name,
-        brand: data.brand,
         price: data.price,
-        description: data.description,
       };
       const newProduct = await createProduct(token, newProductData);
       if (newProduct) {
@@ -45,8 +43,6 @@ const CreateProductModal = ({ onClose }) => {
     if (isSubmitSuccessful) {
       reset({
         name: "",
-        brand: "",
-        description: "",
         price: "",
       });
     }
@@ -55,7 +51,7 @@ const CreateProductModal = ({ onClose }) => {
   return (
     <Box
       sx={{
-        width: 500,
+        width: "20vw",
         padding: 2,
         margin: "auto",
         marginTop: "15%",
@@ -80,7 +76,7 @@ const CreateProductModal = ({ onClose }) => {
               <span style={{ fontSize: "12px", color: "red" }}>Please enter product name</span>
             )}
 
-            <TextField
+            {/* <TextField
               id="brand"
               label="Brand"
               variant="outlined"
@@ -89,7 +85,7 @@ const CreateProductModal = ({ onClose }) => {
             />
             {errors.brand && (
               <span style={{ fontSize: "12px", color: "red" }}>Please enter product brand</span>
-            )}
+            )} */}
           </Box>
 
           <Box mb={2}>
@@ -104,7 +100,7 @@ const CreateProductModal = ({ onClose }) => {
               <span style={{ fontSize: "12px", color: "red" }}>Please enter product price</span>
             )}
           </Box>
-          <Box mb={2}>
+          {/* <Box mb={2}>
             <TextField
               id="description"
               label="Description"
@@ -119,7 +115,7 @@ const CreateProductModal = ({ onClose }) => {
                 Please enter product description
               </span>
             )}
-          </Box>
+          </Box> */}
         </Box>
         <Box mt={2} display="flex" justifyContent="end" gap="1rem">
           <Button

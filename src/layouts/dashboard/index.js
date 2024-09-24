@@ -95,7 +95,7 @@ function Dashboard() {
     async function getAllLocation() {
       try {
         const response = await getAllLocations(token);
-        console.log(" getting all getAllLocation", response.data);
+        // console.log("getting all getAllLocation", response.data);
         dispatch(setLocations(response.data));
       } catch (error) {
         console.log("Error getting all getAllServices");
@@ -103,10 +103,10 @@ function Dashboard() {
     }
     getAllLocation();
   }, [token, dispatch]);
-  console.log("users", users);
+  // console.log("users", users);
   const filteredUsers = selectedLocation
     ? users.filter((user) => user.preferred_location?._id === selectedLocation)
-    : users;
+    : [];
   return (
     <DashboardLayout>
       <DashboardNavbar />

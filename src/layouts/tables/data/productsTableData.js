@@ -49,7 +49,7 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
 
   const rows = products.map((product, i) => ({
     Name: <Product image={product.image} name={product.name} />,
-    Brand: <ProductBrand title={product.brand} description={product.description} />,
+    // Brand: <ProductBrand title={product.brand} description={product.description} />,
     price: (
       <MDTypography variant="caption" fontWeight="bold">
         {product.price}
@@ -105,8 +105,8 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
 
   return {
     columns: [
-      { Header: "Product Name", accessor: "Name", width: "30%", align: "left" },
-      { Header: "Brand", accessor: "Brand", align: "left" },
+      { Header: "Product Name", accessor: "Name", align: "left" },
+      // { Header: "Brand", accessor: "Brand", align: "left" },
       { Header: "Price", accessor: "price", align: "center" },
       { Header: "Listed On", accessor: "createdAt", align: "center" },
       { Header: "action", accessor: "action", align: "center" },

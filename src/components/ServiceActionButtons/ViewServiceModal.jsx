@@ -10,7 +10,7 @@ export default function BasicCard({ onClose }) {
   const activeService = services[serviceIndex];
 
   return (
-    <Card sx={{ width: 320, display: "flex", flexDirection: "column" }}>
+    <Card sx={{ width: "18vw", display: "flex", flexDirection: "column" }}>
       <IconButton
         sx={{
           position: "absolute",
@@ -30,14 +30,22 @@ export default function BasicCard({ onClose }) {
         <Typography variant="h6" component="div">
           Service Name: {activeService.serviceName}
         </Typography>
-        <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
+        <Typography
+          variant="h6"
+          color="text.secondary"
+          sx={{ fontSize: "12px", fontWeight: "bold" }}
+        >
           Minutes Available: {activeService.minutesAvailable}
+        </Typography>
+        <Typography
+          variant="h6"
+          color="text.secondary"
+          sx={{ fontSize: "12px", fontWeight: "bold" }}
+        >
+          Total price: {activeService.price}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
           Listed On: {formatDate(activeService.created_at)}
-        </Typography>
-        <Typography variant="h6" color="text.primary" sx={{ fontSize: "12px", fontWeight: "bold" }}>
-          Total price: {activeService.price}
         </Typography>
       </Box>
       {/* <CardMedia

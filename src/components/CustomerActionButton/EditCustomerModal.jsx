@@ -4,9 +4,11 @@ import {
   Box,
   Button,
   FormControl,
+  FormControlLabel,
   InputLabel,
   MenuItem,
   Select,
+  Switch,
   TextField,
   Typography,
 } from "@mui/material";
@@ -44,7 +46,6 @@ const EditUserModal = ({ onClose }) => {
   const handleSubmitForm = async (data) => {
     try {
       const newUserData = {
-        // userName: data.userName,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
@@ -75,7 +76,6 @@ const EditUserModal = ({ onClose }) => {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
-        // userName: "",
         firstName: "",
         lastName: "",
         email: "",
@@ -85,7 +85,9 @@ const EditUserModal = ({ onClose }) => {
         gender: "",
         referred_by: "",
         preferred_location: "",
-        avatar: "",
+        gdpr_sms_active: false,
+        gdpr_email_active: false,
+        // avatar: "",
       });
     }
   }, [reset, isSubmitSuccessful]);
@@ -167,7 +169,10 @@ const EditUserModal = ({ onClose }) => {
             />
           </Box>
 
-          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
+          <Box
+            mb={2}
+            sx={{ display: "flex", gap: 2, justifyContent: "center", alignItems: "center" }}
+          >
             <TextField
               label="Post Code"
               variant="outlined"
@@ -184,50 +189,49 @@ const EditUserModal = ({ onClose }) => {
               sx={{ width: "100%" }}
             />
           </Box>
-          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
-            {/* <FormControl fullWidth>
-              <InputLabel id="role-label">Role</InputLabel>
-              <Select
-                labelId="role-label"
-                label="Role"
-                defaultValue={activeUser.role}
-                {...register("role", { required: true })}
-              >
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="user">User</MenuItem>
-              </Select>
-            </FormControl> */}
-            <FormControl sx={{ width: "100%" }}>
-              <InputLabel id="gender-label">Gender</InputLabel>
-              <Select
-                labelId="gender-label"
-                label="Gender"
-                defaultValue={activeUser.gender}
-                {...register("gender", { required: true })}
-              >
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
-                <MenuItem value="Other">Other</MenuItem>
-              </Select>
-            </FormControl>
-          </Box>
-          <Box mb={2}>
-            <FormControl fullWidth>
-              <InputLabel id="location-label">Preferred Location</InputLabel>
-              <Select
-                labelId="location-label"
-                label="Preferred Location"
-                defaultValue={activeUser?.preferred_location?._id}
-                {...register("preferred_location", { required: true })}
-                disabled={loading} // Disable dropdown if locations are loading
-              >
-                {locations.map((location) => (
-                  <MenuItem key={location._id} value={location._id}>
-                    {location.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+          <Box
+            sx={{
+              width: "100%",
+              display: "flex",
+              justifyContent: "start",
+              alignItems: "center",
+              gap: 2,
+            }}
+          >
+            <select
+              id="preferred_location"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              defaultValue={activeUser?.preferred_location?._id}
+              {...register("preferred_location", { required: true })}
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px", // Matches the height of the input
+              }}
+              disabled={loading} // Disable dropdown if locations are loading
+            >
+              <option value="">Select location</option>
+              {locations.map((location) => (
+                <option key={location._id} value={location._id}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
+
+            <select
+              id="gender"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              defaultValue={activeUser.gender}
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px", // Matches the height of the input
+              }}
+              {...register("gender", { required: true })}
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
           </Box>
 
           {/* <Box mb={2}>
@@ -243,6 +247,44 @@ const EditUserModal = ({ onClose }) => {
                   />
                 )}
               </Box> */}
+          <Box display="flex" justifyContent="start" alignItems="center" sx={{ width: "100%" }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  {...register("gdpr_sms_active")}
+                  color="primary"
+                  defaultChecked={activeUser.gdpr_sms_active}
+                />
+              }
+              label="SMS"
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  fontWeight: "medium", // Make it bold
+                  color: "#6F727B", // Change text color
+                  fontSize: "14px",
+                  marginLeft: "-4px", // Adjust font size
+                },
+              }}
+            />
+            <FormControlLabel
+              control={
+                <Switch
+                  {...register("gdpr_email_active")}
+                  color="primary"
+                  defaultChecked={activeUser.gdpr_email_active}
+                />
+              }
+              label="Email"
+              sx={{
+                "& .MuiFormControlLabel-label": {
+                  fontWeight: "medium",
+                  color: "#6F727B",
+                  fontSize: "14px",
+                  marginLeft: "-4px",
+                },
+              }}
+            />
+          </Box>
         </Box>
 
         <Box mt={2} display="flex" justifyContent="end" gap="1rem">

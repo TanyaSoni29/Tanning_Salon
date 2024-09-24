@@ -169,53 +169,84 @@ const CreateUserModal = ({ onClose }) => {
             />
           </Box>
 
-          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
+          <Box
+            mb={2}
+            sx={{
+              display: "flex",
+              gap: 2,
+              justifyContent: "center",
+              alignContent: "center",
+              width: "100%",
+            }}
+          >
             <TextField
               label="Post Code"
               variant="outlined"
               {...register("postCode", { required: true })}
-              sx={{ width: "100%" }}
+              sx={{ width: "50%" }}
             />
-            <FormControl sx={{ width: "100%" }}>
-              <InputLabel id="gender-label">Gender</InputLabel>
-              <Select
-                labelId="gender-label"
-                label="Gender"
-                {...register("gender", { required: true })}
-              >
-                <MenuItem value="Male">Male</MenuItem>
-                <MenuItem value="Female">Female</MenuItem>
-                <MenuItem value="Other">Other</MenuItem>
-              </Select>
-            </FormControl>
+
+            <select
+              id="gender"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              {...register("gender", { required: true })}
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px",
+                width: "50%", // Matches the height of the input
+              }}
+            >
+              <option value="">Select gender</option>
+              <option value="Male">Male</option>
+              <option value="Female">Female</option>
+              <option value="Other">Other</option>
+            </select>
           </Box>
 
-          <Box mb={2}>
-            <FormControl fullWidth>
-              <InputLabel id="role-label">Role</InputLabel>
-              <Select labelId="role-label" label="Role" {...register("role", { required: true })}>
-                <MenuItem value="admin">Admin</MenuItem>
-                <MenuItem value="user">User</MenuItem>
-              </Select>
-            </FormControl>
+          <Box
+            mb={2}
+            sx={{
+              display: "flex",
+              gap: 2,
+              justifyContent: "center",
+              alignContent: "center",
+              width: "100%",
+            }}
+          >
+            <select
+              id="role"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px",
+                width: "50%", // Matches the height of the input
+              }}
+              {...register("role", { required: true })}
+            >
+              <option value="">Select role</option>
+              <option value="admin">Admin</option>
+              <option value="user">User</option>
+            </select>
+            <select
+              id="location"
+              className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px",
+                width: "50%", // Matches the height of the input
+              }}
+              {...register("preferred_location", { required: true })}
+              disabled={loading} // Disable dropdown if locations are loading
+            >
+              <option value="">Select location</option>
+              {locations.map((location) => (
+                <option key={location._id} value={location._id}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
           </Box>
-          <Box mb={2}>
-            <FormControl fullWidth>
-              <InputLabel id="location-label">Preferred Location</InputLabel>
-              <Select
-                labelId="location-label"
-                label="Preferred Location"
-                {...register("preferred_location", { required: true })}
-                disabled={loading} // Disable dropdown if locations are loading
-              >
-                {locations.map((location) => (
-                  <MenuItem key={location._id} value={location._id}>
-                    {location.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          </Box>
+
           <Box mb={2}>
             <TextField
               label="Referred By"

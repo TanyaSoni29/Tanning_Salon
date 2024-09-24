@@ -53,7 +53,7 @@ const CreateServiceModal = ({ onClose }) => {
   return (
     <Box
       sx={{
-        width: 500,
+        width: "30vw",
         padding: 2,
         margin: "auto",
         marginTop: "15%",
@@ -77,7 +77,9 @@ const CreateServiceModal = ({ onClose }) => {
             {errors.name && (
               <span style={{ fontSize: "12px", color: "red" }}>Please enter service name</span>
             )}
+          </Box>
 
+          <Box mb={2} sx={{ width: "100%", display: "flex", gap: 2 }}>
             <TextField
               id="minutesAvailable"
               label="Minutes Available"
@@ -90,9 +92,6 @@ const CreateServiceModal = ({ onClose }) => {
                 Please enter service minutes available
               </span>
             )}
-          </Box>
-
-          <Box mb={2}>
             <TextField
               id="price"
               label="Price"

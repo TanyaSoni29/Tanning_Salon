@@ -29,9 +29,7 @@ const EditProductModal = ({ onClose }) => {
     try {
       const newProductData = {
         name: data.name,
-        brand: data.brand,
         price: data.price,
-        description: data.description,
       };
       const updatedProduct = await updateProduct(token, activeProduct._id, newProductData);
       if (updatedProduct) {
@@ -52,8 +50,6 @@ const EditProductModal = ({ onClose }) => {
     if (isSubmitSuccessful) {
       reset({
         name: "",
-        brand: "",
-        description: "",
         price: "",
       });
     }
@@ -64,7 +60,7 @@ const EditProductModal = ({ onClose }) => {
   return (
     <Box
       sx={{
-        width: 500,
+        width: "20vw",
         padding: 2,
         margin: "auto",
         marginTop: "15%",
@@ -87,7 +83,7 @@ const EditProductModal = ({ onClose }) => {
               sx={{ width: "100%" }}
             />
             {errors.name && <span className="">Please enter product name</span>}
-            <TextField
+            {/* <TextField
               id="brand"
               label="Brand"
               variant="outlined"
@@ -95,7 +91,7 @@ const EditProductModal = ({ onClose }) => {
               {...register("brand", { required: true })}
               sx={{ width: "100%" }}
             />
-            {errors.brand && <span className="">Please enter product brand</span>}
+            {errors.brand && <span className="">Please enter product brand</span>} */}
           </Box>
 
           <Box mb={2}>
@@ -111,7 +107,7 @@ const EditProductModal = ({ onClose }) => {
               <span className="-mt-1 text-[12px] text-yellow-100">Please enter product price</span>
             )}
           </Box>
-          <Box mb={2}>
+          {/* <Box mb={2}>
             <TextField
               id="description"
               label="Description"
@@ -123,7 +119,7 @@ const EditProductModal = ({ onClose }) => {
               sx={{ width: "100%" }}
             />
             {errors.description && <span className="">Please enter product description</span>}
-          </Box>
+          </Box> */}
         </Box>
         <Box mt={2} display="flex" justifyContent="end" gap="1rem">
           <Button

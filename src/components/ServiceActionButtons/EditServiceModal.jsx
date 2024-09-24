@@ -62,7 +62,7 @@ const EditServiceModal = ({ onClose }) => {
   return (
     <Box
       sx={{
-        width: 500,
+        width: "30vw",
         padding: 2,
         margin: "auto",
         marginTop: "15%",
@@ -85,6 +85,9 @@ const EditServiceModal = ({ onClose }) => {
               sx={{ width: "100%" }}
             />
             {errors.name && <span className="">Please enter Service name</span>}
+          </Box>
+
+          <Box mb={2} sx={{ width: "100%", display: "flex", gap: 2 }}>
             <TextField
               id="minutesAvailable"
               label="Minutes Available"
@@ -94,9 +97,6 @@ const EditServiceModal = ({ onClose }) => {
               sx={{ width: "100%" }}
             />
             {errors.brand && <span className="">Please enter minutes available</span>}
-          </Box>
-
-          <Box mb={2}>
             <TextField
               id="price"
               label="Price"

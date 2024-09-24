@@ -34,7 +34,7 @@ function index() {
 
   const { users, userIndex } = useSelector((state) => state.profile);
   const activeUser = users[userIndex];
-  console.log("active user to delete", activeUser);
+  // console.log("active user to delete", activeUser);
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const handleEditClose = () => setIsEditOpen(false);

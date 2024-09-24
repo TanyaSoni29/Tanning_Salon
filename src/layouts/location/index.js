@@ -65,16 +65,16 @@ function index() {
   return (
     <>
       <Modal open={createModalOpen} setOpen={setCreateModalOpen}>
-        <CreateServiceModal onClose={handleCreateModalClose} />
+        {/* <CreateServiceModal onClose={handleCreateModalClose} /> */}
       </Modal>
       <Modal open={viewModal} setOpen={setViewModal}>
-        <ViewServiceModal onClose={handleViewModalClose} />
+        {/* <ViewServiceModal onClose={handleViewModalClose} /> */}
       </Modal>
       <Modal open={isEditOpen} setOpen={setIsEditOpen}>
-        <EditServiceModal onClose={handleEditClose} />
+        {/* <EditServiceModal onClose={handleEditClose} /> */}
       </Modal>
       <Modal open={isDeleteOpen} setOpen={setIsDeleteOpen}>
-        <DeleteServiceModal onClose={handleDeleteClose} handleDelete={handleDelete} />
+        {/* <DeleteServiceModal onClose={handleDeleteClose} handleDelete={handleDelete} /> */}
       </Modal>
       <DashboardLayout>
         <DashboardNavbar />

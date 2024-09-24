@@ -112,7 +112,7 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
       ...row,
       createdAt: (
         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          {formatDate(product.created_at)}
+          {formatDate(row.createdAt)}
         </MDTypography>
       ),
     })),

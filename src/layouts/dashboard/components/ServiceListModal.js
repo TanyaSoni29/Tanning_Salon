@@ -31,7 +31,7 @@ function ServiceListModal({ open, setOpen, createServiceTransactionOfUser }) {
   return (
     <Box
       sx={{
-        width: "40vw",
+        width: "20vw",
         padding: 2,
         margin: "auto",
         backgroundColor: "#fff",
@@ -61,16 +61,26 @@ function ServiceListModal({ open, setOpen, createServiceTransactionOfUser }) {
             showTotalEntries={false}
             noEndBorder
           /> */}
-          <Select value={selectedService} onChange={handleServiceChange} fullWidth sx={{ mb: 2 }}>
-            <MenuItem value="" disabled>
+          <select
+            id="gender"
+            className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+            value={selectedService}
+            onChange={handleServiceChange}
+            style={{
+              fontSize: "14px", // Matches the font size of the MDInput
+              height: "45px",
+              width: "100%", // Matches the height of the input
+            }}
+          >
+            <option value="" disabled>
               Select a Service
-            </MenuItem>
+            </option>
             {services.map((service) => (
-              <MenuItem key={service._id} value={service._id}>
+              <option key={service._id} value={service._id}>
                 {service.serviceName} {/* Adjust based on your service object structure */}
-              </MenuItem>
+              </option>
             ))}
-          </Select>
+          </select>
         </MDBox>
         {selectedServiceDetails && (
           <MDBox mt={1}>

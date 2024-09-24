@@ -96,7 +96,8 @@ function Dashboard() {
       try {
         const response = await getAllLocations(token);
         console.log("getting all getAllLocation....", response.data);
-        dispatch(setLocations(response.data));
+        const sortedLocations = response.data.sort((a, b) => a.name.localeCompare(b.name));
+        dispatch(setLocations(sortedLocations));
       } catch (error) {
         console.log("Error getting all getAllServices");
       }

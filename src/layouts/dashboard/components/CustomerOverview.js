@@ -6,7 +6,7 @@ import Modal from "../../../components/Modal";
 import QuestionCustomer from "../components/QuestionCustomer";
 import ProfileModal from "../components/ProfileModal";
 import { Button } from "@mui/material";
-function CustomerOverview({ searchQuery }) {
+function CustomerOverview({ searchQuery, filteredUsers }) {
   const { users } = useSelector((state) => state.profile);
   const [isQuesModal, setIsQuesModal] = useState(false);
   const [profileModal, setProfileModal] = useState(false);
@@ -31,7 +31,7 @@ function CustomerOverview({ searchQuery }) {
     setIsQuesModal(false);
   };
   // Filter customers based on the search query
-  const filteredUsers = users.filter(
+  const filterUsers = filteredUsers.filter(
     (user) =>
       user.role === "customer" &&
       ((user.firstName && user.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
@@ -153,8 +153,8 @@ function CustomerOverview({ searchQuery }) {
               </tr>
             </thead>
             <tbody>
-              {filteredUsers.length > 0 ? (
-                filteredUsers.map((user) => (
+              {filterUsers.length > 0 ? (
+                filterUsers.map((user) => (
                   <tr key={user._id} className="hover:bg-gray-50 text-[0.8rem]">
                     <td className="border border-gray-300 p-2">{`${user.firstName} ${user.lastName}`}</td>
                     <td className="border border-gray-300 p-2">{user.phone_number}</td>

@@ -31,12 +31,16 @@ import { getAllServices } from "../../service/operations/serviceAndServiceTransa
 import { Card, MenuItem } from "@mui/material";
 import MDInput from "components/MDInput";
 import { Padding } from "@mui/icons-material";
+import { getAllLocations } from "service/operations/locationApi";
+import { setLocations } from "slices/locationSlice";
 
 function Dashboard() {
-  const { sales, tasks } = reportsLineChartData;
+  // const { sales, tasks } = reportsLineChartData;
   const { token } = useSelector((state) => state.auth);
   const { users } = useSelector((state) => state.profile);
+  const { locations } = useSelector((state) => state.location);
   const [searchQuery, setSearchQuery] = useState("");
+  const [selectedLocation, setSelectedLocation] = useState("");
   const searchRef = useRef(null);
   const dispatch = useDispatch();
   const handleSearch = async () => {
@@ -59,7 +63,7 @@ function Dashboard() {
       }
     }
     getAllProduct();
-  }, []);
+  }, [token, dispatch]);
 
   useEffect(() => {
     async function getAllUserProfile() {
@@ -71,7 +75,7 @@ function Dashboard() {
       }
     }
     getAllUserProfile();
-  }, []);
+  }, [token, dispatch]);
 
   console.log("users", users);
 
@@ -85,8 +89,24 @@ function Dashboard() {
       }
     }
     getAllService();
-  }, []);
+  }, [token, dispatch]);
 
+  useEffect(() => {
+    async function getAllLocation() {
+      try {
+        const response = await getAllLocations(token);
+        console.log(" getting all getAllLocation", response.data);
+        dispatch(setLocations(response.data));
+      } catch (error) {
+        console.log("Error getting all getAllServices");
+      }
+    }
+    getAllLocation();
+  }, [token, dispatch]);
+  console.log("users", users);
+  const filteredUsers = selectedLocation
+    ? users.filter((user) => user.preferred_location?._id === selectedLocation)
+    : users;
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -98,7 +118,7 @@ function Dashboard() {
                 color="primary"
                 icon="person_add"
                 title="Total Users"
-                count={users.length}
+                count={filteredUsers.length}
                 percentage={{
                   color: "success",
                   label: "Customers",
@@ -111,7 +131,7 @@ function Dashboard() {
               <ComplexStatisticsCard
                 icon="person"
                 title="Today's Users"
-                count={users.length}
+                count={filteredUsers.length}
                 percentage={{
                   color: "success",
                   amount: "+3%",
@@ -136,7 +156,7 @@ function Dashboard() {
             </MDBox>
           </Grid>
         </Grid>
-        <MDBox mt={4.5} display="flex" justifyContent="center">
+        <MDBox mt={4.5} display="flex" justifyContent="center" gap={2}>
           <Card
             sx={{
               width: "100%", // Make the card take full width
@@ -152,12 +172,35 @@ function Dashboard() {
               inputProps={{
                 ref: searchRef,
                 onFocus: (event) => event.target.select(),
+                style: {
+                  fontSize: "16px", // Ensures the font size is consistent with the select
+                },
               }}
               sx={{
                 width: "100%", // Full width for the input inside the card
                 height: "50px", // Same height as before
+                fontSize: "16px",
               }}
             />
+          </Card>
+          <Card display="flex" justifyContent="center" alignItems="center" sx={{ paddingX: 2 }}>
+            <select
+              id="location"
+              className="border border-border rounded-md p-2 w-full bg-input text-foreground focus:ring-primary focus:border-primary m-auto"
+              value={selectedLocation}
+              onChange={(e) => setSelectedLocation(e.target.value)}
+              style={{
+                fontSize: "14px", // Matches the font size of the MDInput
+                height: "45px", // Matches the height of the input
+              }}
+            >
+              <option value="">Select location</option>
+              {locations.map((location) => (
+                <option key={location._id} value={location._id}>
+                  {location.name}
+                </option>
+              ))}
+            </select>
           </Card>
         </MDBox>
 
@@ -166,7 +209,7 @@ function Dashboard() {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <MDBox mb={3}>
-                <CustomerOverview searchQuery={searchQuery} />
+                <CustomerOverview searchQuery={searchQuery} filteredUsers={filteredUsers} />
               </MDBox>
             </Grid>
           </Grid>

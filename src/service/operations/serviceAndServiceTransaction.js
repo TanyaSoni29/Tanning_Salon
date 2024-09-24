@@ -23,7 +23,8 @@ export const createService = async (token, data) => {
     return response.data?.data;
   } catch (error) {
     console.log("Create service Api error...", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
   }
@@ -41,7 +42,8 @@ export const getAllServices = async (token) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Fetch all services api error", error);
-    toast.error("Failed to fetch all services");
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -61,7 +63,8 @@ export const getServiceById = async (token, serviceId) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Fetch service by id api error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -81,7 +84,8 @@ export const updateService = async (token, serviceId, data) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Update Service Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -101,7 +105,8 @@ export const deleteService = async (token, serviceId) => {
     result = true;
   } catch (error) {
     console.log("Delete Service Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -121,7 +126,8 @@ export const createServiceTransaction = async (token, data) => {
     return response.data?.data;
   } catch (error) {
     console.log("Create service transaction Api error...", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
   }

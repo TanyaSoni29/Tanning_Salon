@@ -19,7 +19,8 @@ export const createProduct = async (token, data) => {
     return response.data?.data;
   } catch (error) {
     console.log("Create Product Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
   }
@@ -37,7 +38,8 @@ export const getAllProducts = async (token) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get All Product Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -57,7 +59,8 @@ export const updateProduct = async (token, productId, data) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Update Product Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -78,7 +81,8 @@ export const getProduct = async (token, productId) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get Product Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -103,7 +107,8 @@ export const deleteProduct = async (token, productId) => {
     result = true;
   } catch (error) {
     console.log("Delete Product Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -123,7 +128,8 @@ export const createProductTransaction = async (token, data) => {
     return response.data?.data;
   } catch (error) {
     console.log("Create Product Transaction Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
   }

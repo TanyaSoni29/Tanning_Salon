@@ -29,7 +29,8 @@ export const createUser = async (token, data) => {
     return response.data?.data;
   } catch (error) {
     console.log("Create User Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
   }
@@ -49,7 +50,8 @@ export const createCustomer = async (token, data) => {
     return response.data?.data;
   } catch (error) {
     console.log("Customer User Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
   }
@@ -67,7 +69,8 @@ export const getAllUser = async (token) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get All User Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -87,7 +90,8 @@ export const getUserById = async (token, userId) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get User Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -107,7 +111,8 @@ export const updateUser = async (token, userId, data) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Update User Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -132,7 +137,8 @@ export const deleteUserAndUserProfile = async (token, userId) => {
     result = true;
   } catch (error) {
     console.log("Delete User Api Error...", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -157,7 +163,8 @@ export const deleteCustomerProfile = async (token, userId) => {
     result = true;
   } catch (error) {
     console.log("Delete Customer Api Error...", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -177,7 +184,8 @@ export const deleteUser = async (token, userId) => {
     result = true;
   } catch (error) {
     console.log("Delete User Api Error...", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -199,7 +207,8 @@ export const getTotalSales = async (token) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get Total Sales Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -224,7 +233,8 @@ export const getSalesByLocation = async (token, locationId) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Sales By Location Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -242,7 +252,8 @@ export const getTopCustomer = async (token) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get All Top Customer Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -267,7 +278,8 @@ export const getServiceTransactionsByUser = async (token, userId) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get User Service transactions Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -292,7 +304,8 @@ export const getProductTransactionsByUser = async (token, userId) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get User Product transactions Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;

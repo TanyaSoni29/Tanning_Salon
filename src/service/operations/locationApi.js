@@ -18,7 +18,8 @@ export const createLocation = async (token, data) => {
     return response.data?.data;
   } catch (error) {
     console.log("Create Location Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
 };
@@ -35,7 +36,8 @@ export const getAllLocations = async (token) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get All Locations Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -55,7 +57,8 @@ export const updateLocation = async (token, locationId, data) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Update Location Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -76,7 +79,8 @@ export const getLocation = async (token, locationId) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get Location Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -96,7 +100,8 @@ export const deleteLocation = async (token, locationId) => {
     result = true;
   } catch (error) {
     console.log("Delete Location Api Error", error);
-    toast.error(error.message);
+    const errorMessage = error.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;

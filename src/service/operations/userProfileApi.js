@@ -22,7 +22,8 @@ export const createUserProfile = async (token, data) => {
     return response.data?.data;
   } catch (err) {
     console.log("Create user profile api error....", err);
-    toast.error(err.message);
+    const errorMessage = err.response?.data?.message;
+    toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
   }
@@ -42,7 +43,8 @@ export const getAllUserProfiles = async (token) => {
     result = response.data?.data;
   } catch (error) {
     console.log("Get all user profile api error....", error);
-    toast.error(error.message);
+    const errorMessage = err.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -84,7 +86,8 @@ export const updateUserProfile = async (token, userId, data) => {
     result = response.data?.data;
   } catch (error) {
     console.log("update user profile error", error);
-    toast.error(error.message);
+    const errorMessage = err.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -105,7 +108,8 @@ export const updateUserProfileImage = async (token, data) => {
     result = response.data?.data;
   } catch (error) {
     console.log("update user profile error", error);
-    toast.error(error.message);
+    const errorMessage = err.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
@@ -125,7 +129,8 @@ export const deleteUserProfile = async (token, userId) => {
     result = true;
   } catch (error) {
     console.log("Delete user profile error", error);
-    toast.error(error.message);
+    const errorMessage = err.response?.data?.message;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;

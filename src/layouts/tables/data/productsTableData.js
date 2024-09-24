@@ -65,11 +65,7 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
         />
       </MDBox>
     ),
-    createdAt: (
-      <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {formatDate(product.created_at)}
-      </MDTypography>
-    ),
+    createdAt: product.created_at,
     action: (
       <MDBox
         textAlign="center"
@@ -102,7 +98,7 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
       </MDBox>
     ),
   }));
-
+  const sortedRows = rows.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
   return {
     columns: [
       { Header: "Product Name", accessor: "Name", align: "left" },
@@ -112,6 +108,13 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
       { Header: "action", accessor: "action", align: "center" },
     ],
 
-    rows,
+    rows: sortedRows.map((row) => ({
+      ...row,
+      createdAt: (
+        <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
+          {formatDate(product.created_at)}
+        </MDTypography>
+      ),
+    })),
   };
 }

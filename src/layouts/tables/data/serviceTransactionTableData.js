@@ -26,7 +26,7 @@ export default function data() {
     }
     getServiceTransaction();
   }, []);
-  console.log("service Transactions set in empty array", serviceTransactions);
+  // console.log("service Transactions set in empty array", serviceTransactions);
   const Product = ({ name }) => (
     <MDBox ml={2} lineHeight={1}>
       <MDTypography display="block" variant="caption" fontWeight="medium">

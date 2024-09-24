@@ -8,11 +8,18 @@ import MDTypography from "components/MDTypography";
 // import serviceListModalData from "./serviceListModalData";
 import { useSelector } from "react-redux";
 
-function ServiceUseModal({ open, setOpen, createServiceUseTransactionOfUser }) {
+function ServiceUseModal({
+  open,
+  setOpen,
+  createServiceUseTransactionOfUser,
+  serviceTransactions,
+}) {
   const [selectedQuantity, setSelectedQuantity] = useState("");
-  const quantityOptions = [3, 6, 9, 12, 18, 30, 60, 90, 120];
+  const quantityOptions = serviceTransactions
+    .filter((transaction) => transaction.type === "purchase")
+    .map((transaction) => transaction.quantity);
   // const { columns, rows } = serviceListModalData(createServiceTransactionOfUser);
-
+  console.log("setServiceTransactions", serviceTransactions);
   const handleQuantityChange = (event) => {
     setSelectedQuantity(event.target.value); // Update quantity state
   };
@@ -27,7 +34,7 @@ function ServiceUseModal({ open, setOpen, createServiceUseTransactionOfUser }) {
   return (
     <Box
       sx={{
-        width: "40vw",
+        width: "20vw",
         padding: 2,
         margin: "auto",
         backgroundColor: "#fff",
@@ -36,7 +43,6 @@ function ServiceUseModal({ open, setOpen, createServiceUseTransactionOfUser }) {
     >
       <MDBox>
         <MDBox
-          mx={1}
           mt={2}
           py={1}
           px={2}
@@ -46,7 +52,7 @@ function ServiceUseModal({ open, setOpen, createServiceUseTransactionOfUser }) {
           coloredShadow="info"
         >
           <MDTypography variant="h6" color="white">
-            Select a Service
+            Select Quantity
           </MDTypography>
         </MDBox>
         <MDBox pt={1}>
@@ -57,16 +63,26 @@ function ServiceUseModal({ open, setOpen, createServiceUseTransactionOfUser }) {
             showTotalEntries={false}
             noEndBorder
           /> */}
-          <Select value={selectedQuantity} onChange={handleQuantityChange} fullWidth sx={{ mb: 2 }}>
-            <MenuItem value="" disabled>
+          <select
+            id="gender"
+            className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
+            value={selectedQuantity}
+            onChange={handleQuantityChange}
+            style={{
+              fontSize: "14px", // Matches the font size of the MDInput
+              height: "45px",
+              width: "100%", // Matches the height of the input
+            }}
+          >
+            <option value="" disabled>
               Select Quantity
-            </MenuItem>
+            </option>
             {quantityOptions.map((quantity) => (
-              <MenuItem key={quantity} value={quantity}>
+              <option key={quantity} value={quantity}>
                 {quantity}
-              </MenuItem>
+              </option>
             ))}
-          </Select>
+          </select>
         </MDBox>
       </MDBox>
       <Box mt={4} display="flex" justifyContent="end" gap="1rem">

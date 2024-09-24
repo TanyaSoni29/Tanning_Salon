@@ -41,7 +41,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
   const { token } = useSelector((state) => state.auth);
   const [productTransactions, setProductTransactions] = useState([]);
   const [serviceTransactions, setServiceTransactions] = useState([]);
-  const [transactionModal, setTransactionModal] = useState(false);
+  // const [transactionModal, setTransactionModal] = useState(false);
   const [productListModal, setProductListModal] = useState(false);
   const [serviceListModal, setServiceListModal] = useState(false);
   const [serviceUseModal, setServiceUseModal] = useState(false);
@@ -54,7 +54,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
       setServiceTransactions(serviceTransactions);
     }
     getServiceTransactionsOfUser();
-  }, [transactionModal]);
+  }, [token, selectedUser._id]);
 
   useEffect(() => {
     async function getProductTransactionsOfUser() {
@@ -63,7 +63,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
       setProductTransactions(productTransactions);
     }
     getProductTransactionsOfUser();
-  }, [transactionModal]);
+  }, [token, selectedUser?._id]);
 
   useEffect(() => {
     async function getServiceUsageByUser() {
@@ -71,7 +71,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
       setServiceUsageOfSelectedUser(response.serviceUsage?.at(0));
     }
     getServiceUsageByUser();
-  }, [selectedUser, serviceListModal, serviceUseModal]);
+  }, [selectedUser._id, token]);
 
   const createProductTransactionOfUser = async (productId, quantity) => {
     try {
@@ -81,8 +81,10 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
         product: productId,
         quantity,
       };
-      const response = await createProductTransaction(token, data);
-      console.log("Transaction created", response.data);
+      await createProductTransaction(token, data);
+      const { productTransactions } = await getProductTransactionsByUser(token, selectedUser?._id);
+      setProductTransactions(productTransactions);
+      // console.log("Transaction created", response.data);
     } catch (err) {
       console.error("Error creating transaction", err);
     }
@@ -99,7 +101,9 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
       const response = await createServiceTransaction(token, data);
       const updatedServiceUsageResponse = await getAllServiceUsageByUser(token, selectedUser._id);
       setServiceUsageOfSelectedUser(updatedServiceUsageResponse.serviceUsage?.at(0));
-      console.log("Transaction created", response.data);
+      const { serviceTransactions } = await getServiceTransactionsByUser(token, selectedUser?._id);
+      setServiceTransactions(serviceTransactions);
+      // console.log("Transaction created", response.data);
     } catch (err) {
       console.error("Error creating transaction", err);
     }
@@ -130,14 +134,14 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
   const handleProductListModal = () => {
     setProductListModal(true);
   };
-  const handleViewTransactionModal = () => {
-    setTransactionModal(true);
-  };
+  // const handleViewTransactionModal = () => {
+  //   setTransactionModal(true);
+  // };
   const { columns, rows } = userProductTableData(productTransactions);
   const { columns: scols, rows: srows } = userServiceTableData(serviceTransactions);
   return (
     <>
-      <Modal open={transactionModal} setOpen={setTransactionModal}>
+      {/* <Modal open={transactionModal} setOpen={setTransactionModal}>
         <TransactionModal
           setOpen={setTransactionModal}
           scols={scols}
@@ -145,7 +149,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
           columns={columns}
           rows={rows}
         />
-      </Modal>
+      </Modal> */}
       <Modal open={productListModal} setOpen={setProductListModal}>
         <ProductListModal
           setOpen={setProductListModal}
@@ -161,13 +165,15 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
       <Modal open={serviceUseModal} setOpen={setServiceUseModal}>
         <ServiceUseModal
           setOpen={setServiceUseModal}
+          serviceTransactions={serviceTransactions}
           createServiceUseTransactionOfUser={createServiceUseTransactionOfUser}
         />
       </Modal>
       <MDBox
         mb={2}
         sx={{
-          width: 900,
+          width: "60vw",
+          height: "20vh",
           padding: 2,
           margin: "auto",
           borderRadius: 2,
@@ -250,22 +256,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
               </MDBox>
             </Grid>
           </Grid>
-
-          {/* <MDBox display="flex" alignItems="center">
-            <MDTypography variant="h6" color="secondary" sx={{ fontSize: "14px" }}>
-              GDPR :
-            </MDTypography>
-            <EmailOutlinedIcon sx={{ color: "#32CD32", marginLeft: "4px" }} />
-            <Switch
-              checked={selectedUser.gdpr_email_active}
-              name="gdpr_email_active"
-              color="primary"
-            />
-            <SmsOutlinedIcon sx={{ color: "#32CD32" }} />
-            <Switch checked={selectedUser.gdpr_sms_active} name="gdpr_sms_active" color="primary" />
-          </MDBox> */}
-
-          <MDBox py={1} sx={{ display: "flex", gap: 2 }}>
+          <MDBox py={2} sx={{ display: "flex", gap: 2 }}>
             <Button
               sx={{
                 backgroundColor: "#328BED",
@@ -336,7 +327,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
             >
               Use Service
             </Button>
-            <Grid item xs={12} md={6} lg={3} sx={{ ml: "auto" }}>
+            {/* <Grid item xs={12} md={6} lg={3} sx={{ ml: "auto" }}>
               <Button
                 sx={{
                   backgroundColor: "#328BED",
@@ -360,7 +351,64 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
               >
                 View Transactions
               </Button>
-            </Grid>
+            </Grid> */}
+          </MDBox>
+
+          <MDBox
+            py={1}
+            px={2}
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="info"
+          >
+            <MDTypography variant="h6" color="white">
+              Services
+            </MDTypography>
+          </MDBox>
+          <MDBox
+            pt={1}
+            sx={{
+              maxHeight: "20vh", // Set fixed height for Services table
+              overflowY: "auto", // Add scrollbar if content overflows
+            }}
+          >
+            <DataTable
+              table={{ columns: scols, rows: srows }}
+              isSorted={true}
+              entriesPerPage={false}
+              showTotalEntries={false}
+              noEndBorder
+            />
+          </MDBox>
+
+          <MDBox
+            mt={2}
+            py={1}
+            px={2}
+            variant="gradient"
+            bgColor="info"
+            borderRadius="lg"
+            coloredShadow="info"
+          >
+            <MDTypography variant="h6" color="white">
+              Products
+            </MDTypography>
+          </MDBox>
+          <MDBox
+            pt={1}
+            sx={{
+              maxHeight: "20vh", // Set fixed height for Services table
+              overflowY: "auto", // Add scrollbar if content overflows
+            }}
+          >
+            <DataTable
+              table={{ columns, rows }}
+              isSorted={true}
+              entriesPerPage={false}
+              showTotalEntries={false}
+              noEndBorder
+            />
           </MDBox>
         </Card>
       </MDBox>

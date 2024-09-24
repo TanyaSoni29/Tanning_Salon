@@ -2,7 +2,7 @@
 /* eslint-disable react/function-component-definition */
 
 // Material Dashboard 2 React components
-import React from "react";
+import React, { useEffect } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAvatar from "components/MDAvatar";
@@ -14,11 +14,15 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useDispatch, useSelector } from "react-redux";
 import { setProductIndex } from "slices/productSlice";
 import { formatDate } from "utils/formateDate";
+import { refreshProduct } from "slices/productSlice";
 
 export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
   const { products } = useSelector((state) => state.product);
   const dispatch = useDispatch();
-
+  // const { token } = useSelector((state) => state.auth);
+  useEffect(() => {
+    dispatch(refreshProduct());
+  }, []);
   const Product = ({ image, name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar

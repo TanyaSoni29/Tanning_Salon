@@ -39,7 +39,7 @@ export default function data(serviceTransactions) {
     price:
       transaction.type === "purchase" ? (
         <MDTypography variant="caption" fontWeight="medium">
-          {transaction.service.price}
+          {transaction.service?.price}
         </MDTypography>
       ) : (
         <MDTypography variant="caption" fontWeight="medium">
@@ -49,7 +49,7 @@ export default function data(serviceTransactions) {
     quantity:
       transaction.type === "usage" ? (
         <MDTypography variant="caption" fontWeight="medium">
-          {transaction.quantity}
+          {transaction?.quantity}
         </MDTypography>
       ) : (
         <MDTypography variant="caption" fontWeight="medium">
@@ -58,7 +58,7 @@ export default function data(serviceTransactions) {
       ),
     location: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {transaction.location.name}
+        {transaction?.location?.name}
       </MDTypography>
     ),
     type: (

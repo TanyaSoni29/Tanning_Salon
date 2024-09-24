@@ -49,7 +49,7 @@ export default function data() {
     userName: <User firstName={transaction.user.firstName} lastName={transaction.user.lastName} />,
     price: (
       <MDTypography variant="caption" fontWeight="medium">
-        {transaction.product.price}
+        {transaction.product?.price}
       </MDTypography>
     ),
     location: (

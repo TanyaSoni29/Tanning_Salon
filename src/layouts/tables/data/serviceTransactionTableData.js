@@ -44,11 +44,13 @@ export default function data() {
 
   const rows = serviceTransactions.map((transaction, i) => ({
     productName: <Product name={transaction?.service?.serviceName} />,
-    userName: <User firstName={transaction.user.firstName} lastName={transaction.user.lastName} />,
+    userName: (
+      <User firstName={transaction.user?.firstName} lastName={transaction.user?.lastName} />
+    ),
     price:
       transaction.type === "purchase" ? (
         <MDTypography variant="caption" fontWeight="medium">
-          {transaction.service.price}
+          {transaction.service?.price}
         </MDTypography>
       ) : (
         <MDTypography variant="caption" fontWeight="medium">

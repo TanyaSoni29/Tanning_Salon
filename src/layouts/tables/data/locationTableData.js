@@ -10,10 +10,10 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 
 import { useDispatch, useSelector } from "react-redux";
-import { setServiceIndex } from "slices/serviceSlice";
+import { setLocationIndex } from "slices/locationSlice";
 
 export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
-  const { locations, locationIndex } = useSelector((state) => state.location);
+  const { locations } = useSelector((state) => state.location);
   const dispatch = useDispatch();
 
   const Author = ({ name }) => (
@@ -51,7 +51,7 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
     ),
     postCode: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-        {location.zip_code}
+        {location.postCode}
       </MDTypography>
     ),
     action: (
@@ -64,21 +64,21 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
       >
         <RemoveRedEyeIcon
           onClick={() => {
-            dispatch(setServiceIndex(i));
+            dispatch(setLocationIndex(i));
             setViewModal(true);
           }}
           sx={{ cursor: "pointer" }}
         />
         <EditIcon
           onClick={() => {
-            dispatch(setServiceIndex(i));
+            dispatch(setLocationIndex(i));
             handleEdit();
           }}
           sx={{ cursor: "pointer" }}
         />
         <DeleteIcon
           onClick={() => {
-            dispatch(setServiceIndex(i));
+            dispatch(setLocationIndex(i));
             setIsDeleteOpen(true);
           }}
           sx={{ cursor: "pointer" }}

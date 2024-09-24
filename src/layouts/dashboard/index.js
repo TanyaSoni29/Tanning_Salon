@@ -95,7 +95,7 @@ function Dashboard() {
     async function getAllLocation() {
       try {
         const response = await getAllLocations(token);
-        // console.log("getting all getAllLocation", response.data);
+        console.log("getting all getAllLocation....", response.data);
         dispatch(setLocations(response.data));
       } catch (error) {
         console.log("Error getting all getAllServices");

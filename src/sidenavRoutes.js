@@ -6,7 +6,7 @@ import SignIn from "layouts/authentication/sign-in";
 // Other imports remain the same
 import Dashboard from "layouts/dashboard";
 import Transaction from "layouts/Transactions";
-
+import Location from "layouts/location";
 // @mui icons
 import Icon from "@mui/material/Icon";
 
@@ -18,6 +18,15 @@ const sideNavRoutes = [
     icon: <Icon fontSize="small">dashboard</Icon>,
     route: "/dashboard",
     component: <Dashboard />,
+    protected: true,
+  },
+  {
+    type: "collapse",
+    name: "Location",
+    key: "locations",
+    icon: <Icon fontSize="small">place</Icon>,
+    route: "/locations",
+    component: <Location />,
     protected: true,
   },
   {

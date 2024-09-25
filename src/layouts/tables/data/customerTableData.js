@@ -21,6 +21,7 @@ import { getAllServiceUsage } from "service/operations/serviceAndServiceTransact
 import { getAllServiceTransactions } from "service/operations/serviceAndServiceTransaction";
 
 export default function data(
+  filteredCustomers,
   handleEdit,
   setIsDeleteOpen,
   setViewModal,
@@ -134,7 +135,7 @@ export default function data(
     </MDBox>
   );
 
-  const rows = rowsData.map((customer, i) => {
+  const rows = (filteredCustomers.length > 0 ? filteredCustomers : rowsData).map((customer, i) => {
     // const serviceUsage = serviceData[customer._id] || {};
 
     return {
@@ -178,21 +179,33 @@ export default function data(
         >
           <RemoveRedEyeIcon
             onClick={() => {
-              dispatch(setUserIndex(i));
+              const index =
+                filteredCustomers.length > 0
+                  ? rowsData.findIndex((u) => u._id === customer._id)
+                  : i;
+              dispatch(setUserIndex(index));
               setViewModal(true);
             }}
             sx={{ cursor: "pointer" }}
           />
           <EditIcon
             onClick={() => {
-              dispatch(setUserIndex(i));
+              const index =
+                filteredCustomers.length > 0
+                  ? rowsData.findIndex((u) => u._id === customer._id)
+                  : i;
+              dispatch(setUserIndex(index));
               handleEdit();
             }}
             sx={{ cursor: "pointer" }}
           />
           <DeleteIcon
             onClick={() => {
-              dispatch(setUserIndex(i));
+              const index =
+                filteredCustomers.length > 0
+                  ? rowsData.findIndex((u) => u._id === customer._id)
+                  : i;
+              dispatch(setUserIndex(index));
               setIsDeleteOpen(true);
             }}
             sx={{ cursor: "pointer" }}

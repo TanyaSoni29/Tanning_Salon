@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -25,6 +25,7 @@ import ViewCustomerModal from "../../components/CustomerActionButton/ViewCustome
 import DeleteCustomerModal from "../../components/CustomerActionButton/DeleteCustomerModal";
 import EditCustomerModal from "../../components/CustomerActionButton/EditCustomerModal";
 import { deleteCustomerProfile } from "service/operations/userApi";
+import MDInput from "components/MDInput";
 
 function index() {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -37,10 +38,29 @@ function index() {
   // console.log("active user to delete", activeUser);
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchRef = useRef(null);
   const handleEditClose = () => setIsEditOpen(false);
   const handleDeleteClose = () => setIsDeleteOpen(false);
   const handleCreateModalClose = () => setCreateModalOpen(false);
   const handleViewModalClose = () => setViewModal(false);
+  const filteredCustomers = users.filter(
+    (user) =>
+      (user.firstName && user.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.phone_number && user.phone_number.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.preferred_location.name &&
+        user.preferred_location.name.toLowerCase().includes(searchQuery.toLowerCase()))
+    // Assuming 'name' is the field to search
+  );
+  const handleSearch = async () => {
+    console.log(searchQuery);
+  };
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+      searchRef.current.blur();
+    }
+  };
   const handleCreateNewCustomer = () => {
     setCreateModalOpen(true);
   };
@@ -63,6 +83,7 @@ function index() {
   };
 
   const { columns, rows } = customerTableData(
+    filteredCustomers,
     handleEdit,
     setIsDeleteOpen,
     setViewModal,
@@ -89,7 +110,20 @@ function index() {
         <DashboardNavbar />
         <MDBox pt={4} pb={3}>
           <Grid container spacing={6}>
-            <Grid item xs={12} display="flex" justifyContent="end">
+            <Grid item xs={12} display="flex" justifyContent="space-between">
+              <MDBox pr={1} sx={{ flex: 1 }}>
+                <MDInput
+                  label="Search Customer"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  inputProps={{
+                    ref: searchRef,
+                    onFocus: (event) => event.target.select(),
+                  }}
+                  // sx={{ width: "20%" }}
+                />
+              </MDBox>
               <Button
                 sx={{
                   backgroundColor: "#328BED",

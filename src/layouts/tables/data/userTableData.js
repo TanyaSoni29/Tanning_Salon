@@ -17,6 +17,7 @@ import { setUserIndex } from "slices/profileSlice";
 import { setUsers } from "slices/profileSlice";
 
 export default function data(
+  filteredUsers,
   handleEdit,
   setIsDeleteOpen,
   setViewModal,
@@ -70,7 +71,7 @@ export default function data(
     </MDBox>
   );
 
-  const rows = rowsData.map((user, i) => ({
+  const rows = (filteredUsers.length > 0 ? filteredUsers : rowsData).map((user, i) => ({
     userName: (
       <Author
         image={user.avatar}
@@ -96,21 +97,27 @@ export default function data(
       >
         <RemoveRedEyeIcon
           onClick={() => {
-            dispatch(setUserIndex(i));
+            const index =
+              filteredUsers.length > 0 ? rowsData.findIndex((u) => u._id === user._id) : i;
+            dispatch(setUserIndex(index));
             setViewModal(true);
           }}
           sx={{ cursor: "pointer" }}
         />
         <EditIcon
           onClick={() => {
-            dispatch(setUserIndex(i));
+            const index =
+              filteredUsers.length > 0 ? rowsData.findIndex((u) => u._id === user._id) : i;
+            dispatch(setUserIndex(index));
             handleEdit();
           }}
           sx={{ cursor: "pointer" }}
         />
         <DeleteIcon
           onClick={() => {
-            dispatch(setUserIndex(i));
+            const index =
+              filteredUsers.length > 0 ? rowsData.findIndex((u) => u._id === user._id) : i;
+            dispatch(setUserIndex(index));
             setIsDeleteOpen(true);
           }}
           sx={{ cursor: "pointer" }}

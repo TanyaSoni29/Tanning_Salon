@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -26,6 +26,7 @@ import DeleteServiceModal from "../../components/ServiceActionButtons/DeleteServ
 import ViewServiceModal from "../../components/ServiceActionButtons/ViewServiceModal";
 import { getAllServices } from "service/operations/serviceAndServiceTransaction";
 import { setServices } from "slices/serviceSlice";
+import MDInput from "components/MDInput";
 
 function index() {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -33,10 +34,27 @@ function index() {
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [viewModal, setViewModal] = useState(false);
   const { services, serviceIndex } = useSelector((state) => state.service);
+  const activeService = services[serviceIndex];
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchRef = useRef(null);
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
-  const activeService = services[serviceIndex];
-
+  const filteredService = services.filter(
+    (service) =>
+      (service.serviceName &&
+        service.serviceName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (service.minutesAvailable && service.minutesAvailable.toString().includes(searchQuery))
+    // Assuming 'name' is the field to search
+  );
+  const handleSearch = async () => {
+    console.log(searchQuery);
+  };
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+      searchRef.current.blur();
+    }
+  };
   useEffect(() => {
     async function getAllService() {
       try {
@@ -74,7 +92,12 @@ function index() {
       setIsDeleteOpen(false);
     }
   };
-  const { columns, rows } = serviceTableData(handleEdit, setIsDeleteOpen, setViewModal);
+  const { columns, rows } = serviceTableData(
+    filteredService,
+    handleEdit,
+    setIsDeleteOpen,
+    setViewModal
+  );
   return (
     <>
       <Modal open={createModalOpen} setOpen={setCreateModalOpen}>
@@ -93,7 +116,20 @@ function index() {
         <DashboardNavbar />
         <MDBox pt={4} pb={3}>
           <Grid container spacing={6}>
-            <Grid item xs={12} display="flex" justifyContent="end">
+            <Grid item xs={12} display="flex" justifyContent="space-between">
+              <MDBox pr={1} sx={{ flex: 1 }}>
+                <MDInput
+                  label="Search Service"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  inputProps={{
+                    ref: searchRef,
+                    onFocus: (event) => event.target.select(),
+                  }}
+                  // sx={{ width: "20%" }}
+                />
+              </MDBox>
               <Button
                 sx={{
                   backgroundColor: "#328BED",

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -26,6 +26,7 @@ import { getAllLocations } from "service/operations/locationApi";
 import { setLocations } from "slices/locationSlice";
 import { removeLocation } from "slices/locationSlice";
 import { refreshLocation } from "slices/locationSlice";
+import MDInput from "components/MDInput";
 
 function index() {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -34,6 +35,8 @@ function index() {
   const [viewModal, setViewModal] = useState(false);
   const { locations, locationIndex } = useSelector((state) => state.location);
   const { token } = useSelector((state) => state.auth);
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchRef = useRef(null);
   const dispatch = useDispatch();
   const activeLocation = locations[locationIndex];
 
@@ -41,7 +44,20 @@ function index() {
   const handleDeleteClose = () => setIsDeleteOpen(false);
   const handleCreateModalClose = () => setCreateModalOpen(false);
   const handleViewModalClose = () => setViewModal(false);
-
+  const filteredLocations = locations.filter(
+    (location) =>
+      (location.name && location.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (location.address && location.address.toLowerCase().includes(searchQuery.toLowerCase())) // Assuming 'name' is the field to search
+  );
+  const handleSearch = async () => {
+    console.log(searchQuery);
+  };
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+      searchRef.current.blur();
+    }
+  };
   const handleCreateNewLocation = () => {
     setCreateModalOpen(true);
   };
@@ -78,7 +94,12 @@ function index() {
     }
     getAllLocation();
   }, [token, dispatch]);
-  const { columns, rows } = locationTableData(handleEdit, setIsDeleteOpen, setViewModal);
+  const { columns, rows } = locationTableData(
+    filteredLocations,
+    handleEdit,
+    setIsDeleteOpen,
+    setViewModal
+  );
   return (
     <>
       <Modal open={createModalOpen} setOpen={setCreateModalOpen}>
@@ -97,7 +118,20 @@ function index() {
         <DashboardNavbar />
         <MDBox pt={4} pb={3}>
           <Grid container spacing={6}>
-            <Grid item xs={12} display="flex" justifyContent="end">
+            <Grid item xs={12} display="flex" justifyContent="space-between">
+              <MDBox pr={1} sx={{ flex: 1 }}>
+                <MDInput
+                  label="Search Location"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  inputProps={{
+                    ref: searchRef,
+                    onFocus: (event) => event.target.select(),
+                  }}
+                  // sx={{ width: "20%" }}
+                />
+              </MDBox>
               <Button
                 sx={{
                   backgroundColor: "#328BED",
@@ -123,6 +157,7 @@ function index() {
                 Add New Location
               </Button>
             </Grid>
+
             <Grid item xs={12}>
               <Card>
                 <MDBox

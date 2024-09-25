@@ -12,7 +12,7 @@ import EditIcon from "@mui/icons-material/Edit";
 import { useDispatch, useSelector } from "react-redux";
 import { setServiceIndex } from "slices/serviceSlice";
 
-export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
+export default function data(filteredService, handleEdit, setIsDeleteOpen, setViewModal) {
   const { services } = useSelector((state) => state.service);
   const dispatch = useDispatch();
 
@@ -42,7 +42,7 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
     </MDBox>
   );
 
-  const rows = services.map((service, i) => ({
+  const rows = (filteredService.length > 0 ? filteredService : services).map((service, i) => ({
     serviceName: <Author name={service.serviceName} />,
     price: (
       <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
@@ -64,21 +64,27 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
       >
         <RemoveRedEyeIcon
           onClick={() => {
-            dispatch(setServiceIndex(i));
+            const index =
+              filteredService.length > 0 ? services.findIndex((s) => s._id === service._id) : i;
+            dispatch(setServiceIndex(index));
             setViewModal(true);
           }}
           sx={{ cursor: "pointer" }}
         />
         <EditIcon
           onClick={() => {
-            dispatch(setServiceIndex(i));
+            const index =
+              filteredService.length > 0 ? services.findIndex((s) => s._id === service._id) : i;
+            dispatch(setServiceIndex(index));
             handleEdit();
           }}
           sx={{ cursor: "pointer" }}
         />
         <DeleteIcon
           onClick={() => {
-            dispatch(setServiceIndex(i));
+            const index =
+              filteredService.length > 0 ? services.findIndex((s) => s._id === service._id) : i;
+            dispatch(setServiceIndex(index));
             setIsDeleteOpen(true);
           }}
           sx={{ cursor: "pointer" }}

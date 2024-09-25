@@ -27,7 +27,10 @@ import { getAllUserProfiles } from "../../service/operations/userProfileApi";
 import { setUsers } from "../../slices/profileSlice";
 import { setProducts } from "../../slices/productSlice";
 import { setServices } from "../../slices/serviceSlice";
-import { getAllServices } from "../../service/operations/serviceAndServiceTransaction";
+import {
+  getAllServices,
+  getAllServiceTransactions,
+} from "../../service/operations/serviceAndServiceTransaction";
 import { Card, MenuItem } from "@mui/material";
 import MDInput from "components/MDInput";
 import { Padding } from "@mui/icons-material";
@@ -41,6 +44,7 @@ function Dashboard() {
   const { locations } = useSelector((state) => state.location);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedLocation, setSelectedLocation] = useState("");
+  const [serviceTransactions, setServiceTransactions] = useState([]);
   const searchRef = useRef(null);
   const dispatch = useDispatch();
   const handleSearch = async () => {
@@ -66,7 +70,21 @@ function Dashboard() {
     getAllUserProfile();
   }, [token, dispatch]);
 
-  console.log("users", users);
+  useEffect(() => {
+    async function getServiceTransaction() {
+      try {
+        const response = await getAllServiceTransactions(token);
+        const usageServiceTransaction = response.data
+          .filter((data) => data.type === "usage")
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+        console.log("service Transactions", usageServiceTransaction);
+        setServiceTransactions(usageServiceTransaction);
+      } catch (error) {
+        console.log("Error getting all service Transactions");
+      }
+    }
+    getServiceTransaction();
+  }, []);
 
   useEffect(() => {
     async function getAllLocation() {
@@ -86,7 +104,22 @@ function Dashboard() {
   }, [token, dispatch]);
   // console.log("users", users);
   const filteredUsers = selectedLocation
-    ? users.filter((user) => user.preferred_location?._id === selectedLocation)
+    ? users
+        .filter((user) => user.preferred_location?._id === selectedLocation)
+        .map((user) => {
+          const userTransactions = serviceTransactions.filter(
+            (transaction) => transaction.user._id === user._id
+          );
+          if (userTransactions.length > 0) {
+            const latestTransaction = userTransactions.reduce((latest, transaction) => {
+              return new Date(transaction.created_at) > new Date(latest.created_at)
+                ? transaction
+                : latest;
+            }, userTransactions[0]);
+            return { ...user, latestTransaction };
+          }
+          return { ...user };
+        })
     : [];
   return (
     <DashboardLayout>

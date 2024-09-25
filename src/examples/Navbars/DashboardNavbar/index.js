@@ -48,8 +48,7 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const { miniSidenav, transparentNavbar, fixedNavbar, openConfigurator, darkMode } = controller;
   const [openMenu, setOpenMenu] = useState(false);
   const route = useLocation().pathname.split("/").slice(1);
-  const [searchQuery, setSearchQuery] = useState("");
-  const searchRef = useRef(null);
+
   const navigate = useNavigate();
   const appDispatch = useDispatch();
   useEffect(() => {
@@ -82,20 +81,13 @@ function DashboardNavbar({ absolute, light, isMini }) {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
   const handleOpenMenu = (event) => setOpenMenu(event.currentTarget);
   const handleCloseMenu = () => setOpenMenu(false);
-  const handleSearch = async () => {
-    console.log(searchQuery);
-  };
+
   const handleProfileClick = () => {
     navigate("/profile");
     handleCloseMenu();
   };
   // Handle key press event
-  const handleKeyPress = (event) => {
-    if (event.key === "Enter") {
-      handleSearch();
-      searchRef.current.blur();
-    }
-  };
+
   const handleLogout = () => {
     appDispatch(logout(navigate));
   };
@@ -146,20 +138,6 @@ function DashboardNavbar({ absolute, light, isMini }) {
         </MDBox>
         {isMini ? null : (
           <MDBox sx={(theme) => navbarRow(theme, { isMini })}>
-            {route[route.length - 1] !== "dashboard" && (
-              <MDBox pr={1}>
-                <MDInput
-                  label="Search here"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  onKeyPress={handleKeyPress}
-                  inputProps={{
-                    ref: searchRef,
-                    onFocus: (event) => event.target.select(),
-                  }}
-                />
-              </MDBox>
-            )}
             <MDBox color={light ? "white" : "inherit"}>
               {/* <Link to="/authentication/sign-in">
                 <IconButton sx={navbarIconButton} size="small" disableRipple>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -17,6 +17,7 @@ import { refreshProduct } from "slices/productSlice";
 import CreateProductModal from "../../components/ActionButton/CreateProductModal";
 import ViewProductCard from "../../components/ActionButton/ViewProductCard";
 import { setProducts } from "slices/productSlice";
+import MDInput from "components/MDInput";
 function index() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -24,10 +25,23 @@ function index() {
   const [viewModal, setViewModal] = useState(false);
   const { products, productIndex } = useSelector((state) => state.product);
   const { token } = useSelector((state) => state.auth);
-
+  const [searchQuery, setSearchQuery] = useState("");
+  const searchRef = useRef(null);
   const dispatch = useDispatch();
   const activeProduct = products[productIndex];
-
+  const filteredProducts = products.filter(
+    (product) => product.name && product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    // Assuming 'name' is the field to search
+  );
+  const handleSearch = async () => {
+    console.log(searchQuery);
+  };
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleSearch();
+      searchRef.current.blur();
+    }
+  };
   useEffect(() => {
     async function getAllProduct() {
       try {
@@ -65,7 +79,12 @@ function index() {
       setIsDeleteOpen(false);
     }
   };
-  const { columns, rows } = productsTableData(handleEdit, setIsDeleteOpen, setViewModal);
+  const { columns, rows } = productsTableData(
+    filteredProducts,
+    handleEdit,
+    setIsDeleteOpen,
+    setViewModal
+  );
 
   return (
     <>
@@ -86,7 +105,20 @@ function index() {
         <DashboardNavbar />
         <MDBox pt={4} pb={3}>
           <Grid container spacing={6}>
-            <Grid item xs={12} display="flex" justifyContent="end">
+            <Grid item xs={12} display="flex" justifyContent="space-between">
+              <MDBox pr={1} sx={{ flex: 1 }}>
+                <MDInput
+                  label="Search Product"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={handleKeyPress}
+                  inputProps={{
+                    ref: searchRef,
+                    onFocus: (event) => event.target.select(),
+                  }}
+                  // sx={{ width: "20%" }}
+                />
+              </MDBox>
               <Button
                 sx={{
                   backgroundColor: "#328BED",

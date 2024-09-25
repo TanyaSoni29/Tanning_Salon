@@ -7,6 +7,7 @@ import QuestionCustomer from "../components/QuestionCustomer";
 import ProfileModal from "../components/ProfileModal";
 import { Button } from "@mui/material";
 import CreateCustomerModal from "components/CustomerActionButton/CreateCustomerModal";
+import { formatDate } from "utils/formateDate";
 function CustomerOverview({ searchQuery, filteredUsers }) {
   const { users } = useSelector((state) => state.profile);
   const [isQuesModal, setIsQuesModal] = useState(false);
@@ -35,10 +36,11 @@ function CustomerOverview({ searchQuery, filteredUsers }) {
   const handleCloseQuesModal = () => {
     setIsQuesModal(false);
   };
+  // console.log("filtered User", filteredUsers);
   // Filter customers based on the search query
   const filterUsers = filteredUsers.filter(
     (user) =>
-      user.role === "customer" &&
+      user?.role === "customer" &&
       ((user.firstName && user.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (user.lastName && user.lastName.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (user.mobileNumber && user.mobileNumber.includes(searchQuery)))
@@ -97,7 +99,7 @@ function CustomerOverview({ searchQuery, filteredUsers }) {
                 <th className="border border-gray-300 p-2 text-left font-semibold">Phone No.</th>
                 <th className="border border-gray-300 p-2 text-left font-semibold">Gender</th>
                 <th className="border border-gray-300 p-2 text-left font-semibold">
-                  Last Service Usage
+                  Latest Service Usage
                 </th>
                 <th className="border border-gray-300 p-2 text-center font-semibold">Select</th>
               </tr>
@@ -109,7 +111,11 @@ function CustomerOverview({ searchQuery, filteredUsers }) {
                     <td className="border border-gray-300 p-2">{`${user.firstName} ${user.lastName}`}</td>
                     <td className="border border-gray-300 p-2">{user.phone_number}</td>
                     <td className="border border-gray-300 p-2">{user.gender}</td>
-                    <td className="border border-gray-300 p-2">{user.lastServiceUsage || "N/A"}</td>
+                    <td className="border border-gray-300 p-2">
+                      {user?.latestTransaction
+                        ? formatDate(user?.latestTransaction?.created_at)
+                        : "N/A"}
+                    </td>
                     <td className="border border-gray-300 p-2 text-center">
                       {/* <button
                         className="bg-blue-600 text-white px-4 py-1 rounded-lg text-[.8rem] hover:bg-blue-500 focus:outline-none"

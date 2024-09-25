@@ -16,7 +16,7 @@ import { setProductIndex } from "slices/productSlice";
 import { formatDate } from "utils/formateDate";
 import { refreshProduct } from "slices/productSlice";
 
-export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
+export default function data(filteredProducts, handleEdit, setIsDeleteOpen, setViewModal) {
   const { products } = useSelector((state) => state.product);
   const dispatch = useDispatch();
   // const { token } = useSelector((state) => state.auth);
@@ -51,7 +51,7 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
     </MDBox>
   );
 
-  const rows = products.map((product, i) => ({
+  const rows = (filteredProducts.length > 0 ? filteredProducts : products).map((product, i) => ({
     Name: <Product image={product.image} name={product.name} />,
     // Brand: <ProductBrand title={product.brand} description={product.description} />,
     price: (
@@ -80,21 +80,27 @@ export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
       >
         <RemoveRedEyeIcon
           onClick={() => {
-            dispatch(setProductIndex(i));
+            const index =
+              filteredProducts.length > 0 ? products.findIndex((p) => p._id === product._id) : i;
+            dispatch(setProductIndex(index));
             setViewModal(true);
           }}
           sx={{ cursor: "pointer" }}
         />
         <EditIcon
           onClick={() => {
-            dispatch(setProductIndex(i));
+            const index =
+              filteredProducts.length > 0 ? products.findIndex((p) => p._id === product._id) : i;
+            dispatch(setProductIndex(index));
             handleEdit();
           }}
           sx={{ cursor: "pointer" }}
         />
         <DeleteIcon
           onClick={() => {
-            dispatch(setProductIndex(i));
+            const index =
+              filteredProducts.length > 0 ? products.findIndex((p) => p._id === product._id) : i;
+            dispatch(setProductIndex(index));
             setIsDeleteOpen(true);
           }}
           sx={{ cursor: "pointer" }}

@@ -42,7 +42,7 @@ function Footer({ light }) {
               </Icon>
             </MDBox>
             by
-            <Link to="/" target="_blank">
+            <Link to="/">
               <MDTypography variant="button" fontWeight="medium" color={light ? "white" : "dark"}>
                 &nbsp;Salon&nbsp;
               </MDTypography>
@@ -66,8 +66,8 @@ function Footer({ light }) {
               },
             })}
           >
-            <MDBox component="li" pr={2} lineHeight={1}>
-              <Link to="/" target="_blank">
+            {/* <MDBox component="li" pr={2} lineHeight={1}>
+              <Link to="/">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"
@@ -78,7 +78,7 @@ function Footer({ light }) {
               </Link>
             </MDBox>
             <MDBox component="li" px={2} lineHeight={1}>
-              <Link to="/" target="_blank">
+              <Link to="/">
                 <MDTypography
                   variant="button"
                   fontWeight="regular"
@@ -87,7 +87,7 @@ function Footer({ light }) {
                   About Us
                 </MDTypography>
               </Link>
-            </MDBox>
+            </MDBox> */}
             {/* <MDBox component="li" px={2} lineHeight={1}>
               <Link to="/" target="_blank">
                 <MDTypography

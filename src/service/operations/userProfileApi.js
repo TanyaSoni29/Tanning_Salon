@@ -45,8 +45,9 @@ export const getAllUserProfiles = async (token) => {
     console.log("Get all user profile api error....", error);
     const errorMessage = err.response?.data?.message;
     toast.error(errorMessage);
+  } finally {
+    toast.dismiss(toastId);
   }
-  toast.dismiss(toastId);
   return result;
 };
 

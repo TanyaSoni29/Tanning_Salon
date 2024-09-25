@@ -53,17 +53,6 @@ function Dashboard() {
       searchRef.current.blur();
     }
   };
-  useEffect(() => {
-    async function getAllProduct() {
-      try {
-        const response = await getAllProducts(token);
-        dispatch(setProducts(response.data));
-      } catch (error) {
-        console.log("Error getting all products");
-      }
-    }
-    getAllProduct();
-  }, [token, dispatch]);
 
   useEffect(() => {
     async function getAllUserProfile() {
@@ -78,18 +67,6 @@ function Dashboard() {
   }, [token, dispatch]);
 
   console.log("users", users);
-
-  useEffect(() => {
-    async function getAllService() {
-      try {
-        const response = await getAllServices(token);
-        dispatch(setServices(response.data));
-      } catch (error) {
-        console.log("Error getting all getAllServices");
-      }
-    }
-    getAllService();
-  }, [token, dispatch]);
 
   useEffect(() => {
     async function getAllLocation() {

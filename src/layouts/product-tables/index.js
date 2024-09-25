@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import MDBox from "components/MDBox";
@@ -16,6 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { refreshProduct } from "slices/productSlice";
 import CreateProductModal from "../../components/ActionButton/CreateProductModal";
 import ViewProductCard from "../../components/ActionButton/ViewProductCard";
+import { setProducts } from "slices/productSlice";
 function index() {
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -26,6 +27,18 @@ function index() {
 
   const dispatch = useDispatch();
   const activeProduct = products[productIndex];
+
+  useEffect(() => {
+    async function getAllProduct() {
+      try {
+        const response = await getAllProducts(token);
+        dispatch(setProducts(response.data));
+      } catch (error) {
+        console.log("Error getting all products");
+      }
+    }
+    getAllProduct();
+  }, [token, dispatch]);
 
   const handleEditClose = () => setIsEditOpen(false);
   const handleDeleteClose = () => setIsDeleteOpen(false);

@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 
 // @mui material components
-import Link from "@mui/material/Link";
+// import Link from "@mui/material/Link";
 import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
@@ -10,7 +10,7 @@ import MDTypography from "components/MDTypography";
 
 // Material Dashboard 2 React base styles
 import typography from "assets/theme/base/typography";
-
+import { Link } from "react-router-dom";
 function Footer({ company, links }) {
   const { href, name } = company;
   const { size } = typography;
@@ -51,7 +51,7 @@ function Footer({ company, links }) {
           </Icon>
         </MDBox>
         by
-        <Link href={href} target="_blank">
+        <Link to="/dashboard">
           <MDTypography variant="button" fontWeight="medium">
             &nbsp;{name}&nbsp;
           </MDTypography>
@@ -75,7 +75,7 @@ function Footer({ company, links }) {
           },
         })}
       >
-        {renderLinks()}
+        {/* {renderLinks()} */}
       </MDBox>
     </MDBox>
   );

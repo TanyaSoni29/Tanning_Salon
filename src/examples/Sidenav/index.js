@@ -11,7 +11,7 @@ import PropTypes from "prop-types";
 // @mui material components
 import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
-import Link from "@mui/material/Link";
+// import Link from "@mui/material/Link";
 import Icon from "@mui/material/Icon";
 
 // Material Dashboard 2 React components
@@ -76,20 +76,14 @@ function Sidenav({ color, brand, brandName, routes, onLogoutClick, ...rest }) {
 
     if (type === "collapse") {
       returnValue = href ? (
-        <Link
-          href={href}
-          key={key}
-          target="_blank"
-          rel="noreferrer"
-          sx={{ textDecoration: "none" }}
-        >
+        <NavLink to={href} key={key} sx={{ textDecoration: "none" }}>
           <SidenavCollapse
             name={name}
             icon={icon}
             active={key === collapseName}
             noCollapse={noCollapse}
           />
-        </Link>
+        </NavLink>
       ) : (
         <NavLink key={key} to={route}>
           <SidenavCollapse name={name} icon={icon} active={key === collapseName} />

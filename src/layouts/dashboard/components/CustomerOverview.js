@@ -43,94 +43,6 @@ function CustomerOverview({ searchQuery, filteredUsers }) {
         (user.lastName && user.lastName.toLowerCase().includes(searchQuery.toLowerCase())) ||
         (user.mobileNumber && user.mobileNumber.includes(searchQuery)))
   );
-
-  // return (
-  //   <Card sx={{ height: "100%", width: "100%" }}>
-  //     <MDBox pt={3} px={3}>
-  //       <MDTypography variant="h6" fontWeight="medium">
-  //         Customer Overview
-  //       </MDTypography>
-  //       <MDBox mt={3} mb={2}>
-  //         {/* Table structure */}
-  //         <TableContainer>
-  //           <Table>
-  //             <TableHead>
-  //               <TableRow>
-  //                 <TableCell align="left" sx={{ fontWeight: "bold", padding: "8px" }}>
-  //                   Name
-  //                 </TableCell>
-  //                 <TableCell align="left" sx={{ fontWeight: "bold", padding: "8px" }}>
-  //                   Mobile No.
-  //                 </TableCell>
-  //                 <TableCell align="left" sx={{ fontWeight: "bold", padding: "8px" }}>
-  //                   Gender
-  //                 </TableCell>
-  //                 <TableCell align="left" sx={{ fontWeight: "bold", padding: "8px" }}>
-  //                   Last Service Usage
-  //                 </TableCell>
-  //                 <TableCell align="center" sx={{ fontWeight: "bold", padding: "8px" }}>
-  //                   Select
-  //                 </TableCell>
-  //               </TableRow>
-  //             </TableHead>
-  //             <TableBody>
-  //               {filteredUsers.length > 0 ? (
-  //                 filteredUsers.map((user) => (
-  //                   <TableRow key={user._id}>
-  //                     <TableCell align="left" sx={{ padding: "8px" }}>
-  //                       {`${user.firstName} ${user.lastName}`}
-  //                     </TableCell>
-  //                     <TableCell align="left" sx={{ padding: "8px" }}>
-  //                       {user.mobileNumber}
-  //                     </TableCell>
-  //                     <TableCell align="left" sx={{ padding: "8px" }}>
-  //                       {user.gender}
-  //                     </TableCell>
-  //                     <TableCell align="left" sx={{ padding: "8px" }}>
-  //                       {user.lastServiceUsage || "N/A"}
-  //                     </TableCell>
-  //                     <TableCell align="center" sx={{ padding: "8px" }}>
-  //                       <Button
-  //                         sx={{
-  //                           backgroundColor: "#328BED",
-  //                           color: "#fff",
-  //                           marginBottom: "8px",
-  //                           "&:hover": {
-  //                             backgroundColor: "#63A0F5",
-  //                             color: "#fff",
-  //                           },
-  //                           "&:focus": {
-  //                             color: "#fff",
-  //                           },
-  //                           "&:active": {
-  //                             color: "#fff",
-  //                           },
-  //                           "&:disabled": {
-  //                             backgroundColor: "#D3D3D3",
-  //                             color: "#fff",
-  //                           },
-  //                         }}
-  //                         size="small"
-  //                       >
-  //                         Select
-  //                       </Button>
-  //                     </TableCell>
-  //                   </TableRow>
-  //                 ))
-  //               ) : (
-  //                 <TableRow>
-  //                   <TableCell colSpan={5} align="center" sx={{ padding: "8px" }}>
-  //                     No customers found.
-  //                   </TableCell>
-  //                 </TableRow>
-  //               )}
-  //             </TableBody>
-  //           </Table>
-  //         </TableContainer>
-  //       </MDBox>
-  //     </MDBox>
-  //   </Card>
-  // );
   return (
     <>
       <Modal setOpen={setIsQuesModal} open={isQuesModal}>
@@ -171,7 +83,9 @@ function CustomerOverview({ searchQuery, filteredUsers }) {
             }}
             onClick={handleCreateNewCustomer}
           >
-            Register New Customer
+            <span style={{ fontSize: "12px", textTransform: "capitalize" }}>
+              Register New Customer
+            </span>
           </Button>
         </div>
 
@@ -226,7 +140,9 @@ function CustomerOverview({ searchQuery, filteredUsers }) {
                         }}
                         onClick={() => handleSelectButton(user)}
                       >
-                        Select
+                        <span style={{ fontSize: "12px", textTransform: "capitalize" }}>
+                          Select
+                        </span>
                       </Button>
                     </td>
                   </tr>

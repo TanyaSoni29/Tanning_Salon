@@ -261,9 +261,9 @@ function Configurator() {
         </MDBox>
         <Divider />
         <MDBox display="flex" justifyContent="space-between" alignItems="center" lineHeight={1}>
-          <MDTypography variant="h6">Light / Dark</MDTypography>
+          {/* <MDTypography variant="h6">Light / Dark</MDTypography> */}
 
-          <Switch checked={darkMode} onChange={handleDarkMode} />
+          {/* <Switch checked={darkMode} onChange={handleDarkMode} /> */}
         </MDBox>
         <Divider />
         <MDBox mt={2} textAlign="center">
@@ -271,7 +271,7 @@ function Configurator() {
             <MDTypography variant="h6">Thank you for Visiting Us!</MDTypography>
           </MDBox>
 
-          <MDBox display="flex" justifyContent="center">
+          {/* <MDBox display="flex" justifyContent="center">
             <MDBox mr={1.5}>
               <MDButton component={Link} target="_blank" rel="noreferrer" color="dark">
                 <TwitterIcon />
@@ -282,7 +282,7 @@ function Configurator() {
               <FacebookIcon />
               &nbsp; Share
             </MDButton>
-          </MDBox>
+          </MDBox> */}
         </MDBox>
       </MDBox>
     </ConfiguratorRoot>

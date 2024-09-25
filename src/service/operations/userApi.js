@@ -71,8 +71,9 @@ export const getAllUser = async (token) => {
     console.log("Get All User Api Error", error);
     const errorMessage = error.response?.data?.message;
     toast.error(errorMessage);
+  } finally {
+    toast.dismiss(toastId);
   }
-  toast.dismiss(toastId);
   return result;
 };
 

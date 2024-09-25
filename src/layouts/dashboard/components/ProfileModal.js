@@ -25,7 +25,7 @@ import userServiceTableData from "../components/userServiceTableData";
 import MDAvatar from "components/MDAvatar";
 import DataTable from "examples/Tables/DataTable";
 import { getProductTransactionsByUser } from "service/operations/userApi";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { getServiceTransactionsByUser } from "service/operations/userApi";
 import Modal from "../../../components/Modal";
 import TransactionModal from "./TransactionModal";
@@ -37,6 +37,10 @@ import { createProductTransaction } from "service/operations/productAndProductTr
 import { createServiceTransaction } from "service/operations/serviceAndServiceTransaction";
 import ServiceListModal from "./ServiceListModal";
 import ServiceUseModal from "./ServiceUseModal";
+import { getAllProducts } from "service/operations/productAndProductTransaction";
+import { setProducts } from "slices/productSlice";
+import { getAllServices } from "service/operations/serviceAndServiceTransaction";
+import { setServices } from "slices/serviceSlice";
 export default function BasicCard({ onClose, handleSelectedProfileModal, selectedUser }) {
   const { token } = useSelector((state) => state.auth);
   const [productTransactions, setProductTransactions] = useState([]);
@@ -45,7 +49,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
   const [productListModal, setProductListModal] = useState(false);
   const [serviceListModal, setServiceListModal] = useState(false);
   const [serviceUseModal, setServiceUseModal] = useState(false);
-
+  const dispatch = useDispatch();
   const [serviceUsageOfSelectedUser, setServiceUsageOfSelectedUser] = useState({});
   useEffect(() => {
     async function getServiceTransactionsOfUser() {
@@ -125,14 +129,26 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
       console.error("Error creating transaction", err);
     }
   };
-  const handleServiceListModal = () => {
+  const handleServiceListModal = async () => {
     setServiceListModal(true);
+    try {
+      const response = await getAllServices(token);
+      dispatch(setServices(response.data));
+    } catch (error) {
+      console.log("Error getting all getAllServices", error);
+    }
   };
   const handleServiceUseModal = () => {
     setServiceUseModal(true);
   };
-  const handleProductListModal = () => {
+  const handleProductListModal = async () => {
     setProductListModal(true);
+    try {
+      const response = await getAllProducts(token);
+      dispatch(setProducts(response.data));
+    } catch (error) {
+      console.log("Error getting all products", error);
+    }
   };
   // const handleViewTransactionModal = () => {
   //   setTransactionModal(true);

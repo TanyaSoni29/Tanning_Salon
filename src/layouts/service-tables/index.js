@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 // @mui material components
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
@@ -24,6 +24,8 @@ import CreateServiceModal from "../../components/ServiceActionButtons/CreateServ
 import EditServiceModal from "../../components/ServiceActionButtons/EditServiceModal";
 import DeleteServiceModal from "../../components/ServiceActionButtons/DeleteServiceModal";
 import ViewServiceModal from "../../components/ServiceActionButtons/ViewServiceModal";
+import { getAllServices } from "service/operations/serviceAndServiceTransaction";
+import { setServices } from "slices/serviceSlice";
 
 function index() {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -34,6 +36,18 @@ function index() {
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const activeService = services[serviceIndex];
+
+  useEffect(() => {
+    async function getAllService() {
+      try {
+        const response = await getAllServices(token);
+        dispatch(setServices(response.data));
+      } catch (error) {
+        console.log("Error getting all getAllServices");
+      }
+    }
+    getAllService();
+  }, [token, dispatch]);
 
   const handleEditClose = () => setIsEditOpen(false);
   const handleDeleteClose = () => setIsDeleteOpen(false);

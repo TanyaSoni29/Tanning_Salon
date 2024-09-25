@@ -5,7 +5,7 @@ import { locationEndpoints } from "../api";
 const { GET_ALL_LOCATION_API } = locationEndpoints;
 
 export const createLocation = async (token, data) => {
-  const toastId = toast.loading("LOading...");
+  const toastId = toast.loading("Loading...");
   try {
     const response = await apiConnector("POST", GET_ALL_LOCATION_API, data, {
       Authorization: `Bearer ${token}`,
@@ -20,8 +20,9 @@ export const createLocation = async (token, data) => {
     console.log("Create Location Api Error", error);
     const errorMessage = error.response?.data?.message;
     toast.error(errorMessage);
+  } finally {
+    toast.dismiss(toastId);
   }
-  toast.dismiss(toastId);
 };
 
 export const getAllLocations = async (token) => {
@@ -38,8 +39,9 @@ export const getAllLocations = async (token) => {
     console.log("Get All Locations Api Error", error);
     const errorMessage = error.response?.data?.message;
     toast.error(errorMessage);
+  } finally {
+    toast.dismiss(toastId);
   }
-  toast.dismiss(toastId);
   return result;
 };
 
@@ -95,13 +97,11 @@ export const deleteLocation = async (token, locationId) => {
       "Content-Type": "application/json",
     });
     console.log("Delete Location Api Response..", response);
-    if (response.status !== 200) throw new Error("Could not delete Location");
+    if (response.status !== 204) throw new Error("Could not delete Location");
     toast.success("Location deleted successfully");
     result = true;
   } catch (error) {
     console.log("Delete Location Api Error", error);
-    const errorMessage = error.response?.data?.message;
-    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;

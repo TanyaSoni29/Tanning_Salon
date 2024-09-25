@@ -2,7 +2,7 @@
 /* eslint-disable react/function-component-definition */
 
 // Material Dashboard 2 React components
-import React from "react";
+import React, { useEffect } from "react";
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import RemoveRedEyeIcon from "@mui/icons-material/RemoveRedEye";
@@ -11,11 +11,14 @@ import EditIcon from "@mui/icons-material/Edit";
 
 import { useDispatch, useSelector } from "react-redux";
 import { setLocationIndex } from "slices/locationSlice";
+import { refreshLocation } from "slices/locationSlice";
 
 export default function data(handleEdit, setIsDeleteOpen, setViewModal) {
   const { locations } = useSelector((state) => state.location);
   const dispatch = useDispatch();
-
+  useEffect(() => {
+    dispatch(refreshLocation());
+  }, []);
   const Author = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDBox ml={2} lineHeight={1}>

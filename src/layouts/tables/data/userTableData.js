@@ -43,7 +43,7 @@ export default function data(
 
   const Author = ({ image, firstName, lastName, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
-      <MDAvatar src={image} name={name} size="sm" />
+      <MDAvatar src={image} size="sm" />
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
           {firstName} {lastName}
@@ -74,13 +74,13 @@ export default function data(
     userName: (
       <Author
         image={user.avatar}
-        firstName={user.firstName}
-        lastName={user.lastName}
+        firstName={user?.firstName}
+        lastName={user?.lastName}
         email={user.email}
       />
     ),
     Admin: <Job title={user.role} />,
-    location: <Location name={user.preferred_location.name} />,
+    location: <Location name={user.preferred_location?.name} />,
     phone_number: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
         {user.phone_number}

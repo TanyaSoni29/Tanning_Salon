@@ -72,8 +72,11 @@ function Dashboard() {
     async function getAllLocation() {
       try {
         const response = await getAllLocations(token);
+        const sortLocation = response.data.sort(
+          (a, b) => new Date(b.created_at) - new Date(a.created_at)
+        );
         console.log("getting all getAllLocation....", response.data);
-        const sortedLocations = response.data.sort((a, b) => a.name.localeCompare(b.name));
+        const sortedLocations = sortLocation.sort((a, b) => a.name.localeCompare(b.name));
         dispatch(setLocations(sortedLocations));
       } catch (error) {
         console.log("Error getting all getAllServices");

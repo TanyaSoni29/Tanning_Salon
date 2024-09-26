@@ -22,6 +22,7 @@ import burceMars from "assets/images/bruce-mars.jpg";
 import backgroundImage from "assets/images/bg-profile.jpeg";
 import userProductTableData from "../components/userProductTableData";
 import userServiceTableData from "../components/userServiceTableData";
+import userTransactionTableData from "../components/userTransactionTableData";
 import MDAvatar from "components/MDAvatar";
 import DataTable from "examples/Tables/DataTable";
 import { getProductTransactionsByUser } from "service/operations/userApi";
@@ -45,29 +46,80 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
   const { token } = useSelector((state) => state.auth);
   const [productTransactions, setProductTransactions] = useState([]);
   const [serviceTransactions, setServiceTransactions] = useState([]);
+  const [combinedTransactions, setCombinedTransactions] = useState([]);
+
   // const [transactionModal, setTransactionModal] = useState(false);
   const [productListModal, setProductListModal] = useState(false);
   const [serviceListModal, setServiceListModal] = useState(false);
   const [serviceUseModal, setServiceUseModal] = useState(false);
   const dispatch = useDispatch();
   const [serviceUsageOfSelectedUser, setServiceUsageOfSelectedUser] = useState({});
-  useEffect(() => {
-    async function getServiceTransactionsOfUser() {
-      const { serviceTransactions } = await getServiceTransactionsByUser(token, selectedUser?._id);
-      //   console.log("response of get service transaction of user", response.serviceTransactions);
-      setServiceTransactions(serviceTransactions);
-    }
-    getServiceTransactionsOfUser();
-  }, [token, selectedUser._id]);
+  // useEffect(() => {
+  //   async function getServiceTransactionsOfUser() {
+  //     const { serviceTransactions } = await getServiceTransactionsByUser(token, selectedUser?._id);
+  //     //   console.log("response of get service transaction of user", response.serviceTransactions);
+  //     setServiceTransactions(serviceTransactions);
+  //   }
+  //   getServiceTransactionsOfUser();
+  // }, [token, selectedUser._id]);
+
+  // useEffect(() => {
+  //   async function getProductTransactionsOfUser() {
+  //     const { productTransactions } = await getProductTransactionsByUser(token, selectedUser?._id);
+  //     //   console.log("response of get product transaction of user", response.productTransactions);
+  //     setProductTransactions(productTransactions);
+  //   }
+  //   getProductTransactionsOfUser();
+  // }, [token, selectedUser?._id]);
 
   useEffect(() => {
-    async function getProductTransactionsOfUser() {
-      const { productTransactions } = await getProductTransactionsByUser(token, selectedUser?._id);
-      //   console.log("response of get product transaction of user", response.productTransactions);
-      setProductTransactions(productTransactions);
+    async function getUserTransactions() {
+      try {
+        // Fetch both product and service transactions concurrently
+        const [serviceResponse, productResponse] = await Promise.all([
+          getServiceTransactionsByUser(token, selectedUser?._id),
+          getProductTransactionsByUser(token, selectedUser?._id),
+        ]);
+        setServiceTransactions(serviceResponse.serviceTransactions);
+        console.log({ serviceResponse, productResponse });
+        const serviceData = serviceResponse.serviceTransactions;
+        const productData = productResponse.productTransactions;
+        console.log({ serviceData: serviceData, productData: productData });
+        // Map and structure service transactions
+        const formattedServiceTransactions = serviceData.map((transaction) => ({
+          id: transaction._id,
+          productName: transaction?.service?.serviceName, // For service, this might be the service name
+          userName: `${transaction.user.firstName} ${transaction.user.lastName}`,
+          quantity: transaction.quantity,
+          price: transaction?.service?.price, // Service might not have a price, so defaulting to '-'
+          location: transaction.location.name,
+          type: transaction.type === "usage" ? "usage" : "purchase",
+          createdAt: transaction.created_at,
+        }));
+
+        // Map and structure product transactions
+        const formattedProductTransactions = productData.map((transaction) => ({
+          _id: transaction._id,
+          productName: transaction?.product?.name, // For products, this is the product name
+          userName: `${transaction.user.firstName} ${transaction.user.lastName}`,
+          quantity: transaction.quantity,
+          price: transaction?.product?.price, // Product has a price
+          location: transaction?.location.name,
+          type: transaction?.product?.type, // Assuming all product transactions are "Product"
+          createdAt: transaction?.created_at,
+        }));
+
+        // Combine both sets of transactions
+        const combined = [...formattedServiceTransactions, ...formattedProductTransactions];
+        console.log("combined data transaction", combined);
+        setCombinedTransactions(combined);
+      } catch (error) {
+        console.log("Error getting transactions", error);
+      }
     }
-    getProductTransactionsOfUser();
-  }, [token, selectedUser?._id]);
+
+    getUserTransactions();
+  }, [token, selectedUser?._id, serviceUsageOfSelectedUser]);
 
   useEffect(() => {
     async function getServiceUsageByUser() {
@@ -122,6 +174,10 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
         quantity: quantity,
       };
       const response = await createServiceTransaction(token, data);
+      // const updatedServiceTransactions = await getServiceTransactionsByUser(
+      //   token,
+      //   selectedUser._id
+      // );
       const updatedServiceUsageResponse = await getAllServiceUsageByUser(token, selectedUser._id);
       setServiceUsageOfSelectedUser(updatedServiceUsageResponse.serviceUsage?.at(0));
       console.log("Transaction created", response.data);
@@ -153,8 +209,9 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
   // const handleViewTransactionModal = () => {
   //   setTransactionModal(true);
   // };
-  const { columns, rows } = userProductTableData(productTransactions);
-  const { columns: scols, rows: srows } = userServiceTableData(serviceTransactions);
+  // const { columns, rows } = userProductTableData(productTransactions);
+  // const { columns: scols, rows: srows } = userServiceTableData(serviceTransactions);
+  const { columns: ucols, rows: urows } = userTransactionTableData(combinedTransactions);
   return (
     <>
       {/* <Modal open={transactionModal} setOpen={setTransactionModal}>
@@ -379,47 +436,18 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
             coloredShadow="info"
           >
             <MDTypography variant="h6" color="white">
-              Services
+              Transactions
             </MDTypography>
           </MDBox>
           <MDBox
             pt={1}
             sx={{
-              maxHeight: "20vh", // Set fixed height for Services table
+              maxHeight: "40vh", // Set fixed height for Services table
               overflowY: "auto", // Add scrollbar if content overflows
             }}
           >
             <DataTable
-              table={{ columns: scols, rows: srows }}
-              isSorted={true}
-              entriesPerPage={false}
-              showTotalEntries={false}
-              noEndBorder
-            />
-          </MDBox>
-
-          <MDBox
-            mt={2}
-            py={1}
-            px={2}
-            variant="gradient"
-            bgColor="info"
-            borderRadius="lg"
-            coloredShadow="info"
-          >
-            <MDTypography variant="h6" color="white">
-              Products
-            </MDTypography>
-          </MDBox>
-          <MDBox
-            pt={1}
-            sx={{
-              maxHeight: "20vh", // Set fixed height for Services table
-              overflowY: "auto", // Add scrollbar if content overflows
-            }}
-          >
-            <DataTable
-              table={{ columns, rows }}
+              table={{ columns: ucols, rows: urows }}
               isSorted={true}
               entriesPerPage={false}
               showTotalEntries={false}

@@ -26,6 +26,7 @@ import DeleteCustomerModal from "../../components/CustomerActionButton/DeleteCus
 import EditCustomerModal from "../../components/CustomerActionButton/EditCustomerModal";
 import { deleteCustomerProfile } from "service/operations/userApi";
 import MDInput from "components/MDInput";
+import { deleteUserProfile } from "service/operations/userProfileApi";
 
 function index() {
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -44,12 +45,15 @@ function index() {
   const handleDeleteClose = () => setIsDeleteOpen(false);
   const handleCreateModalClose = () => setCreateModalOpen(false);
   const handleViewModalClose = () => setViewModal(false);
+  console.log("users----", users);
   const filteredCustomers = users.filter(
     (user) =>
-      (user.firstName && user.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (user.phone_number && user.phone_number.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (user.preferred_location.name &&
-        user.preferred_location.name.toLowerCase().includes(searchQuery.toLowerCase()))
+      (user.profile?.firstName &&
+        user.profile?.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
+      (user.profile?.phone_number &&
+        user.profile?.phone_number.toLowerCase().includes(searchQuery.toLowerCase()))
+    // (user.preferred_location.name &&
+    //   user.preferred_location.name.toLowerCase().includes(searchQuery.toLowerCase()))
     // Assuming 'name' is the field to search
   );
   const handleSearch = async () => {
@@ -69,7 +73,7 @@ function index() {
   };
   const handleDelete = async () => {
     try {
-      const result = await deleteCustomerProfile(token, activeUser._id);
+      const result = await deleteUserProfile(token, activeUser.user.id);
       if (result) {
         dispatch(removeUser(activeUser._id));
         dispatch(refreshUser());

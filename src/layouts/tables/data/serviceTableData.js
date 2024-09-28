@@ -15,7 +15,7 @@ import { setServiceIndex } from "slices/serviceSlice";
 export default function data(filteredService, handleEdit, setIsDeleteOpen, setViewModal) {
   const { services } = useSelector((state) => state.service);
   const dispatch = useDispatch();
-
+  // console.log("service table data", services);
   const Author = ({ name }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDBox ml={2} lineHeight={1}>
@@ -65,7 +65,7 @@ export default function data(filteredService, handleEdit, setIsDeleteOpen, setVi
         <RemoveRedEyeIcon
           onClick={() => {
             const index =
-              filteredService.length > 0 ? services.findIndex((s) => s._id === service._id) : i;
+              filteredService.length > 0 ? services.findIndex((s) => s.id === service.id) : i;
             dispatch(setServiceIndex(index));
             setViewModal(true);
           }}
@@ -74,7 +74,7 @@ export default function data(filteredService, handleEdit, setIsDeleteOpen, setVi
         <EditIcon
           onClick={() => {
             const index =
-              filteredService.length > 0 ? services.findIndex((s) => s._id === service._id) : i;
+              filteredService.length > 0 ? services.findIndex((s) => s.id === service.id) : i;
             dispatch(setServiceIndex(index));
             handleEdit();
           }}
@@ -83,7 +83,7 @@ export default function data(filteredService, handleEdit, setIsDeleteOpen, setVi
         <DeleteIcon
           onClick={() => {
             const index =
-              filteredService.length > 0 ? services.findIndex((s) => s._id === service._id) : i;
+              filteredService.length > 0 ? services.findIndex((s) => s.id === service.id) : i;
             dispatch(setServiceIndex(index));
             setIsDeleteOpen(true);
           }}

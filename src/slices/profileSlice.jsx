@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { getAllUser } from "service/operations/userApi";
 import { getAllUserProfiles } from "service/operations/userProfileApi";
 
 const initialState = {
@@ -44,8 +45,8 @@ export function refreshUser() {
   return async (dispatch, getState) => {
     const token = getState().auth.token;
     try {
-      const response = await getAllUserProfiles(token);
-      dispatch(setUsers(response.data));
+      const response = await getAllUser(token);
+      dispatch(setUsers(response));
     } catch (error) {
       console.error("Failed to refresh users:", error);
     }

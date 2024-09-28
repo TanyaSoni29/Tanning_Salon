@@ -43,7 +43,7 @@ export default function BasicCard({ onClose }) {
           {activeLocation.address}
         </Typography>
         <Typography variant="h5" color="text.secondary" sx={{ fontSize: "12px" }}>
-          {activeLocation.postCode}
+          {activeLocation.post_code}
         </Typography>
       </Box>
     </Card>

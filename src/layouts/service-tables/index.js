@@ -59,7 +59,7 @@ function index() {
     async function getAllService() {
       try {
         const response = await getAllServices(token);
-        dispatch(setServices(response.data));
+        dispatch(setServices(response));
       } catch (error) {
         console.log("Error getting all getAllServices");
       }

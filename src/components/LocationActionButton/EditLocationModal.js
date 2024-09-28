@@ -48,7 +48,7 @@ const EditUserModal = ({ onClose }) => {
       const newUserData = {
         name: data.name,
         address: data.address,
-        postCode: data.postCode,
+        post_code: data.post_code,
         phone_number: data.phone_number,
       };
       const updatedLocation = await updateLocation(token, activeLocation._id, newUserData);
@@ -71,7 +71,7 @@ const EditUserModal = ({ onClose }) => {
       reset({
         name: "",
         address: "",
-        postCode: "",
+        post_code: "",
         phone_number: "",
       });
     }
@@ -129,8 +129,8 @@ const EditUserModal = ({ onClose }) => {
             <TextField
               label="Post Code"
               variant="outlined"
-              defaultValue={activeLocation.postCode}
-              {...register("postCode", { required: true })}
+              defaultValue={activeLocation.post_code}
+              {...register("post_code", { required: true })}
               sx={{ width: "100%" }}
             />
           </Box>

@@ -19,6 +19,8 @@ import { formatDate } from "utils/formateDate";
 import { getAllServiceUsageByUser } from "service/operations/serviceAndServiceTransaction";
 import { getAllServiceUsage } from "service/operations/serviceAndServiceTransaction";
 import { getAllServiceTransactions } from "service/operations/serviceAndServiceTransaction";
+import { getAllUser } from "service/operations/userApi";
+import { refreshLocation } from "slices/locationSlice";
 
 export default function data(
   filteredCustomers,
@@ -57,48 +59,49 @@ export default function data(
   //   };
   //   fetchData();
   // }, [createModalOpen, isDeleteOpen, isEditOpen]);
+  useEffect(() => {
+    dispatch(refreshLocation(token));
+  }, [dispatch]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userProfilesResponse = await getAllUserProfiles(token);
-        const filteredUsers = userProfilesResponse.data.filter(
-          (data) => data.role === "customer" && data.active
-        );
+        const userProfilesResponse = await getAllUser(token);
+        const filteredUsers = userProfilesResponse.filter((data) => data.user.role === "customer");
         const sortedUsers = filteredUsers.sort(
           (a, b) => new Date(b.created_at) - new Date(a.created_at)
         );
 
         dispatch(setUsers(sortedUsers));
 
-        const serviceUsageResponse = await getAllServiceUsage(token);
-        const serviceDataMap = {};
+        // const serviceUsageResponse = await getAllServiceUsage(token);
+        // const serviceDataMap = {};
 
         // Map service usage data to user IDs
-        serviceUsageResponse.data.forEach((usage) => {
-          serviceDataMap[usage.user] = {
-            available_balance: usage.available_balance || 0,
-            totalSpend: 0,
-          };
-        });
+        // serviceUsageResponse.data.forEach((usage) => {
+        //   serviceDataMap[usage.user] = {
+        //     available_balance: usage.available_balance || 0,
+        //     totalSpend: 0,
+        //   };
+        // });
 
-        const transactions = await getAllServiceTransactions(token);
+        // const transactions = await getAllServiceTransactions(token);
 
-        transactions.data.forEach((transaction) => {
-          if (transaction.type === "usage" && serviceDataMap[transaction.user]) {
-            const quantity = transaction.quantity || 0;
-            serviceDataMap[transaction.user].totalSpend += quantity;
-          }
-        });
+        // transactions.data.forEach((transaction) => {
+        //   if (transaction.type === "used" && serviceDataMap[transaction.user]) {
+        //     const quantity = transaction.quantity || 0;
+        //     serviceDataMap[transaction.user].totalSpend += quantity;
+        //   }
+        // });
 
         // Combine user profiles with their corresponding service usage data
-        const combinedData = sortedUsers.map((user) => ({
-          ...user,
-          available_balance: serviceDataMap[user._id]?.available_balance || 0, // Default to 0 if no usage found
-          totalSpend: serviceDataMap[user._id]?.totalSpend || 0, // Default to 0 if no usage found
-        }));
+        // const combinedData = sortedUsers.map((user) => ({
+        //   ...user,
+        //   available_balance: user.profile?.available_balance || 0, // Default to 0 if no usage found
+        //   totalSpend: user..totalSpend || 0, // Default to 0 if no usage found
+        // }));
 
-        setRowsData(combinedData);
+        setRowsData(sortedUsers);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -127,13 +130,29 @@ export default function data(
     </MDBox>
   );
 
-  const Location = ({ name }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {name}
-      </MDTypography>
-    </MDBox>
-  );
+  // const Location = ({ name }) => (
+  //   <MDBox lineHeight={1} textAlign="left">
+  //     <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+  //       {name}
+  //     </MDTypography>
+  //   </MDBox>
+  // );
+  // console.log("rowsData----", rowsData);
+
+  const Location = ({ locationId }) => {
+    const { locations } = useSelector((state) => state.location); // Get locations from Redux
+
+    // Find the location by ID
+    const location = locations.find((loc) => loc.id === locationId);
+
+    return (
+      <MDBox lineHeight={1} textAlign="left">
+        <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+          {location ? location.name : "-"} {/* Fallback if location is not found */}
+        </MDTypography>
+      </MDBox>
+    );
+  };
 
   const rows = (filteredCustomers.length > 0 ? filteredCustomers : rowsData).map((customer, i) => {
     // const serviceUsage = serviceData[customer._id] || {};
@@ -141,32 +160,32 @@ export default function data(
     return {
       userName: (
         <Author
-          image={customer.avatar}
-          firstName={customer.firstName}
-          lastName={customer.lastName}
-          email={customer.email}
+          image={customer.profile?.avatar}
+          firstName={customer.profile?.firstName}
+          lastName={customer.profile?.lastName}
+          email={customer.user?.email}
         />
       ),
-      Admin: <Job title={customer.role} />,
-      location: <Location name={customer.preferred_location.name} />,
+      Admin: <Job title={customer.user?.role} />,
+      location: <Location locationId={customer.profile?.preferred_location} />,
       phone_number: (
         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          {customer.phone_number}
+          {customer.profile?.phone_number}
         </MDTypography>
       ),
       minutesAvailable: (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {customer?.available_balance}
+          {customer.profile?.available_balance}
         </MDTypography>
       ),
       totalSpend: (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {/* {customer?.totalSpend} */}
+          {customer.profile?.total_spend}
         </MDTypography>
       ),
       lastUpdatedAt: (
         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          {formatDate(customer.updated_at)}
+          {formatDate(customer.profile?.updated_at)}
         </MDTypography>
       ),
       action: (
@@ -181,7 +200,7 @@ export default function data(
             onClick={() => {
               const index =
                 filteredCustomers.length > 0
-                  ? rowsData.findIndex((u) => u._id === customer._id)
+                  ? rowsData.findIndex((u) => u.user.id === customer.user.id)
                   : i;
               dispatch(setUserIndex(index));
               setViewModal(true);
@@ -192,7 +211,7 @@ export default function data(
             onClick={() => {
               const index =
                 filteredCustomers.length > 0
-                  ? rowsData.findIndex((u) => u._id === customer._id)
+                  ? rowsData.findIndex((u) => u.user.id === customer.user.id)
                   : i;
               dispatch(setUserIndex(index));
               handleEdit();
@@ -203,7 +222,7 @@ export default function data(
             onClick={() => {
               const index =
                 filteredCustomers.length > 0
-                  ? rowsData.findIndex((u) => u._id === customer._id)
+                  ? rowsData.findIndex((u) => u.user.id === customer.user.id)
                   : i;
               dispatch(setUserIndex(index));
               setIsDeleteOpen(true);

@@ -11,67 +11,28 @@ import { useSelector } from "react-redux";
 function ServiceUseModal({
   open,
   setOpen,
+  serviceUseOptions,
   createServiceUseTransactionOfUser,
   serviceTransactions,
 }) {
-  const [selectedQuantity, setSelectedQuantity] = useState("");
-  const [usedQuantities, setUsedQuantities] = useState(
-    serviceTransactions
-      .filter((transaction) => transaction.type === "usage")
-      .map((transaction) => transaction.service._id)
-  );
-  const [allQuantityBuyOptions, setAllQuantityBuyOptions] = useState(
-    serviceTransactions
-      .filter((transaction) => transaction.type === "purchase")
-      .map((transaction) => transaction.quantity)
-  );
+  const [selectedService, setSelectedService] = useState("");
 
-  const filteredQuantityOptions = allQuantityBuyOptions.forEach((transaction) => {
-    if (usedQuantities.includes(transaction.service._id)) {
-      usedQuantities.filter((use) => use.service._id !== transaction.service._id);
-    }
-  });
-
-  // const distinctQuantities = Array.from(
-  //   serviceTransactions
-  //     .filter((transaction) => transaction.type === "purchase")
-  //     .reduce((acc, transaction) => {
-  //       const serviceId = transaction.service._id; // Adjust according to your transaction structure
-
-  //       // Check if the service ID is already in the accumulator
-  //       if (!acc.has(serviceId)) {
-  //         // If not, add it to the Map with its quantity
-  //         acc.set(serviceId, transaction.quantity);
-  //       }
-
-  //       return acc;
-  //     }, new Map()) // Start with an empty Map
-  // );
-  // console.log(distinctQuantities);
-  // // Convert the Map back to an array of distinct quantities
-  // const quantityOptions = distinctQuantities.map((quantity) => quantity[1]);
-  // const { columns, rows } = serviceListModalData(createServiceTransactionOfUser);
-  // console.log("setServiceTransactions", serviceTransactions);
-  const handleQuantityChange = (event) => {
-    setSelectedQuantity(event.target.value); // Update quantity state
+  const handleServiceChange = (event) => {
+    setSelectedService(Number(event.target.value)); // Update quantity state
   };
   const handleBuyService = () => {
-    if (selectedQuantity) {
+    if (selectedService) {
       // Create service use transaction
-      createServiceUseTransactionOfUser(selectedQuantity);
-
-      // Remove selected quantity from all available quantities
-      setAllQuantityBuyOptions((prev) => prev.filter((quantity) => quantity !== selectedQuantity));
-
-      // Add the used quantity to the usedQuantities state
-      setUsedQuantities((prev) => [...prev, selectedQuantity]);
-
-      setSelectedQuantity(""); // Reset selected quantity
+      createServiceUseTransactionOfUser(selectedService);
       setOpen(false); // Close modal after buying
     } else {
       alert("Please select a service before buying."); // Alert if no service is selected
     }
   };
+
+  const uniqueServiceOptions = serviceUseOptions.filter(
+    (service, index, self) => index === self.findIndex((s) => s.service_id === service.service_id)
+  );
   return (
     <Box
       sx={{
@@ -107,8 +68,8 @@ function ServiceUseModal({
           <select
             id="gender"
             className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
-            value={selectedQuantity}
-            onChange={handleQuantityChange}
+            value={selectedService}
+            onChange={handleServiceChange}
             style={{
               fontSize: "14px", // Matches the font size of the MDInput
               height: "45px",
@@ -116,11 +77,11 @@ function ServiceUseModal({
             }}
           >
             <option value="" disabled>
-              Select Quantity
+              Select Service
             </option>
-            {filteredQuantityOptions.map((quantity) => (
-              <option key={quantity} value={quantity}>
-                {quantity}
+            {uniqueServiceOptions.map((service) => (
+              <option key={service.service_id} value={service.service_id}>
+                {service.serviceName}
               </option>
             ))}
           </select>

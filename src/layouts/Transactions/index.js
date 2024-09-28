@@ -43,7 +43,7 @@ function Tables() {
       searchRef.current.blur();
     }
   };
-
+  // console.log(combinedTransactions);
   const filteredTransaction = combinedTransactions.filter(
     (transaction) => {
       const transactionDate = new Date(transaction.createdAt); // Assuming 'created_at' is the date field

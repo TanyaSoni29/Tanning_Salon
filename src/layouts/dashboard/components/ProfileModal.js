@@ -25,9 +25,9 @@ import userServiceTableData from "../components/userServiceTableData";
 import userTransactionTableData from "../components/userTransactionTableData";
 import MDAvatar from "components/MDAvatar";
 import DataTable from "examples/Tables/DataTable";
-import { getProductTransactionsByUser } from "service/operations/userApi";
+import { getProductTransactionsByUser } from "service/operations/productAndProductTransaction";
 import { useDispatch, useSelector } from "react-redux";
-import { getServiceTransactionsByUser } from "service/operations/userApi";
+import { getServiceTransactionsByUser } from "service/operations/serviceAndServiceTransaction";
 import Modal from "../../../components/Modal";
 import TransactionModal from "./TransactionModal";
 import EmailOutlinedIcon from "@mui/icons-material/EmailOutlined";
@@ -42,69 +42,75 @@ import { getAllProducts } from "service/operations/productAndProductTransaction"
 import { setProducts } from "slices/productSlice";
 import { getAllServices } from "service/operations/serviceAndServiceTransaction";
 import { setServices } from "slices/serviceSlice";
+import { refreshUser } from "slices/profileSlice";
+import { getServiceUseOptions } from "service/operations/serviceAndServiceTransaction";
 export default function BasicCard({ onClose, handleSelectedProfileModal, selectedUser }) {
   const { token } = useSelector((state) => state.auth);
   const [productTransactions, setProductTransactions] = useState([]);
   const [serviceTransactions, setServiceTransactions] = useState([]);
   const [combinedTransactions, setCombinedTransactions] = useState([]);
-
+  const { locations } = useSelector((state) => state.location);
   // const [transactionModal, setTransactionModal] = useState(false);
   const [productListModal, setProductListModal] = useState(false);
   const [serviceListModal, setServiceListModal] = useState(false);
   const [serviceUseModal, setServiceUseModal] = useState(false);
   const dispatch = useDispatch();
-  const [serviceUsageOfSelectedUser, setServiceUsageOfSelectedUser] = useState({});
-  // useEffect(() => {
-  //   async function getServiceTransactionsOfUser() {
-  //     const { serviceTransactions } = await getServiceTransactionsByUser(token, selectedUser?._id);
-  //     //   console.log("response of get service transaction of user", response.serviceTransactions);
-  //     setServiceTransactions(serviceTransactions);
-  //   }
-  //   getServiceTransactionsOfUser();
-  // }, [token, selectedUser._id]);
+  const [serviceUseOptions, setServiceUseOptions] = useState([]);
+  console.log("selected user:", selectedUser);
+  const preferredLocation = locations.find(
+    (location) => selectedUser.profile?.preferred_location === location.id
+  );
+  useEffect(() => {
+    async function getServiceTransactionsOfUser() {
+      const response = await getServiceTransactionsByUser(token, selectedUser?.user.id);
+      console.log("response of get service transaction of user", response);
+      setServiceTransactions(response);
+    }
+    getServiceTransactionsOfUser();
+  }, [token, selectedUser?.user.id]);
 
-  // useEffect(() => {
-  //   async function getProductTransactionsOfUser() {
-  //     const { productTransactions } = await getProductTransactionsByUser(token, selectedUser?._id);
-  //     //   console.log("response of get product transaction of user", response.productTransactions);
-  //     setProductTransactions(productTransactions);
-  //   }
-  //   getProductTransactionsOfUser();
-  // }, [token, selectedUser?._id]);
+  useEffect(() => {
+    async function getProductTransactionsOfUser() {
+      const response = await getProductTransactionsByUser(token, selectedUser?.user.id);
+      console.log("response of get product transaction of user", response);
+      setProductTransactions(response);
+    }
+    getProductTransactionsOfUser();
+  }, [token, selectedUser?.user.id]);
 
   useEffect(() => {
     async function getUserTransactions() {
       try {
         // Fetch both product and service transactions concurrently
         const [serviceResponse, productResponse] = await Promise.all([
-          getServiceTransactionsByUser(token, selectedUser?._id),
-          getProductTransactionsByUser(token, selectedUser?._id),
+          getServiceTransactionsByUser(token, selectedUser?.user.id),
+          getProductTransactionsByUser(token, selectedUser?.user.id),
         ]);
-        setServiceTransactions(serviceResponse.serviceTransactions);
+        setServiceTransactions(serviceResponse);
         console.log({ serviceResponse, productResponse });
-        const serviceData = serviceResponse.serviceTransactions;
-        const productData = productResponse.productTransactions;
+        const serviceData = serviceResponse;
+        const productData = productResponse;
         console.log({ serviceData: serviceData, productData: productData });
         // Map and structure service transactions
         const formattedServiceTransactions = serviceData.map((transaction) => ({
-          id: transaction._id,
-          productName: transaction?.service?.serviceName, // For service, this might be the service name
-          userName: `${transaction.user.firstName} ${transaction.user.lastName}`,
-          quantity: transaction.quantity,
+          id: transaction.transaction.id,
+          productName: transaction?.service?.name, // For service, this might be the service name
+          userName: `${transaction.user_details?.firstName} ${transaction.user_details?.lastName}`,
+          quantity: transaction?.transaction?.quantity,
           price: transaction?.service?.price, // Service might not have a price, so defaulting to '-'
-          location: transaction.location.name,
-          type: transaction.type === "usage" ? "usage" : "purchase",
-          createdAt: transaction.created_at,
+          location: transaction.user_details?.preferred_location?.name,
+          type: transaction.transaction?.type === "used" ? "used" : "purchased",
+          createdAt: transaction.transaction?.created_at,
         }));
 
         // Map and structure product transactions
         const formattedProductTransactions = productData.map((transaction) => ({
-          _id: transaction._id,
-          productName: transaction?.product?.name, // For products, this is the product name
-          userName: `${transaction.user.firstName} ${transaction.user.lastName}`,
-          quantity: transaction.quantity,
+          id: transaction?.id,
+          productName: transaction?.product?.productName, // For products, this is the product name
+          userName: `${transaction.user?.firstName} ${transaction.user?.lastName}`,
+          quantity: transaction?.quantity,
           price: transaction?.product?.price, // Product has a price
-          location: transaction?.location.name,
+          location: transaction?.location?.name,
           type: transaction?.product?.type, // Assuming all product transactions are "Product"
           createdAt: transaction?.created_at,
         }));
@@ -119,27 +125,27 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
     }
 
     getUserTransactions();
-  }, [token, selectedUser?._id, serviceUsageOfSelectedUser]);
+  }, [token, selectedUser?.user.id]);
 
-  useEffect(() => {
-    async function getServiceUsageByUser() {
-      const response = await getAllServiceUsageByUser(token, selectedUser._id);
-      setServiceUsageOfSelectedUser(response.serviceUsage?.at(0));
-    }
-    getServiceUsageByUser();
-  }, [selectedUser._id, token]);
+  // useEffect(() => {
+  //   async function getServiceUsageByUser() {
+  //     const response = await getAllServiceUsageByUser(token, selectedUser._id);
+  //     setServiceUsageOfSelectedUser(response.serviceUsage?.at(0));
+  //   }
+  //   getServiceUsageByUser();
+  // }, [selectedUser._id, token]);
 
   const createProductTransactionOfUser = async (productId, quantity) => {
     try {
       const data = {
-        user: selectedUser._id, // Assuming user data is stored in auth state
-        location: selectedUser.preferred_location._id, // Replace with the correct location ID
-        product: productId,
+        user_id: selectedUser.user.id, // Assuming user data is stored in auth state
+        location_id: selectedUser.profile?.preferred_location, // Replace with the correct location ID
+        product_id: productId,
         quantity,
       };
       await createProductTransaction(token, data);
-      const { productTransactions } = await getProductTransactionsByUser(token, selectedUser?._id);
-      setProductTransactions(productTransactions);
+      // const { productTransactions } = await getProductTransactionsByUser(token, selectedUser?._id);
+      // setProductTransactions(productTransactions);
       // console.log("Transaction created", response.data);
     } catch (err) {
       console.error("Error creating transaction", err);
@@ -149,37 +155,28 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
   const createServiceTransactionOfUser = async (serviceId) => {
     try {
       const data = {
-        user: selectedUser._id,
-        service: serviceId, // Assuming user data is stored in auth state
-        location: selectedUser.preferred_location._id, // Replace with the correct location ID
-        type: "purchase",
+        user_id: selectedUser.user.id,
+        service_id: serviceId, // Assuming user data is stored in auth state
+        location_id: selectedUser.profile?.preferred_location, // Replace with the correct location ID
+        type: "purchased",
       };
       const response = await createServiceTransaction(token, data);
-      const updatedServiceUsageResponse = await getAllServiceUsageByUser(token, selectedUser._id);
-      setServiceUsageOfSelectedUser(updatedServiceUsageResponse.serviceUsage?.at(0));
-      const { serviceTransactions } = await getServiceTransactionsByUser(token, selectedUser?._id);
-      setServiceTransactions(serviceTransactions);
-      // console.log("Transaction created", response.data);
+      dispatch(refreshUser(token));
     } catch (err) {
       console.error("Error creating transaction", err);
     }
   };
 
-  const createServiceUseTransactionOfUser = async (quantity) => {
+  const createServiceUseTransactionOfUser = async (serviceId) => {
     try {
       const data = {
-        user: selectedUser._id, // Assuming user data is stored in auth state
-        location: selectedUser.preferred_location._id, // Replace with the correct location ID
-        type: "usage",
-        quantity: quantity,
+        user_id: selectedUser.user.id, // Assuming user data is stored in auth state
+        location_id: selectedUser.profile?.preferred_location,
+        service_id: serviceId, // Replace with the correct location ID
+        type: "used",
       };
       const response = await createServiceTransaction(token, data);
-      // const updatedServiceTransactions = await getServiceTransactionsByUser(
-      //   token,
-      //   selectedUser._id
-      // );
-      const updatedServiceUsageResponse = await getAllServiceUsageByUser(token, selectedUser._id);
-      setServiceUsageOfSelectedUser(updatedServiceUsageResponse.serviceUsage?.at(0));
+      dispatch(refreshUser(token));
       console.log("Transaction created", response.data);
     } catch (err) {
       console.error("Error creating transaction", err);
@@ -189,19 +186,28 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
     setServiceListModal(true);
     try {
       const response = await getAllServices(token);
-      dispatch(setServices(response.data));
+      console.log("Get all service in Profile modal", response);
+      dispatch(setServices(response));
     } catch (error) {
       console.log("Error getting all getAllServices", error);
     }
   };
-  const handleServiceUseModal = () => {
+  const handleServiceUseModal = async () => {
     setServiceUseModal(true);
+    try {
+      const response = await getServiceUseOptions(token, selectedUser.user.id);
+      console.log("get Service use Option", response);
+      setServiceUseOptions(response);
+    } catch (error) {
+      console.log(error);
+    }
   };
   const handleProductListModal = async () => {
     setProductListModal(true);
     try {
       const response = await getAllProducts(token);
-      dispatch(setProducts(response.data));
+      console.log("Get all product in Profile modal", response);
+      dispatch(setProducts(response));
     } catch (error) {
       console.log("Error getting all products", error);
     }
@@ -239,6 +245,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
         <ServiceUseModal
           setOpen={setServiceUseModal}
           serviceTransactions={serviceTransactions}
+          serviceUseOptions={serviceUseOptions}
           createServiceUseTransactionOfUser={createServiceUseTransactionOfUser}
         />
       </Modal>
@@ -304,26 +311,26 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
             <Grid item>
               <MDBox height="100%" mt={0.5} lineHeight={1}>
                 <MDTypography variant="h5" fontWeight="medium">
-                  {selectedUser.firstName} {selectedUser.lastName}
+                  {selectedUser.profile?.firstName} {selectedUser.profile?.lastName}
                 </MDTypography>
                 {/* <MDTypography variant="button" color="text" fontWeight="regular">
                   {selectedUser.email}
                 </MDTypography> */}
                 <MDBox height="100%" lineHeight={1}>
                   <MDTypography variant="button" color="text" fontWeight="regular">
-                    {selectedUser.phone_number}
+                    {selectedUser.profile?.phone_number}
                   </MDTypography>
                 </MDBox>
                 <MDBox height="100%" lineHeight={1}>
                   <MDTypography variant="button" color="text" fontWeight="medium">
-                    {serviceUsageOfSelectedUser?.available_balance
-                      ? `Available Balance : ${serviceUsageOfSelectedUser?.available_balance}`
+                    {selectedUser.profile?.available_balance
+                      ? `Available Balance : ${selectedUser.profile?.available_balance}`
                       : "Not purchase any service yet"}
                   </MDTypography>
                 </MDBox>
                 <MDBox height="100%" lineHeight={1}>
                   <MDTypography variant="button" color="text" fontWeight="regular">
-                    Preferred Location: {selectedUser.preferred_location.name}
+                    Preferred Location: {preferredLocation?.name}
                   </MDTypography>
                 </MDBox>
               </MDBox>
@@ -396,7 +403,7 @@ export default function BasicCard({ onClose, handleSelectedProfileModal, selecte
                 },
               }}
               onClick={handleServiceUseModal}
-              disabled={serviceUsageOfSelectedUser?.available_balance > 0 ? false : true}
+              disabled={selectedUser?.profile?.available_balance > 0 ? false : true}
             >
               Use Service
             </Button>

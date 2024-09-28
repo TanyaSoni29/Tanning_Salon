@@ -16,10 +16,10 @@ export const createProduct = async (token, data) => {
     console.log("Create New Product Api Response..", response);
     if (response.status !== 201) throw new Error("Could not create Product");
     toast.success("Product created successfully");
-    return response.data?.data;
+    return response.data;
   } catch (error) {
     console.log("Create Product Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error?.response?.data?.error;
     toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
@@ -35,10 +35,10 @@ export const getAllProducts = async (token) => {
     });
     console.log("Get All Product Api Response..", response);
     if (response.status !== 200) throw new Error("Could not fetch all Product");
-    result = response.data?.data;
+    result = response.data;
   } catch (error) {
     console.log("Get All Product Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error.response?.data?.error;
     toast.error(errorMessage);
   }
   toast.dismiss(toastId);
@@ -49,17 +49,17 @@ export const updateProduct = async (token, productId, data) => {
   const toastId = toast.loading("Loading...");
   let result = null;
   try {
-    const response = await apiConnector("PATCH", `${GET_ALL_PRODUCT_API}/${productId}`, data, {
+    const response = await apiConnector("PUT", `${GET_ALL_PRODUCT_API}/${productId}`, data, {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     });
     console.log("Update Product Api Response..", response);
     if (response.status !== 200) throw new Error("Could not update Product");
     toast.success("Product updated successfully");
-    result = response.data?.data;
+    result = response.data;
   } catch (error) {
     console.log("Update Product Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error.response?.data?.error;
     toast.error(errorMessage);
   }
   toast.dismiss(toastId);
@@ -78,10 +78,10 @@ export const getProduct = async (token, productId) => {
     console.log("Get Product Api Response..", response);
     if (response.status !== 200) throw new Error("Could not fetch Product");
     toast.success("Product fetched successfully");
-    result = response.data?.data;
+    result = response.data;
   } catch (error) {
     console.log("Get Product Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error.response?.data?.error;
     toast.error(errorMessage);
   }
   toast.dismiss(toastId);
@@ -102,12 +102,12 @@ export const deleteProduct = async (token, productId) => {
       }
     );
     console.log("Delete Product Api Response..", response);
-    if (response.status !== 204) throw new Error("Could not delete Product");
+    if (response.status !== 200) throw new Error("Could not delete Product");
     toast.success("Product deleted successfully");
     result = true;
   } catch (error) {
     console.log("Delete Product Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error.response?.data?.error;
     toast.error(errorMessage);
   }
   toast.dismiss(toastId);
@@ -125,10 +125,10 @@ export const createProductTransaction = async (token, data) => {
     console.log("Create New Product Transaction Api Response..", response);
     if (response.status !== 201) throw new Error("Could not create Product");
     toast.success("Product Transaction created successfully");
-    return response.data?.data;
+    return response.data;
   } catch (error) {
     console.log("Create Product Transaction Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error.response?.data?.error;
     toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
@@ -145,10 +145,37 @@ export const getAllProductTransactions = async (token) => {
     });
     if (response.status !== 200) throw new Error("Could not fetch All Product Transaction");
     // toast.success("All Product Transactions fetched successfully");
-    result = response.data?.data;
+    result = response.data;
   } catch (error) {
     console.log("Fetch product transactions api error", error);
-    toast.error("Failed to fetch product transactions");
+    const errorMessage = error.response?.data?.error;
+    toast.error(errorMessage);
+  }
+  toast.dismiss(toastId);
+  return result;
+};
+
+export const getProductTransactionsByUser = async (token, userId) => {
+  const toastId = toast.loading("Loading...");
+  let result = null;
+  try {
+    const response = await apiConnector(
+      "GET",
+      `${GET_ALL_PRODUCT_TRANSACTION_API}/${userId}`,
+      null,
+      {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      }
+    );
+    console.log("Get User Product transactions Api Response..", response);
+    if (response.status !== 200) throw new Error("Could not fetch User transactions");
+    // toast.success("User Transactions fetch successfully");
+    result = response.data;
+  } catch (error) {
+    console.log("Get User Product transactions Api Error", error);
+    const errorMessage = error?.response?.data?.error;
+    toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;

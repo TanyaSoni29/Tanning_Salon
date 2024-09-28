@@ -1,17 +1,26 @@
 /* eslint-disable react/prop-types */
 /* eslint-disable react/function-component-definition */
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setIsAuth } from "slices/authSlice";
 
 const ProtectedRoute = ({ children }) => {
   const navigate = useNavigate();
-  const { loading, token } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+  const { loading, token, expirationTime, isAuth } = useSelector((state) => state.auth);
   useEffect(() => {
-    if (!loading && !token) {
-      navigate("/authentication/sign-in");
+    if (!loading) {
+      const currentTime = Date.now();
+
+      if (!isAuth || (expirationTime && currentTime > expirationTime)) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("expirationTime");
+        dispatch(setIsAuth(false));
+        navigate("/authentication/sign-in");
+      }
     }
-  }, []);
+  }, [loading, expirationTime, isAuth, dispatch]);
 
   // Show loader if authentication status is still loading
   if (loading) {
@@ -20,7 +29,7 @@ const ProtectedRoute = ({ children }) => {
   }
 
   // If authenticated, render children
-  return <>{children}</>;
+  return isAuth ? children : <Navigate to="/authentication/sign-in" />;
 };
 
 export default ProtectedRoute;

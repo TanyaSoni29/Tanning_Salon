@@ -7,8 +7,13 @@ import CloseIcon from "@mui/icons-material/Close";
 import { formatDate } from "utils/formateDate";
 export default function BasicCard({ onClose }) {
   const { users, userIndex } = useSelector((state) => state.profile);
+  const { locations } = useSelector((state) => state.location);
+
   const activeUser = users[userIndex];
   console.log(activeUser);
+  const preferredLocation = locations.find(
+    (location) => location.id === activeUser.profile?.preferred_location
+  );
   return (
     <Card
       sx={{
@@ -34,16 +39,16 @@ export default function BasicCard({ onClose }) {
       </IconButton>
       <Box sx={{ padding: 2 }}>
         <Typography variant="h6" component="div">
-          {activeUser.firstName + " " + activeUser.lastName}
+          {activeUser.profile?.firstName + " " + activeUser.profile?.lastName}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
-          {activeUser.email}
+          {activeUser.user?.email}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
-          {activeUser.phone_number}
+          {activeUser.profile?.phone_number}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
-          {activeUser.role}
+          {activeUser.user?.role}
         </Typography>
         <CardMedia
           component="img"
@@ -56,27 +61,27 @@ export default function BasicCard({ onClose }) {
             justifyContent: "center",
             alignItems: "center",
           }}
-          image={activeUser.avatar}
-          alt={activeUser.firstName + " " + activeUser.lastName}
+          image={activeUser.profile?.avatar}
+          alt={activeUser.profile?.firstName + " " + activeUser.profile?.lastName}
         />
         <Typography
           variant="body2"
           color="text.secondary"
           sx={{ fontSize: "12px", fontWeight: "bold" }}
         >
-          {activeUser.address}
+          {activeUser.profile?.address}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
-          {activeUser.postCode}
+          {activeUser.profile?.post_code}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
-          {activeUser.gender}
+          {activeUser.profile?.gender}
         </Typography>
         <Typography variant="h6" color="text.primary" sx={{ fontSize: "12px", fontWeight: "bold" }}>
-          Preferred Location: {activeUser.preferred_location.name}
+          Preferred Location: {preferredLocation?.name}
         </Typography>
         <Typography variant="body2" color="text.secondary" sx={{ fontSize: "12px" }}>
-          Created On: {formatDate(activeUser.created_at)}
+          Created On: {formatDate(activeUser.user?.created_at)}
         </Typography>
       </Box>
     </Card>

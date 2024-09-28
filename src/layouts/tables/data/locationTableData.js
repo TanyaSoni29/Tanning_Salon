@@ -44,7 +44,7 @@ export default function data(filteredLocations, handleEdit, setIsDeleteOpen, set
       </MDTypography>
     </MDBox>
   );
-
+  console.log("LOCATion", locations);
   const rows = (filteredLocations.length > 0 ? filteredLocations : locations).map(
     (location, i) => ({
       location: <Author name={location.name} />,
@@ -55,7 +55,7 @@ export default function data(filteredLocations, handleEdit, setIsDeleteOpen, set
       ),
       postCode: (
         <MDTypography component="a" variant="caption" color="text" fontWeight="medium">
-          {location.postCode}
+          {location.post_code}
         </MDTypography>
       ),
       action: (
@@ -70,7 +70,7 @@ export default function data(filteredLocations, handleEdit, setIsDeleteOpen, set
             onClick={() => {
               const index =
                 filteredLocations.length > 0
-                  ? locations.findIndex((loc) => loc._id === location._id)
+                  ? locations.findIndex((loc) => loc.id === location.id)
                   : i;
               dispatch(setLocationIndex(index));
               setViewModal(true);
@@ -81,7 +81,7 @@ export default function data(filteredLocations, handleEdit, setIsDeleteOpen, set
             onClick={() => {
               const index =
                 filteredLocations.length > 0
-                  ? locations.findIndex((loc) => loc._id === location._id)
+                  ? locations.findIndex((loc) => loc.id === location.id)
                   : i;
               dispatch(setLocationIndex(index));
               handleEdit();
@@ -92,7 +92,7 @@ export default function data(filteredLocations, handleEdit, setIsDeleteOpen, set
             onClick={() => {
               const index =
                 filteredLocations.length > 0
-                  ? locations.findIndex((loc) => loc._id === location._id)
+                  ? locations.findIndex((loc) => loc.id === location.id)
                   : i;
               dispatch(setLocationIndex(index));
               setIsDeleteOpen(true);

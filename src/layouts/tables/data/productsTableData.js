@@ -81,7 +81,7 @@ export default function data(filteredProducts, handleEdit, setIsDeleteOpen, setV
         <RemoveRedEyeIcon
           onClick={() => {
             const index =
-              filteredProducts.length > 0 ? products.findIndex((p) => p._id === product._id) : i;
+              filteredProducts.length > 0 ? products.findIndex((p) => p.id === product.id) : i;
             dispatch(setProductIndex(index));
             setViewModal(true);
           }}
@@ -90,7 +90,7 @@ export default function data(filteredProducts, handleEdit, setIsDeleteOpen, setV
         <EditIcon
           onClick={() => {
             const index =
-              filteredProducts.length > 0 ? products.findIndex((p) => p._id === product._id) : i;
+              filteredProducts.length > 0 ? products.findIndex((p) => p.id === product.id) : i;
             dispatch(setProductIndex(index));
             handleEdit();
           }}
@@ -99,7 +99,7 @@ export default function data(filteredProducts, handleEdit, setIsDeleteOpen, setV
         <DeleteIcon
           onClick={() => {
             const index =
-              filteredProducts.length > 0 ? products.findIndex((p) => p._id === product._id) : i;
+              filteredProducts.length > 0 ? products.findIndex((p) => p.id === product.id) : i;
             dispatch(setProductIndex(index));
             setIsDeleteOpen(true);
           }}

@@ -15,10 +15,10 @@ export const createLocation = async (token, data) => {
     console.log("Create New Location Api Response..", response);
     if (response.status !== 201) throw new Error("Could not create Location");
     toast.success("Location created successfully");
-    return response.data?.data;
+    return response.data;
   } catch (error) {
     console.log("Create Location Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error.response?.data?.error;
     toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
@@ -34,10 +34,10 @@ export const getAllLocations = async (token) => {
     });
     console.log("Get All Locations Api Response..", response);
     if (response.status !== 200) throw new Error("Could not fetch Locations");
-    result = response.data?.data;
+    result = response?.data;
   } catch (error) {
     console.log("Get All Locations Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error.response?.data.error;
     toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
@@ -49,17 +49,17 @@ export const updateLocation = async (token, locationId, data) => {
   const toastId = toast.loading("Loading...");
   let result = null;
   try {
-    const response = await apiConnector("PATCH", `${GET_ALL_LOCATION_API}/${locationId}`, data, {
+    const response = await apiConnector("PUT", `${GET_ALL_LOCATION_API}/${locationId}`, data, {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     });
     console.log("Update Location Api Response..", response);
     if (response.status !== 200) throw new Error("Could not update Location");
     toast.success("Location updated successfully");
-    result = response.data?.data;
+    result = response.data;
   } catch (error) {
     console.log("Update Location Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error.response?.data?.error;
     toast.error(errorMessage);
   }
   toast.dismiss(toastId);
@@ -78,10 +78,10 @@ export const getLocation = async (token, locationId) => {
     console.log("Get Location Api Response..", response);
     if (response.status !== 200) throw new Error("Could not fetch Location");
     toast.success("Location fetched successfully");
-    result = response.data?.data;
+    result = response.data;
   } catch (error) {
     console.log("Get Location Api Error", error);
-    const errorMessage = error.response?.data?.message;
+    const errorMessage = error.response?.data.error;
     toast.error(errorMessage);
   }
   toast.dismiss(toastId);
@@ -97,7 +97,7 @@ export const deleteLocation = async (token, locationId) => {
       "Content-Type": "application/json",
     });
     console.log("Delete Location Api Response..", response);
-    if (response.status !== 204) throw new Error("Could not delete Location");
+    if (response.status !== 200) throw new Error("Could not delete Location");
     toast.success("Location deleted successfully");
     result = true;
   } catch (error) {

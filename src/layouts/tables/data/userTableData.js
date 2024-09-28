@@ -15,6 +15,8 @@ import { getAllUserProfiles } from "service/operations/userProfileApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setUserIndex } from "slices/profileSlice";
 import { setUsers } from "slices/profileSlice";
+import { getAllUser } from "service/operations/userApi";
+import { refreshLocation } from "slices/locationSlice";
 
 export default function data(
   filteredUsers,
@@ -31,23 +33,26 @@ export default function data(
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await getAllUserProfiles(token);
-        console.log("getAlluserProfile response", response.data);
-        dispatch(setUsers(response.data.filter((data) => data.role !== "customer")));
-        setRowsData(response.data.filter((data) => data.role !== "customer"));
+        const response = await getAllUser(token);
+        console.log("getAlluserProfile response", response);
+        dispatch(setUsers(response.filter((data) => data.user.role !== "customer")));
+        setRowsData(response.filter((data) => data.user.role !== "customer"));
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
   }, [createModalOpen, isDeleteOpen, isEditOpen]);
-
-  const Author = ({ image, firstName, lastName, email }) => (
+  console.log("rowsData----", rowsData);
+  useEffect(() => {
+    dispatch(refreshLocation(token));
+  }, [dispatch]);
+  const Author = ({ image, name, email }) => (
     <MDBox display="flex" alignItems="center" lineHeight={1}>
       <MDAvatar src={image} size="sm" />
       <MDBox ml={2} lineHeight={1}>
         <MDTypography display="block" variant="button" fontWeight="medium">
-          {firstName} {lastName}
+          {name}
         </MDTypography>
         <MDTypography variant="caption">{email}</MDTypography>
       </MDBox>
@@ -63,28 +68,28 @@ export default function data(
     </MDBox>
   );
 
-  const Location = ({ name }) => (
-    <MDBox lineHeight={1} textAlign="left">
-      <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
-        {name}
-      </MDTypography>
-    </MDBox>
-  );
+  const Location = ({ locationId }) => {
+    const { locations } = useSelector((state) => state.location); // Get locations from Redux
+
+    // Find the location by ID
+    const location = locations.find((loc) => loc.id === locationId);
+
+    return (
+      <MDBox lineHeight={1} textAlign="left">
+        <MDTypography display="block" variant="caption" color="text" fontWeight="medium">
+          {location ? location.name : "-"} {/* Fallback if location is not found */}
+        </MDTypography>
+      </MDBox>
+    );
+  };
 
   const rows = (filteredUsers.length > 0 ? filteredUsers : rowsData).map((user, i) => ({
-    userName: (
-      <Author
-        image={user.avatar}
-        firstName={user?.firstName}
-        lastName={user?.lastName}
-        email={user.email}
-      />
-    ),
-    Admin: <Job title={user.role} />,
-    location: <Location name={user.preferred_location?.name} />,
+    userName: <Author image={user.profile?.avatar} name={user.user.name} email={user.email} />,
+    Admin: <Job title={user.user.role} />,
+    location: <Location locationId={user.profile?.preferred_location} />,
     phone_number: (
       <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-        {user.phone_number}
+        {user.profile?.phone_number}
       </MDTypography>
     ),
     action: (
@@ -98,7 +103,7 @@ export default function data(
         <RemoveRedEyeIcon
           onClick={() => {
             const index =
-              filteredUsers.length > 0 ? rowsData.findIndex((u) => u._id === user._id) : i;
+              filteredUsers.length > 0 ? rowsData.findIndex((u) => u.user.id === user.user.id) : i;
             dispatch(setUserIndex(index));
             setViewModal(true);
           }}
@@ -107,7 +112,7 @@ export default function data(
         <EditIcon
           onClick={() => {
             const index =
-              filteredUsers.length > 0 ? rowsData.findIndex((u) => u._id === user._id) : i;
+              filteredUsers.length > 0 ? rowsData.findIndex((u) => u.user.id === user.user.id) : i;
             dispatch(setUserIndex(index));
             handleEdit();
           }}
@@ -116,7 +121,7 @@ export default function data(
         <DeleteIcon
           onClick={() => {
             const index =
-              filteredUsers.length > 0 ? rowsData.findIndex((u) => u._id === user._id) : i;
+              filteredUsers.length > 0 ? rowsData.findIndex((u) => u.user.id === user.user.id) : i;
             dispatch(setUserIndex(index));
             setIsDeleteOpen(true);
           }}

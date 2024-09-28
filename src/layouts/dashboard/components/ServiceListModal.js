@@ -14,9 +14,10 @@ function ServiceListModal({ open, setOpen, createServiceTransactionOfUser }) {
   const { services } = useSelector((state) => state.service);
   //   const { columns, rows } = serviceListModalData(createServiceTransactionOfUser);
   const handleServiceChange = (event) => {
-    const serviceId = event.target.value;
+    const serviceId = Number(event.target.value);
     setSelectedService(serviceId);
-    const service = services.find((s) => s._id === serviceId);
+    console.log("services ---", services);
+    const service = services.find((s) => s.id === serviceId);
     setSelectedServiceDetails(service);
   };
 
@@ -76,7 +77,7 @@ function ServiceListModal({ open, setOpen, createServiceTransactionOfUser }) {
               Select a Service
             </option>
             {services.map((service) => (
-              <option key={service._id} value={service._id}>
+              <option key={service.id} value={service.id}>
                 {service.serviceName} {/* Adjust based on your service object structure */}
               </option>
             ))}

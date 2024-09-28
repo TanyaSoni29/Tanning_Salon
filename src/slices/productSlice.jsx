@@ -45,7 +45,7 @@ export function refreshProduct() {
     const token = getState().auth.token;
     try {
       const response = await getAllProducts(token);
-      dispatch(setProducts(response.data));
+      dispatch(setProducts(response));
     } catch (error) {
       console.error("Failed to refresh products:", error);
     }

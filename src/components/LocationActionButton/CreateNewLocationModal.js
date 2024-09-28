@@ -42,7 +42,7 @@ const CreateLocationModal = ({ onClose }) => {
       const newLocationData = {
         name: data.name,
         address: data.address,
-        postCode: data.postCode,
+        post_code: data.post_code,
         phone_number: data.phone_number,
       };
       const newLocation = await createLocation(token, newLocationData);
@@ -63,7 +63,7 @@ const CreateLocationModal = ({ onClose }) => {
       reset({
         name: "",
         address: "",
-        postCode: "",
+        post_code: "",
         phone_number: "",
       });
     }
@@ -117,7 +117,7 @@ const CreateLocationModal = ({ onClose }) => {
             <TextField
               label="Post Code"
               variant="outlined"
-              {...register("postCode", { required: true })}
+              {...register("post_code", { required: true })}
               sx={{ width: "100%" }}
             />
           </Box>

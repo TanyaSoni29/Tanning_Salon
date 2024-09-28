@@ -93,7 +93,7 @@ function index() {
       }
     }
     getAllLocation();
-  }, [token, dispatch]);
+  }, [locations]);
   const { columns, rows } = locationTableData(
     filteredLocations,
     handleEdit,

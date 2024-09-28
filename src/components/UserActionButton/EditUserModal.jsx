@@ -20,10 +20,11 @@ import { refreshLocation } from "slices/locationSlice";
 const EditUserModal = ({ onClose }) => {
   const { users, userIndex } = useSelector((state) => state.profile);
   const { locations, loading } = useSelector((state) => state.location);
+  const [preferredLocation, setPreferredLocation] = useState("");
   const { token } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const activeUser = users[userIndex];
-  console.log("active user:", activeUser);
+  console.log("active user:", activeUser, locations);
   const {
     register,
     handleSubmit,
@@ -41,16 +42,22 @@ const EditUserModal = ({ onClose }) => {
     dispatch(refreshLocation()); // Fetch locations when component mounts
   }, [dispatch]);
 
+  useEffect(() => {
+    if (activeUser?.profile?.preferred_location && locations.length > 0) {
+      setPreferredLocation(activeUser.profile.preferred_location);
+    }
+  }, [activeUser, locations]);
+
   const handleSubmitForm = async (data) => {
     try {
       const newUserData = {
-        // userName: data.userName,
+        user_id: activeUser.user.id,
         firstName: data.firstName,
         lastName: data.lastName,
         role: data.role,
         email: data.email,
         address: data.address,
-        postCode: data.postCode,
+        post_code: data.post_code,
         phone_number: data.phone_number,
         gender: data.gender,
         gdpr_sms_active: data.gdpr_sms_active || false,
@@ -58,7 +65,7 @@ const EditUserModal = ({ onClose }) => {
         referred_by: data.referred_by,
         preferred_location: data.preferred_location,
       };
-      const updatedUser = await updateUserProfile(token, activeUser._id, newUserData);
+      const updatedUser = await updateUserProfile(token, activeUser.user.id, newUserData);
       if (updatedUser) {
         dispatch({
           type: "profile/updateUser", // Ensure this matches the action type name
@@ -76,7 +83,6 @@ const EditUserModal = ({ onClose }) => {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
-        // userName: "",
         firstName: "",
         lastName: "",
         role: "",
@@ -97,7 +103,7 @@ const EditUserModal = ({ onClose }) => {
   return (
     <Box
       sx={{
-        width: 500,
+        width: "30vw",
         padding: 2,
         margin: "auto",
         marginTop: "15%",
@@ -114,14 +120,14 @@ const EditUserModal = ({ onClose }) => {
             <TextField
               label="First Name"
               variant="outlined"
-              defaultValue={activeUser.firstName}
+              defaultValue={activeUser.profile?.firstName}
               {...register("firstName", { required: true })}
               sx={{ width: "100%" }}
             />
             <TextField
               label="Last Name"
               variant="outlined"
-              defaultValue={activeUser.lastName}
+              defaultValue={activeUser.profile?.lastName}
               {...register("lastName", { required: true })}
               sx={{ width: "100%" }}
             />
@@ -131,14 +137,14 @@ const EditUserModal = ({ onClose }) => {
             <TextField
               label="Email"
               variant="outlined"
-              defaultValue={activeUser.email}
+              defaultValue={activeUser.user?.email}
               {...register("email", { required: true })}
               sx={{ width: "100%" }}
             />
             <TextField
               label="Phone Number"
               variant="outlined"
-              defaultValue={activeUser.phone_number}
+              defaultValue={activeUser.profile?.phone_number}
               {...register("phone_number", { required: true })}
               sx={{ width: "100%" }}
             />
@@ -163,7 +169,7 @@ const EditUserModal = ({ onClose }) => {
             <TextField
               label="Address"
               variant="outlined"
-              defaultValue={activeUser.address}
+              defaultValue={activeUser.profile?.address}
               {...register("address", { required: true })}
               sx={{ width: "100%" }}
             />
@@ -182,15 +188,15 @@ const EditUserModal = ({ onClose }) => {
             <TextField
               label="Post Code"
               variant="outlined"
-              defaultValue={activeUser.postCode}
-              {...register("postCode", { required: true })}
+              defaultValue={activeUser.profile?.post_code}
+              {...register("post_code", { required: true })}
               sx={{ width: "50%" }}
             />
 
             <TextField
               label="Referred By"
               variant="outlined"
-              defaultValue={activeUser.referred_by}
+              defaultValue={activeUser.profile?.referred_by}
               {...register("referred_by", { required: true })}
               sx={{ width: "50%" }}
             />
@@ -213,7 +219,7 @@ const EditUserModal = ({ onClose }) => {
                 height: "45px",
                 width: "50%", // Matches the height of the input
               }}
-              defaultValue={activeUser.role}
+              defaultValue={activeUser.user?.role}
               {...register("role", { required: true })}
             >
               <option value="">Select role</option>
@@ -224,7 +230,7 @@ const EditUserModal = ({ onClose }) => {
             <select
               id="gender"
               className="border border-border rounded-md p-2 w-[50%] bg-input focus:ring-primary focus:border-primary"
-              defaultValue={activeUser.gender}
+              defaultValue={activeUser.profile?.gender}
               {...register("gender", { required: true })}
               style={{
                 fontSize: "14px", // Matches the font size of the MDInput
@@ -247,13 +253,14 @@ const EditUserModal = ({ onClose }) => {
                 height: "45px",
                 width: "100%", // Matches the height of the input
               }}
-              defaultValue={activeUser.preferred_location._id}
+              value={preferredLocation} // Use state variable for controlled component
               {...register("preferred_location", { required: true })}
+              onChange={(e) => setPreferredLocation(e.target.value)}
               disabled={loading} // Disable dropdown if locations are loading
             >
               <option value="">Select location</option>
               {locations.map((location) => (
-                <option key={location._id} value={location._id}>
+                <option key={location.id} value={location.id}>
                   {location.name}
                 </option>
               ))}

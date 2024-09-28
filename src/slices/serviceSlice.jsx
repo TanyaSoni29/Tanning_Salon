@@ -45,7 +45,7 @@ export function refreshService() {
     const token = getState().auth.token;
     try {
       const response = await getAllServices(token);
-      dispatch(setServices(response.data));
+      dispatch(setServices(response));
     } catch (error) {
       console.error("Failed to refresh services:", error);
     }

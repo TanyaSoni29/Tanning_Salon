@@ -3,8 +3,7 @@ import { apiConnector } from "../apiConnector";
 import { userProfileEndpoints } from "../api";
 import { setLoading } from "../../slices/profileSlice";
 
-const { GET_USER_DETAILS_API, UPDATE_USER_PROFILE_IMAGE_API, GET_ALL_USER_PROFILE_API } =
-  userProfileEndpoints;
+const { GET_ALL_USER_PROFILE_API } = userProfileEndpoints;
 
 export const createUserProfile = async (token, data) => {
   const toastId = toast.loading("Loading...");
@@ -19,10 +18,10 @@ export const createUserProfile = async (token, data) => {
     }
 
     toast.success("User profile created successfully");
-    return response.data?.data;
+    return response.data;
   } catch (err) {
     console.log("Create user profile api error....", err);
-    const errorMessage = err.response?.data?.message;
+    const errorMessage = err.response?.data?.error;
     toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
@@ -40,10 +39,10 @@ export const getAllUserProfiles = async (token) => {
     if (response.status !== 200) {
       throw new Error("Could not get all user profile");
     }
-    result = response.data?.data;
+    result = response.data;
   } catch (error) {
     console.log("Get all user profile api error....", error);
-    const errorMessage = err.response?.data?.message;
+    const errorMessage = err.response?.data?.error;
     toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
@@ -55,7 +54,7 @@ export const getUserDetails = async (token, userId) => {
   let result = null;
   const toastId = toast.loading("Loading...");
   try {
-    const response = await apiConnector("GET", GET_USER_DETAILS_API, userId, {
+    const response = await apiConnector("GET", `${GET_ALL_USER_PROFILE_API}/${userId}`, null, {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     });
@@ -63,7 +62,7 @@ export const getUserDetails = async (token, userId) => {
     if (response.status !== 200) {
       throw new Error("Could not get user details");
     }
-    result = response.data?.data;
+    result = response.data;
   } catch (error) {
     console.log("Get user details api error....", error);
     toast.error(error.message);
@@ -76,7 +75,7 @@ export const updateUserProfile = async (token, userId, data) => {
   let result = null;
   const toastId = toast.loading("Loading...");
   try {
-    const response = await apiConnector("PATCH", `${GET_ALL_USER_PROFILE_API}/${userId}`, data, {
+    const response = await apiConnector("PUT", `${GET_ALL_USER_PROFILE_API}/${userId}`, data, {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     });
@@ -84,37 +83,37 @@ export const updateUserProfile = async (token, userId, data) => {
     if (response.status !== 200) throw new Error("Could not update user profile");
 
     toast.success("User profile updated successfully");
-    result = response.data?.data;
+    result = response.data;
   } catch (error) {
     console.log("update user profile error", error);
-    const errorMessage = err.response?.data?.message;
+    const errorMessage = err.response?.data?.error;
     toast.error(errorMessage);
   }
   toast.dismiss(toastId);
   return result;
 };
 
-export const updateUserProfileImage = async (token, data) => {
-  let result = null;
-  const toastId = toast.loading("Loading...");
-  try {
-    const response = await apiConnector("POST", UPDATE_USER_PROFILE_IMAGE_API, data, {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    });
-    console.log("Update user profile image response....", response);
-    if (response.status !== 200) throw new Error("Could not update user image profile");
+// export const updateUserProfileImage = async (token, data) => {
+//   let result = null;
+//   const toastId = toast.loading("Loading...");
+//   try {
+//     const response = await apiConnector("POST", UPDATE_USER_PROFILE_IMAGE_API, data, {
+//       Authorization: `Bearer ${token}`,
+//       "Content-Type": "application/json",
+//     });
+//     console.log("Update user profile image response....", response);
+//     if (response.status !== 200) throw new Error("Could not update user image profile");
 
-    toast.success("User profile updated successfully");
-    result = response.data?.data;
-  } catch (error) {
-    console.log("update user profile error", error);
-    const errorMessage = err.response?.data?.message;
-    toast.error(errorMessage);
-  }
-  toast.dismiss(toastId);
-  return result;
-};
+//     toast.success("User profile updated successfully");
+//     result = response.data?.data;
+//   } catch (error) {
+//     console.log("update user profile error", error);
+//     const errorMessage = err.response?.data?.message;
+//     toast.error(errorMessage);
+//   }
+//   toast.dismiss(toastId);
+//   return result;
+// };
 
 export const deleteUserProfile = async (token, userId) => {
   let result = null;
@@ -125,12 +124,12 @@ export const deleteUserProfile = async (token, userId) => {
       "Content-Type": "application/json",
     });
     console.log("Delete user profile response....", response);
-    if (response.status !== 204) throw new Error("Could not delete user profile");
+    if (response.status !== 200) throw new Error("Could not delete user profile");
     toast.success("User profile deleted successfully");
     result = true;
   } catch (error) {
     console.log("Delete user profile error", error);
-    const errorMessage = err.response?.data?.message;
+    const errorMessage = err.response?.data?.error;
     toast.error(errorMessage);
   }
   toast.dismiss(toastId);

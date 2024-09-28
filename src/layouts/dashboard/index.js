@@ -36,6 +36,7 @@ import MDInput from "components/MDInput";
 import { Padding } from "@mui/icons-material";
 import { getAllLocations } from "service/operations/locationApi";
 import { setLocations } from "slices/locationSlice";
+import { getAllUser } from "service/operations/userApi";
 
 function Dashboard() {
   // const { sales, tasks } = reportsLineChartData;
@@ -48,7 +49,7 @@ function Dashboard() {
   const searchRef = useRef(null);
   const dispatch = useDispatch();
   const handleSearch = async () => {
-    console.log(searchQuery);
+    // console.log(searchQuery);
   };
 
   const handleKeyPress = (event) => {
@@ -61,8 +62,9 @@ function Dashboard() {
   useEffect(() => {
     async function getAllUserProfile() {
       try {
-        const response = await getAllUserProfiles(token);
-        dispatch(setUsers(response.data.filter((user) => user.role === "customer" && user.active)));
+        const response = await getAllUser(token);
+        // console.log("Get All User Api Response:..", response);
+        dispatch(setUsers(response.filter((data) => data?.user?.role === "customer")));
       } catch (error) {
         console.log("Error getting all userProfiles");
       }
@@ -74,10 +76,13 @@ function Dashboard() {
     async function getServiceTransaction() {
       try {
         const response = await getAllServiceTransactions(token);
-        const usageServiceTransaction = response.data
-          .filter((data) => data.type === "usage")
-          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
-        console.log("service Transactions", usageServiceTransaction);
+        console.log("response of service transactions:---", response);
+        const usageServiceTransaction = response
+          .filter((data) => data.transaction?.type === "used")
+          .sort(
+            (a, b) => new Date(b.transaction?.created_at) - new Date(a.transaction?.created_at)
+          );
+        // console.log("service Transactions used", usageServiceTransaction);
         setServiceTransactions(usageServiceTransaction);
       } catch (error) {
         console.log("Error getting all service Transactions");
@@ -90,29 +95,33 @@ function Dashboard() {
     async function getAllLocation() {
       try {
         const response = await getAllLocations(token);
-        const sortLocation = response.data.sort(
-          (a, b) => new Date(b.created_at) - new Date(a.created_at)
-        );
-        console.log("getting all getAllLocation....", response.data);
-        const sortedLocations = sortLocation.sort((a, b) => a.name.localeCompare(b.name));
-        dispatch(setLocations(sortedLocations));
+        // console.log("response for location :", response);
+        const sortLocation = response
+          .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+          .sort((a, b) => a.name.localeCompare(b.name));
+        if (JSON.stringify(locations) !== JSON.stringify(sortLocation)) {
+          dispatch(setLocations(sortLocation));
+        }
+        // console.log("getting all getAllLocation....", response.data);
       } catch (error) {
         console.log("Error getting all getAllServices");
       }
     }
     getAllLocation();
-  }, [token, dispatch]);
-  // console.log("users", users);
+  }, []);
+  console.log("User in dashboard----", users, serviceTransactions);
   const filteredUsers = selectedLocation
     ? users
-        .filter((user) => user.preferred_location?._id === selectedLocation)
+        .filter((user) => user.profile !== null)
+        .filter((data) => data.profile.preferred_location === selectedLocation)
         .map((user) => {
           const userTransactions = serviceTransactions.filter(
-            (transaction) => transaction.user._id === user._id
+            (transaction) => transaction.user_details?.id === user?.user.id
           );
           if (userTransactions.length > 0) {
             const latestTransaction = userTransactions.reduce((latest, transaction) => {
-              return new Date(transaction.created_at) > new Date(latest.created_at)
+              return new Date(transaction.transaction?.created_at) >
+                new Date(latest.transaction?.created_at)
                 ? transaction
                 : latest;
             }, userTransactions[0]);
@@ -121,6 +130,7 @@ function Dashboard() {
           return { ...user };
         })
     : [];
+
   return (
     <DashboardLayout>
       <DashboardNavbar />
@@ -202,7 +212,7 @@ function Dashboard() {
               id="location"
               className="border border-border rounded-md p-2 w-full bg-input text-foreground focus:ring-primary focus:border-primary m-auto"
               value={selectedLocation}
-              onChange={(e) => setSelectedLocation(e.target.value)}
+              onChange={(e) => setSelectedLocation(Number(e.target.value))}
               style={{
                 fontSize: "14px", // Matches the font size of the MDInput
                 height: "45px", // Matches the height of the input
@@ -210,7 +220,7 @@ function Dashboard() {
             >
               <option value="">Select location</option>
               {locations.map((location) => (
-                <option key={location._id} value={location._id}>
+                <option key={location.id} value={location.id}>
                   {location.name}
                 </option>
               ))}

@@ -4,6 +4,10 @@ const initialState = {
   signupData: null,
   loading: false,
   token: localStorage.getItem("token") ? JSON.parse(localStorage.getItem("token")) : null,
+  isAuth: false,
+  expirationTime: localStorage.getItem("expirationTime")
+    ? JSON.parse(localStorage.getItem("expirationTime"))
+    : null,
   user: null,
 };
 
@@ -24,8 +28,11 @@ const authSlice = createSlice({
     setUser(state, action) {
       state.user = action.payload;
     },
+    setIsAuth(state, action) {
+      state.isAuth = action.payload;
+    },
   },
 });
 
-export const { setSignupData, setToken, setLoading, setUser } = authSlice.actions;
+export const { setSignupData, setToken, setLoading, setUser, setIsAuth } = authSlice.actions;
 export default authSlice.reducer;

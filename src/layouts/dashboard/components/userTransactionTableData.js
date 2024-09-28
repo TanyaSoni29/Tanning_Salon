@@ -67,16 +67,16 @@ export default function data(combinedTransactions) {
       <MDBox ml={-1}>
         <MDBadge
           badgeContent={
-            transaction.type === "purchase"
-              ? "Purchase"
-              : transaction.type === "usage"
-              ? "Usage"
+            transaction.type === "purchased"
+              ? "Purchased"
+              : transaction.type === "used"
+              ? "Used"
               : "Product"
           }
           color={
-            transaction.type === "purchase"
+            transaction.type === "purchased"
               ? "success"
-              : transaction.type === "usage"
+              : transaction.type === "used"
               ? "error"
               : "dark"
           }
@@ -108,7 +108,7 @@ export default function data(combinedTransactions) {
       ...row,
       createdAt: (
         <MDTypography component="a" href="#" variant="caption" color="text" fontWeight="medium">
-          {formatDate(row.createdAt)} {row.createdAt?.split("T")[1]?.slice(0, 8)}
+          {row.createdAt}
         </MDTypography>
       ),
     })),

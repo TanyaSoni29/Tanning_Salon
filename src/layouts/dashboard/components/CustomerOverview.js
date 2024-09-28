@@ -8,6 +8,7 @@ import ProfileModal from "../components/ProfileModal";
 import { Button } from "@mui/material";
 import CreateCustomerModal from "components/CustomerActionButton/CreateCustomerModal";
 import { formatDate } from "utils/formateDate";
+import data from "./userProductTableData";
 function CustomerOverview({ searchQuery, filteredUsers }) {
   const { users } = useSelector((state) => state.profile);
   const [isQuesModal, setIsQuesModal] = useState(false);
@@ -36,15 +37,17 @@ function CustomerOverview({ searchQuery, filteredUsers }) {
   const handleCloseQuesModal = () => {
     setIsQuesModal(false);
   };
-  // console.log("filtered User", filteredUsers);
+
   // Filter customers based on the search query
   const filterUsers = filteredUsers.filter(
-    (user) =>
-      user?.role === "customer" &&
-      ((user.firstName && user.firstName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (user.lastName && user.lastName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-        (user.mobileNumber && user.mobileNumber.includes(searchQuery)))
+    (data) =>
+      data?.user.role === "customer" &&
+      ((data?.user.name && data?.user.name.toLowerCase().includes(searchQuery.toLowerCase())) ||
+        (data.profile.phone_number &&
+          data.profile.phone_number.toLowerCase().includes(searchQuery.toLowerCase())))
   );
+
+  console.log("filtered User:----", filterUsers);
   return (
     <>
       <Modal setOpen={setIsQuesModal} open={isQuesModal}>
@@ -106,14 +109,16 @@ function CustomerOverview({ searchQuery, filteredUsers }) {
             </thead>
             <tbody>
               {filterUsers.length > 0 ? (
-                filterUsers.map((user) => (
-                  <tr key={user._id} className="hover:bg-gray-50 text-[0.8rem]">
-                    <td className="border border-gray-300 p-2">{`${user.firstName} ${user.lastName}`}</td>
-                    <td className="border border-gray-300 p-2">{user.phone_number}</td>
-                    <td className="border border-gray-300 p-2">{user.gender}</td>
+                filterUsers.map((data) => (
+                  <tr key={data.user.id} className="hover:bg-gray-50 text-[0.8rem]">
+                    <td className="border border-gray-300 p-2">{data.user.name}</td>
                     <td className="border border-gray-300 p-2">
-                      {user?.latestTransaction
-                        ? formatDate(user?.latestTransaction?.created_at)
+                      {data.profile.phone_number ? data.profile.phone_number : "-"}
+                    </td>
+                    <td className="border border-gray-300 p-2">{data.profile.gender}</td>
+                    <td className="border border-gray-300 p-2">
+                      {data?.latestTransaction?.transaction
+                        ? formatDate(data?.latestTransaction?.transaction?.created_at)
                         : "N/A"}
                     </td>
                     <td className="border border-gray-300 p-2 text-center">
@@ -144,7 +149,7 @@ function CustomerOverview({ searchQuery, filteredUsers }) {
                             color: "#fff",
                           },
                         }}
-                        onClick={() => handleSelectButton(user)}
+                        onClick={() => handleSelectButton(data)}
                       >
                         <span style={{ fontSize: "12px", textTransform: "capitalize" }}>
                           Select

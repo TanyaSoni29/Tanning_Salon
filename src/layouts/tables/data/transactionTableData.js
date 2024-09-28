@@ -25,31 +25,31 @@ export default function data(filteredTransaction, combinedTransactions, setCombi
           getAllProductTransactions(token),
         ]);
         console.log({ serviceResponse, productResponse });
-        const serviceData = serviceResponse.data;
-        const productData = productResponse.data;
+        const serviceData = serviceResponse;
+        const productData = productResponse;
         console.log({ serviceData: serviceData, productData: productData });
         // Map and structure service transactions
         const formattedServiceTransactions = serviceData.map((transaction) => ({
-          id: transaction._id,
-          productName: transaction?.service?.serviceName, // For service, this might be the service name
-          userName: `${transaction.user.firstName} ${transaction.user.lastName}`,
-          quantity: transaction.quantity,
+          id: transaction.transaction?.id,
+          productName: transaction?.service?.name, // For service, this might be the service name
+          userName: `${transaction.user_details?.firstName} ${transaction.user_details?.lastName}`,
+          quantity: transaction.transaction?.quantity,
           price: transaction?.service?.price, // Service might not have a price, so defaulting to '-'
-          location: transaction.location.name,
-          type: transaction.type === "usage" ? "usage" : "purchase",
-          createdAt: transaction.created_at,
+          location: transaction.user_details?.preferred_location?.name,
+          type: transaction.transaction?.type === "used" ? "used" : "purchased",
+          createdAt: transaction.transaction?.created_at,
         }));
 
         // Map and structure product transactions
         const formattedProductTransactions = productData.map((transaction) => ({
-          _id: transaction._id,
+          id: transaction.transaction.id,
           productName: transaction?.product?.name, // For products, this is the product name
-          userName: `${transaction.user.firstName} ${transaction.user.lastName}`,
-          quantity: transaction.quantity,
+          userName: `${transaction.user_details?.firstName} ${transaction.user_details?.lastName}`,
+          quantity: transaction.transaction?.quantity,
           price: transaction?.product?.price, // Product has a price
-          location: transaction?.location.name,
-          type: transaction?.product?.type, // Assuming all product transactions are "Product"
-          createdAt: transaction?.created_at,
+          location: transaction?.user_details?.preferred_location?.name,
+          type: "Product", // Assuming all product transactions are "Product"
+          createdAt: transaction?.transaction?.created_at,
         }));
 
         // Combine both sets of transactions
@@ -119,16 +119,16 @@ export default function data(filteredTransaction, combinedTransactions, setCombi
         <MDBox ml={-1}>
           <MDBadge
             badgeContent={
-              transaction.type === "purchase"
-                ? "Purchase"
-                : transaction.type === "usage"
-                ? "Usage"
+              transaction.type === "purchased"
+                ? "Purchased"
+                : transaction.type === "used"
+                ? "Used"
                 : "Product"
             }
             color={
-              transaction.type === "purchase"
+              transaction.type === "purchased"
                 ? "success"
-                : transaction.type === "usage"
+                : transaction.type === "used"
                 ? "error"
                 : "dark"
             }

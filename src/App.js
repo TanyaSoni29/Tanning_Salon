@@ -44,7 +44,7 @@ export default function App() {
   const [onMouseEnter, setOnMouseEnter] = useState(false);
   const { pathname } = useLocation();
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
-  const { token } = useSelector((state) => state.auth);
+  const { token, isAuth } = useSelector((state) => state.auth);
 
   // Open sidenav when mouse enter on mini sidenav
   const handleOnMouseEnter = () => {
@@ -66,9 +66,20 @@ export default function App() {
   const handleConfiguratorOpen = () => setOpenConfigurator(dispatch, !openConfigurator);
 
   // useEffect(() => {
-  //   appDispatch(getMe(navigate, token));
-  // }, [token]);
-
+  //   if (token) {
+  //     appDispatch(getMe(token));
+  //   }
+  // }, [token, appDispatch]);
+  // useEffect(() => {
+  //   // Check if the user is authenticated
+  //   if (!isAuth) {
+  //     // Redirect to the sign-in page if not authenticated
+  //     navigate("/authentication/sign-in");
+  //   } else {
+  //     // If authenticated, you might want to fetch user data
+  //     appDispatch(getMe(navigate, token));
+  //   }
+  // }, [token, navigate, appDispatch]);
   // Setting the dir attribute for the body element
   useEffect(() => {
     document.body.setAttribute("dir", direction);
@@ -158,7 +169,10 @@ export default function App() {
       </LogoutModal>
       <Routes>
         {getRoutes(routes)}
-        <Route path="*" element={<Navigate to="/dashboard" />} />
+        <Route
+          path="*"
+          element={<Navigate to={token ? "/dashboard" : "/authentication/sign-in"} />}
+        />
       </Routes>
     </ThemeProvider>
   );

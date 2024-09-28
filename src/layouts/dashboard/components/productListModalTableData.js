@@ -20,15 +20,15 @@ export default function data(createProductTransactionOfUser) {
   const { products } = useSelector((state) => state.product);
   const [quantities, setQuantities] = useState(() => {
     const initialQuantities = {};
-    products.forEach((product) => {
-      initialQuantities[product._id] = 0; // Start with quantity 0 for each product
+    products?.forEach((product) => {
+      initialQuantities[product.id] = 0; // Start with quantity 0 for each product
     });
     return initialQuantities;
   });
   const handleQuantityChange = (e, productId) => {
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
-      [productId]: e.target.value,
+      [productId]: Number(e.target.value),
     }));
   };
 
@@ -59,20 +59,20 @@ export default function data(createProductTransactionOfUser) {
       <MDTypography variant="caption">{description}</MDTypography>
     </MDBox>
   );
-
-  const rows = products.map((product, i) => ({
+  console.log("products----", products);
+  const rows = products?.map((product, i) => ({
     Name: <Product image={product.image} name={product.name} />,
-    Brand: <ProductBrand title={product.brand} description={product.description} />,
+    // Brand: <ProductBrand title={product?.brand} description={product?.description} />,
     price: (
       <MDTypography variant="caption" fontWeight="bold">
-        {product.price}
+        {product?.price}
       </MDTypography>
     ),
     type: (
       <MDBox ml={-1}>
         <MDBadge
-          badgeContent={product.type === "Product" ? "Product" : "Service"}
-          color={product.type === "Product" ? "success" : "dark"}
+          badgeContent={product?.type === "Product" ? "Product" : "Service"}
+          color={product?.type === "Product" ? "success" : "dark"}
           variant="gradient"
           size="sm"
         />
@@ -80,8 +80,8 @@ export default function data(createProductTransactionOfUser) {
     ),
     quantity: (
       <Select
-        value={quantities[product?._id] || 0}
-        onChange={(e) => handleQuantityChange(e, product?._id)}
+        value={quantities[product?.id] || 0}
+        onChange={(e) => handleQuantityChange(e, product?.id)}
         sx={{ width: "60px" }}
       >
         {[...Array(11).keys()].map((q) => (
@@ -122,7 +122,7 @@ export default function data(createProductTransactionOfUser) {
   return {
     columns: [
       { Header: "Product Name", accessor: "Name", width: "30%", align: "left" },
-      { Header: "Brand", accessor: "Brand", align: "left" },
+      // { Header: "Brand", accessor: "Brand", align: "left" },
       { Header: "Price", accessor: "price", align: "center" },
       { Header: "Quantity", accessor: "quantity", align: "center" },
       //   { Header: "action", accessor: "action", align: "center" },

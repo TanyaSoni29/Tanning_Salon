@@ -15,7 +15,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useForm } from "react-hook-form";
 import { addUser, refreshUser } from "../../slices/profileSlice";
 import { refreshLocation } from "../../slices/locationSlice"; // Import refreshLocation
-import { createCustomer } from "../../service/operations/userApi";
+import { createCustomer, createUser } from "../../service/operations/userApi";
+import { Password } from "@mui/icons-material";
 
 const CreateCustomerModal = ({ onClose }) => {
   const { token } = useSelector((state) => state.auth);
@@ -50,20 +51,22 @@ const CreateCustomerModal = ({ onClose }) => {
   const handleSubmitForm = async (data) => {
     try {
       const newUserData = {
+        password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
         email: data.email,
         address: data.address,
-        postCode: data.postCode,
+        post_code: data.post_code,
         phone_number: data.phone_number,
         gender: data.gender,
         gdpr_sms_active: data.gdpr_sms_active || false,
         gdpr_email_active: data.gdpr_email_active || false,
         referred_by: data.referred_by,
         preferred_location: data.preferred_location,
-        // avatar: avatarPreview, // Store avatar preview or upload file
+        avatar: "",
+        role: "customer", // Store avatar preview or upload file
       };
-      const newUser = await createCustomer(token, newUserData);
+      const newUser = await createUser(token, newUserData);
       if (newUser) {
         dispatch(addUser(newUser));
       }
@@ -79,18 +82,19 @@ const CreateCustomerModal = ({ onClose }) => {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
+        password: "",
         firstName: "",
         lastName: "",
         email: "",
         address: "",
-        postCode: "",
+        post_code: "",
         phone_number: "",
         gender: "",
         referred_by: "",
         preferred_location: "",
         gdpr_sms_active: false,
         gdpr_email_active: false,
-        // avatar: "",
+        avatar: "",
       });
       // setAvatarPreview(null); // Reset avatar preview
     }
@@ -141,6 +145,14 @@ const CreateCustomerModal = ({ onClose }) => {
               sx={{ width: "100%" }}
             />
           </Box>
+          <Box mb={2} sx={{ display: "flex", gap: 2 }}>
+            <TextField
+              label="Password"
+              variant="outlined"
+              {...register("password", { required: true })}
+              sx={{ width: "100%" }}
+            />
+          </Box>
           {/* <Box mb={2} sx={{ display: "flex", gap: 2 }}>
             <TextField
               label="User Name"
@@ -171,7 +183,7 @@ const CreateCustomerModal = ({ onClose }) => {
             <TextField
               label="Post Code"
               variant="outlined"
-              {...register("postCode", { required: true })}
+              {...register("post_code", { required: true })}
               sx={{ width: "100%" }}
             />
 
@@ -219,7 +231,7 @@ const CreateCustomerModal = ({ onClose }) => {
             >
               <option value="">Select location</option>
               {locations.map((location) => (
-                <option key={location._id} value={location._id}>
+                <option key={location.id} value={location.id}>
                   {location.name}
                 </option>
               ))}

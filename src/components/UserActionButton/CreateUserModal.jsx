@@ -51,21 +51,20 @@ const CreateUserModal = ({ onClose }) => {
   const handleSubmitForm = async (data) => {
     try {
       const newUserData = {
-        userName: data.userName,
         password: data.password,
         firstName: data.firstName,
         lastName: data.lastName,
         role: data.role,
         email: data.email,
         address: data.address,
-        postCode: data.postCode,
+        post_code: data.post_code,
         phone_number: data.phone_number,
         gender: data.gender,
         gdpr_sms_active: data.gdpr_sms_active || false,
         gdpr_email_active: data.gdpr_email_active || false,
         referred_by: data.referred_by,
         preferred_location: data.preferred_location,
-        // avatar: avatarPreview, // Store avatar preview or upload file
+        avatar: "",
       };
       const newUser = await createUser(token, newUserData);
       if (newUser) {
@@ -83,19 +82,18 @@ const CreateUserModal = ({ onClose }) => {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset({
-        userName: "",
         password: "",
         firstName: "",
         lastName: "",
         role: "",
         email: "",
         address: "",
-        postCode: "",
+        post_code: "",
         phone_number: "",
         gender: "",
         referred_by: "",
         preferred_location: "",
-        // avatar: "",
+        avatar: "",
       });
       // setAvatarPreview(null); // Reset avatar preview
     }
@@ -148,12 +146,6 @@ const CreateUserModal = ({ onClose }) => {
           </Box>
           <Box mb={2} sx={{ display: "flex", gap: 2 }}>
             <TextField
-              label="User Name"
-              variant="outlined"
-              {...register("userName", { required: true })}
-              sx={{ width: "100%" }}
-            />
-            <TextField
               label="Password"
               variant="outlined"
               {...register("password", { required: true })}
@@ -182,7 +174,7 @@ const CreateUserModal = ({ onClose }) => {
             <TextField
               label="Post Code"
               variant="outlined"
-              {...register("postCode", { required: true })}
+              {...register("post_code", { required: true })}
               sx={{ width: "50%" }}
             />
 
@@ -225,7 +217,7 @@ const CreateUserModal = ({ onClose }) => {
             >
               <option value="">Select role</option>
               <option value="admin">Admin</option>
-              <option value="user">User</option>
+              <option value="operator">User</option>
             </select>
             <select
               id="location"
@@ -240,7 +232,7 @@ const CreateUserModal = ({ onClose }) => {
             >
               <option value="">Select location</option>
               {locations.map((location) => (
-                <option key={location._id} value={location._id}>
+                <option key={location.id} value={location.id}>
                   {location.name}
                 </option>
               ))}

@@ -20,7 +20,7 @@ const ProtectedRoute = ({ children }) => {
         navigate("/authentication/sign-in");
       }
     }
-  }, [loading, expirationTime, isAuth, dispatch]);
+  }, []);
 
   // Show loader if authentication status is still loading
   if (loading) {

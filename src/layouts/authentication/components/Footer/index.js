@@ -34,9 +34,7 @@ function Footer({ light }) {
             flexWrap="wrap"
             color={light ? "white" : "text"}
             fontSize={size.sm}
-          >
-           
-          </MDBox>
+          ></MDBox>
           <MDBox
             component="ul"
             sx={({ breakpoints }) => ({

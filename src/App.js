@@ -169,10 +169,7 @@ export default function App() {
       </LogoutModal>
       <Routes>
         {getRoutes(routes)}
-        <Route
-          path="*"
-          element={<Navigate to={token ? "/dashboard" : "/authentication/sign-in"} />}
-        />
+        <Route path="*" element={<Navigate to="/dashboard" />} />
       </Routes>
     </ThemeProvider>
   );

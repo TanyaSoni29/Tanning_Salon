@@ -19,9 +19,9 @@ export const createUserProfile = async (token, data) => {
 
     toast.success("User profile created successfully");
     return response.data;
-  } catch (err) {
+  } catch (error) {
     console.log("Create user profile api error....", err);
-    const errorMessage = err.response?.data?.error;
+    const errorMessage = error.response?.data?.error;
     toast.error(errorMessage);
   } finally {
     toast.dismiss(toastId);
